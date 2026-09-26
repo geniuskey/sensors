@@ -1,0 +1,72 @@
+name: Source collection
+# Runs the reviewed collectors (scripts/collect), builds the diff/conflict report and opens a PR
+# containing only new raw snapshots + reports. It never writes public/data, the SQLite DB or
+# production D1 (no Cloudflare secrets are used here). Accepted changes go through the importer.
+#
+# To pause the schedule, delete or comment out the `schedule:` block below (or disable the
+# workflow in the Actions tab). Manual runs via workflow_dispatch keep working.
+# Repo setting required for the PR step: Settings > Actions > General >
+# "Allow GitHub Actions to create and approve pull requests".
+on:
+  workflow_dispatch:
+    inputs:
+      sources:
+        description: 'Comma-separated collectors (empty = all enabled: samsung,omnivision,helpix)'
+        required: false
+        default: ''
+      max_pages:
+        description: 'Override max detail pages per collector (empty = collector defaults)'
+        required: false
+        default: ''
+      full_audit:
+        description: 'Include the full low-confidence audit report'
+        type: boolean
+        default: false
+  schedule:
+    - cron: '17 3 * * 1'   # weekly, Monday 03:17 UTC
+    - cron: '47 4 1 * *'   # monthly, 1st 04:47 UTC: same run + full low-confidence audit
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: source-collection
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.13' }
+
+      - name: Run collectors, diff report and audit
+        id: run
+        env:
+          SOURCES: ${{ inputs.sources }}
+          MAX_PAGES: ${{ inputs.max_pages }}
+          FULL_AUDIT: ${{ inputs.full_audit || github.event.schedule == '47 4 1 * *' }}
+        run: |
+          DATE=$(date -u +%F)
+          echo "date=$DATE" >> "$GITHUB_OUTPUT"
+          ARGS=(--date "$DATE")
+          [ -n "$SOURCES" ] && ARGS+=(--sources "$SOURCES")
+          [ -n "$MAX_PAGES" ] && ARGS+=(--max-pages "$MAX_PAGES")
+          [ "$FULL_AUDIT" = "true" ] && ARGS+=(--full-audit)
+          python3 scripts/collect/run_all.py "${ARGS[@]}"
+
+      - name: Open or update review PR
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: automation/source-collection
+          delete-branch: true
+          add-paths: |
+            data/raw/*/20*/snapshot.json
+            data/reports/**
+          commit-message: 'chore: add source snapshots and diff report (${{ steps.run.outputs.date }})'
+          title: 'Source collection ${{ steps.run.outputs.date }}'
+          body-path: data/reports/${{ steps.run.outputs.date }}-summary.md
+          labels: data-review

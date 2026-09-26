@@ -5,3 +5,4 @@ dist/
 wrangler.toml
 database/local.sqlite3
 .DS_Store
+__pycache__/
