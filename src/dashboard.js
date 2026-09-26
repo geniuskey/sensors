@@ -163,6 +163,7 @@ function renderManufacturers(manufacturers) {
 
 const TREND_COLORS = ['#3b5bfd', '#7c5cf0', '#0ea5a4', '#f08a3c', '#e5487a'];
 const OTHER_COLOR = '#94a3b8';
+const MAKER_COLORS = { Sony: '#111111', Samsung: '#1428a0', OmniVision: '#00a3e0', GalaxyCore: '#f28c28', SmartSens: '#e60012' };
 const FORMAT_TICKS = [4, 3, 2.5, 2, 1.7, 1.5, 1.3, 1.12, 1].map((denominator) => 1 / denominator);
 
 function median(values) {
@@ -374,7 +375,7 @@ async function init() {
     qs('#mappings').textContent = number(stats.mappings, 0);
 
     const pitchMakers = makerTally(sensors).slice(0, 5).map(([name]) => name);
-    const pitchMakerColors = new Map(pitchMakers.map((name, index) => [name, TREND_COLORS[index]]));
+    const pitchMakerColors = new Map(pitchMakers.map((name, index) => [name, MAKER_COLORS[name] || TREND_COLORS[index]]));
     const pitchSensors = sensors.filter((row) => Number(row.pixel_size_um) > 0 && Number(row.resolution_mp) > 0);
     const pitchGroup = (sensor) => pitchMakerColors.has(sensor.manufacturer) ? sensor.manufacturer : 'Other';
     const pitchSelection = new Set();
