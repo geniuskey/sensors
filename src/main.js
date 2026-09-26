@@ -85,7 +85,7 @@ let statsData = {};
 let sortState = { key: 'resolution_mp', direction: 'desc' };
 const compareIds = new Set();
 let currentChips = [];
-const roleOptions = ['Main', 'Ultra-wide', 'Telephoto', 'Front', 'Macro', 'Depth', 'Unknown'];
+const roleOptions = ['Main', 'Ultra-wide', 'Telephoto', 'Front', 'Macro', 'Depth', 'Unspecified'];
 
 async function getData() {
   try {
@@ -113,20 +113,28 @@ function formatNumber(value, digits = 1) {
   return value == null || value === '' ? '—' : Number(value).toLocaleString(undefined, { maximumFractionDigits: digits });
 }
 function normalizeRole(value = '') {
-  return value.toLowerCase().replaceAll('rear ', '').replaceAll('ultrawide', 'ultra-wide').trim();
+  const role = String(value).toLowerCase().replace(/^rear\s+/, '').replaceAll('ultrawide', 'ultra-wide').trim();
+  if (role.includes('ultra') && role.includes('wide')) return 'Ultra-wide';
+  if (role.includes('tele')) return 'Telephoto';
+  if (role.includes('front')) return 'Front';
+  if (role.includes('macro')) return 'Macro';
+  if (role.includes('depth') || role.includes('tof')) return 'Depth';
+  if (role.includes('main') || role === 'wide' || role.includes('wide angle')) return 'Main';
+  return '';
 }
 function rolesFor(row) {
-  if (!row.roles) return ['Unknown'];
-  return row.roles.split('+').map((part) => normalizeRole(part)).filter(Boolean);
+  if (!row.roles) return [];
+  return Array.from(new Set(String(row.roles).split(/[,;+]/).map((part) => normalizeRole(part)).filter(Boolean)));
 }
 function rowHasRole(row, selectedRole) {
+  if (selectedRole === 'Unspecified') return rolesFor(row).length === 0;
   return rolesFor(row).includes(normalizeRole(selectedRole));
 }
 function checkedValues(name) {
   return qsa('input[name="' + name + '"]:checked').map((input) => input.value);
 }
 function sortValue(row, key) {
-  if (key === 'roles') return row.roles || 'Unknown';
+  if (key === 'roles') return rolesFor(row).join(', ') || 'Unspecified';
   return row[key];
 }
 function compareRows(left, right) {
@@ -145,12 +153,9 @@ function makeFacets() {
     const count = staticRows.filter((row) => row.manufacturer === maker).length;
     return '<label class="facet-option"><input type="checkbox" name="manufacturer" value="' + esc(maker) + '"><span class="facet-name">' + esc(maker) + '</span><span class="facet-count">' + count + '</span></label>';
   }).join('');
-  const roles = Array.from(new Set(staticRows.flatMap(rolesFor))).sort((a, b) => {
-    const ai = roleOptions.findIndex((role) => normalizeRole(role) === a);
-    const bi = roleOptions.findIndex((role) => normalizeRole(role) === b);
-    if (ai !== -1 || bi !== -1) return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
-    return a.localeCompare(b);
-  });
+  const availableRoles = new Set(staticRows.flatMap(rolesFor));
+  if (staticRows.some((row) => rolesFor(row).length === 0)) availableRoles.add('Unspecified');
+  const roles = roleOptions.filter((role) => availableRoles.has(role));
   qs('#role-facets').innerHTML = roles.map((role) => {
     const count = staticRows.filter((row) => rowHasRole(row, role)).length;
     return '<label class="facet-option"><input type="checkbox" name="role" value="' + esc(role) + '"><span class="facet-name">' + esc(role) + '</span><span class="facet-count">' + count + '</span></label>';
@@ -226,7 +231,7 @@ function render() {
       '<td class="number-cell emphasis">' + (row.resolution_mp == null ? '—' : formatNumber(row.resolution_mp) + ' MP') + '</td>' +
       '<td class="number-cell">' + esc(row.sensor_size || '—') + '</td>' +
       '<td class="number-cell">' + (row.pixel_size_um ? formatNumber(row.pixel_size_um, 2) + ' µm' : '—') + '</td>' +
-      '<td class="role-cell">' + (row.roles ? esc(row.roles).split(' + ').map((role) => '<span class="role-tag">' + role + '</span>').join('') : '<span class="role-tag role-muted">Unknown</span>') + '</td>' +
+      '<td class="role-cell">' + (rolesFor(row).length ? rolesFor(row).map((role) => '<span class="role-tag">' + esc(role) + '</span>').join('') : '<span class="role-tag role-muted">Unspecified</span>') + '</td>' +
       '<td class="number-cell"><span class="phone-count">' + Number(row.phone_count || 0).toLocaleString() + '</span></td>' +
       '<td class="number-cell">' + (row.latest_year || '—') + '</td>' +
       '<td class="open-col"><button class="icon-button row-open" type="button" data-open="' + esc(row.canonical_id) + '" aria-label="View ' + esc(row.sensor) + ' details">↗</button></td></tr>';
@@ -266,6 +271,7 @@ function showDetail(id) {
     '<div class="detail-item"><span>Resolution</span><strong>' + (row.resolution_mp == null ? '—' : formatNumber(row.resolution_mp) + ' MP') + '</strong></div>' +
     '<div class="detail-item"><span>Optical format</span><strong>' + esc(row.sensor_size || '—') + '</strong></div>' +
     '<div class="detail-item"><span>Pixel pitch</span><strong>' + (row.pixel_size_um ? formatNumber(row.pixel_size_um, 2) + ' µm' : '—') + '</strong></div>' +
+    '<div class="detail-item"><span>Camera roles</span><strong>' + esc(rolesFor(row).join(', ') || 'Unspecified') + '</strong></div>' +
     '<div class="detail-item"><span>Internal / alias</span><strong>' + esc(row.internal_code || '—') + '</strong></div>' +
     '<div class="detail-item"><span>Autofocus</span><strong>' + esc(row.af || '—') + '</strong></div>' +
     '<div class="detail-item"><span>HDR</span><strong>' + esc(row.hdr || '—') + '</strong></div>' +
@@ -282,7 +288,7 @@ function comparisonTable() {
     ['Resolution', (row) => row.resolution_mp == null ? '—' : formatNumber(row.resolution_mp) + ' MP'],
     ['Optical format', (row) => row.sensor_size || '—'],
     ['Pixel pitch', (row) => row.pixel_size_um ? formatNumber(row.pixel_size_um, 2) + ' µm' : '—'],
-    ['Camera roles', (row) => row.roles || 'Unknown'],
+    ['Camera roles', (row) => rolesFor(row).join(', ') || 'Unspecified'],
     ['Mapped phones', (row) => Number(row.phone_count || 0).toLocaleString()],
     ['Latest phone year', (row) => row.latest_year || '—'],
     ['Internal code', (row) => row.internal_code || '—'],
