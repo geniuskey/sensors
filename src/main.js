@@ -52,6 +52,7 @@ function normalizeRole(value = '') {
   if (role.includes('macro')) return 'Macro';
   if (role.includes('depth') || role.includes('tof')) return 'Depth';
   if (role.includes('night')) return 'Night';
+  if (role.includes('mono')) return 'Monochrome';
   if (role.includes('main') || role === 'wide' || role.includes('wide angle')) return 'Main';
   return 'Unspecified';
 }
