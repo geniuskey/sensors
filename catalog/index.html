@@ -18,7 +18,7 @@
         <label class="field-label" for="q">Search</label>
         <input id="q" class="text-field" type="search" name="search" autocomplete="off" spellcheck="false" placeholder="IMX989, GN3, S5KGN3…">
 
-        <fieldset class="filter-group"><legend>Manufacturer <span id="maker-hint" class="facet-hint">Top 5 selected</span></legend><div class="facet-list" id="manufacturer-facets"></div></fieldset>
+        <fieldset class="filter-group"><legend>Manufacturer <span id="maker-hint" class="facet-hint">sorted by count</span></legend><div class="facet-list" id="manufacturer-facets"></div></fieldset>
         <fieldset class="filter-group"><legend>Camera role <span class="facet-hint">select any</span></legend><div class="facet-list" id="role-facets"></div></fieldset>
         <fieldset class="filter-group"><legend>Resolution <span class="unit-label">MP</span></legend>
           <div class="range-fields"><label>Min<input id="min-mp" name="min-resolution" type="number" min="0" step="0.1" inputmode="decimal" autocomplete="off" aria-label="Minimum resolution in megapixels"></label><label>Max<input id="max-mp" name="max-resolution" type="number" min="0" step="0.1" inputmode="decimal" autocomplete="off" aria-label="Maximum resolution in megapixels"></label></div>
@@ -44,6 +44,7 @@
           </div>
         </header>
 
+        <section id="detail" class="detail-panel" aria-live="polite"></section>
         <section class="catalog-panel" id="catalog" aria-labelledby="catalog-title">
           <div class="catalog-heading">
             <div><div class="section-kicker">SENSOR CATALOG</div><h2 id="catalog-title">Browse & compare</h2><p class="status" id="status" role="status" aria-live="polite">Loading sensors…</p></div>
@@ -69,9 +70,9 @@
             </table>
             <div id="empty-state" class="empty-state" hidden><div class="empty-mark" aria-hidden="true">⌕</div><h3>No sensors match these filters</h3><p>Try removing a filter or broadening your search.</p><button class="button button-secondary" id="empty-clear" type="button">Clear filters</button></div>
           </div>
+          <div class="results-footer" id="results-footer" hidden><span id="results-count"></span><button class="button button-secondary" id="show-more" type="button">Show more sensors ↓</button></div>
         </section>
-        <section id="detail" class="detail-panel" aria-live="polite"></section>
-        <footer class="page-footer"><span>Source-traceable mobile image sensor data</span><a href="https://github.com/geniuskey/sensors" target="_blank" rel="noopener noreferrer">How this catalog is maintained ↗</a></footer>
+        <footer class="page-footer"><span>Source-traceable mobile image sensor data</span><span class="footer-links"><a href="/data/all-in-one.csv">Download CSV ↓</a><a href="https://github.com/geniuskey/sensors" target="_blank" rel="noopener noreferrer">How this catalog is maintained ↗</a></span></footer>
       </main>
     </div>
 

@@ -5,6 +5,7 @@ let staticRows = [];
 let sortState = { key: 'resolution_mp', direction: 'desc' };
 const compareIds = new Set();
 let currentChips = [];
+let visibleCount = window.matchMedia('(max-width: 720px)').matches ? 24 : 60;
 const roleOptions = ['Main', 'Ultra-wide', 'Telephoto', 'Front', 'Macro', 'Depth', 'Unspecified'];
 
 async function getData() {
@@ -75,14 +76,12 @@ function compareRows(left, right) {
   return sortState.direction === 'asc' ? result : -result;
 }
 function makeFacets() {
-  const params = new URLSearchParams(location.search);
-  const hasUrlFilters = ['manufacturer', 'role', 'q', 'size', 'min', 'max', 'mapped', 'sensor'].some((key) => params.has(key));
-  qs('#maker-hint').textContent = hasUrlFilters ? 'sorted by count' : 'Top 5 selected';
+  qs('#maker-hint').textContent = 'sorted by count';
   const makerCounts = new Map();
   staticRows.forEach((row) => { if (row.manufacturer) makerCounts.set(row.manufacturer, (makerCounts.get(row.manufacturer) || 0) + 1); });
   const makers = Array.from(makerCounts, ([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
-  qs('#manufacturer-facets').innerHTML = makers.map((maker, index) => {
-    return '<label class="facet-option"><input type="checkbox" name="manufacturer" value="' + esc(maker.name) + '"' + (!hasUrlFilters && index < 5 ? ' checked' : '') + '><span class="facet-name">' + esc(maker.name) + '</span><span class="facet-count">' + maker.count + '</span></label>';
+  qs('#manufacturer-facets').innerHTML = makers.map((maker) => {
+    return '<label class="facet-option"><input type="checkbox" name="manufacturer" value="' + esc(maker.name) + '"><span class="facet-name">' + esc(maker.name) + '</span><span class="facet-count">' + maker.count + '</span></label>';
   }).join('');
   const availableRoles = new Set(staticRows.flatMap(rolesFor));
   if (staticRows.some((row) => rolesFor(row).length === 0)) availableRoles.add('Unspecified');
@@ -168,27 +167,32 @@ function updateComparisonBar() {
   qs('#compare-notice').textContent = count < 4 ? 'Select up to 4 sensors to compare.' : 'Comparison limit reached.';
   qs('#open-comparison').disabled = count < 2;
 }
-function render() {
+function render(resetList = false) {
+  if (resetList) visibleCount = window.matchMedia('(max-width: 720px)').matches ? 24 : 60;
   const filters = currentFilters();
   const chips = filterChips(filters);
   const filtered = staticRows.filter((row) => rowMatches(row, filters)).sort(compareRows);
   qs('#status').textContent = filtered.length.toLocaleString() + ' of ' + staticRows.length.toLocaleString() + ' sensors';
-  qs('#rows').innerHTML = filtered.map((row) => {
+  const shown = filtered.slice(0, visibleCount);
+  qs('#rows').innerHTML = shown.map((row) => {
     const selected = compareIds.has(row.canonical_id);
     return '<tr class="' + (selected ? 'is-selected' : '') + '"><td class="check-col"><input class="compare-check" type="checkbox" data-compare="' + esc(row.canonical_id) + '" aria-label="Select ' + esc(row.sensor) + ' for comparison"' + (selected ? ' checked' : '') + '></td>' +
       '<td><span class="maker-label">' + esc(row.manufacturer) + '</span></td>' +
       '<td class="sensor-cell"><button class="sensor-link" type="button" data-open="' + esc(row.canonical_id) + '">' + esc(row.sensor) + '</button></td>' +
-      '<td class="muted code-cell">' + esc(row.internal_code || '—') + '</td>' +
-      '<td class="number-cell emphasis">' + (row.resolution_mp == null ? '—' : formatNumber(row.resolution_mp) + ' MP') + '</td>' +
-      '<td class="number-cell">' + esc(row.sensor_size || '—') + '</td>' +
-      '<td class="number-cell">' + (row.pixel_size_um ? formatNumber(row.pixel_size_um, 2) + ' µm' : '—') + '</td>' +
-      '<td class="role-cell">' + (rolesFor(row).length ? rolesFor(row).map((role) => '<span class="role-tag">' + esc(role) + '</span>').join('') : '<span class="role-tag role-muted">Unspecified</span>') + '</td>' +
-      '<td class="number-cell"><span class="phone-count">' + Number(row.phone_count || 0).toLocaleString() + '</span></td>' +
-      '<td class="number-cell">' + (row.latest_year || '—') + '</td>' +
+      '<td class="muted code-cell" data-label="Part / alias">' + esc(row.internal_code || '—') + '</td>' +
+      '<td class="number-cell emphasis" data-label="Resolution">' + (row.resolution_mp == null ? '—' : formatNumber(row.resolution_mp) + ' MP') + '</td>' +
+      '<td class="number-cell" data-label="Format">' + esc(row.sensor_size || '—') + '</td>' +
+      '<td class="number-cell" data-label="Pixel">' + (row.pixel_size_um ? formatNumber(row.pixel_size_um, 2) + ' µm' : '—') + '</td>' +
+      '<td class="role-cell" data-label="Camera roles">' + (rolesFor(row).length ? rolesFor(row).map((role) => '<span class="role-tag">' + esc(role) + '</span>').join('') : '<span class="role-tag role-muted">Unspecified</span>') + '</td>' +
+      '<td class="number-cell" data-label="Phones"><span class="phone-count">' + Number(row.phone_count || 0).toLocaleString() + '</span></td>' +
+      '<td class="number-cell" data-label="Latest use">' + (row.latest_year || '—') + '</td>' +
       '<td class="open-col"><button class="icon-button row-open" type="button" data-open="' + esc(row.canonical_id) + '" aria-label="View ' + esc(row.sensor) + ' details">↗</button></td></tr>';
   }).join('');
   qs('#empty-state').hidden = filtered.length > 0;
   qs('#sensor-table').hidden = filtered.length === 0;
+  qs('#results-footer').hidden = filtered.length === 0;
+  qs('#results-count').textContent = 'Showing ' + shown.length.toLocaleString() + ' of ' + filtered.length.toLocaleString();
+  qs('#show-more').hidden = shown.length >= filtered.length;
   updateSortIndicators();
   updateComparisonBar();
 }
@@ -199,7 +203,7 @@ function clearFilters() {
   qs('#max-mp').value = '';
   qs('#sensor-size').value = '';
   qs('input[name="mapped"][value="any"]').checked = true;
-  render();
+  render(true);
 }
 function removeChip(chip) {
   if (chip.key === 'manufacturer' || chip.key === 'role') {
@@ -210,7 +214,7 @@ function removeChip(chip) {
   else if (chip.key === 'min') qs('#min-mp').value = '';
   else if (chip.key === 'max') qs('#max-mp').value = '';
   else if (chip.key === 'mapped') qs('input[name="mapped"][value="any"]').checked = true;
-  render();
+  render(true);
 }
 function showDetail(id, updateUrl = true) {
   const row = staticRows.find((item) => item.canonical_id === id);
@@ -244,7 +248,7 @@ function showDetail(id, updateUrl = true) {
     '<div class="detail-item"><span>Phone mappings</span><strong>' + Number(row.phone_count || 0).toLocaleString() + '</strong></div>' +
     '<div class="detail-item"><span>Example phones</span><strong>' + esc(row.example_phones || '—') + '</strong></div>' +
     '</div><div class="detail-extra"><h3>Aliases</h3><p>' + esc((row.aliases || []).join(' · ') || '—') + '</p><h3>Mapped phones (' + Number(row.phone_count || 0) + ')</h3><ul>' + (row.phones || []).map(p=>'<li>'+esc([p.model,p.year,p.role,p.confidence&&('confidence '+p.confidence)].filter(Boolean).join(' · '))+'</li>').join('') + '</ul><h3>Notes</h3><p>' + esc(row.notes || '—') + '</p></div><div class="detail-source">' + (row.sources||[]).map(s=>'<a href="'+esc(s.url)+'" target="_blank" rel="noopener noreferrer">'+esc(s.type+' · '+s.relationship)+' ↗</a>').join('') + (row.source_url && !(row.sources||[]).length ? '<a href="' + esc(row.source_url) + '" target="_blank" rel="noopener noreferrer">Open source ↗</a>' : '') + '</div>';
-  detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  detail.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 function comparisonTable() {
   const rows = Array.from(compareIds).map((id) => staticRows.find((row) => row.canonical_id === id)).filter(Boolean);
@@ -275,13 +279,14 @@ function setDrawer(open) {
   }
 }
 
-qs('#manufacturer-facets').addEventListener('change', render);
-qs('#role-facets').addEventListener('change', render);
-qs('#q').addEventListener('input', render);
-qs('#min-mp').addEventListener('input', render);
-qs('#max-mp').addEventListener('input', render);
-qs('#sensor-size').addEventListener('change', render);
-qsa('input[name="mapped"]').forEach((input) => input.addEventListener('change', render));
+qs('#manufacturer-facets').addEventListener('change', () => render(true));
+qs('#role-facets').addEventListener('change', () => render(true));
+qs('#q').addEventListener('input', () => render(true));
+qs('#min-mp').addEventListener('input', () => render(true));
+qs('#max-mp').addEventListener('input', () => render(true));
+qs('#sensor-size').addEventListener('change', () => render(true));
+qsa('input[name="mapped"]').forEach((input) => input.addEventListener('change', () => render(true)));
+qs('#show-more').addEventListener('click', () => { visibleCount += window.matchMedia('(max-width: 720px)').matches ? 24 : 60; render(); });
 qs('#clear-filters').addEventListener('click', clearFilters);
 qs('#empty-clear').addEventListener('click', clearFilters);
 qs('#filter-toggle').addEventListener('click', () => setDrawer(true));
@@ -306,7 +311,7 @@ qs('#sensor-table').addEventListener('click', (event) => {
       sortSelect.append(sortOption);
     }
     sortSelect.value = sortValue;
-    render();
+    render(true);
     return;
   }
   const detailButton = event.target.closest('[data-open]');
@@ -329,7 +334,7 @@ qs('#sensor-table').addEventListener('change', (event) => {
 qs('#sort-select').addEventListener('change', (event) => {
   const parts = event.target.value.split(':');
   sortState = { key: parts[0], direction: parts[1] };
-  render();
+  render(true);
 });
 qs('#clear-comparison').addEventListener('click', () => { compareIds.clear(); render(); });
 qs('#open-comparison').addEventListener('click', () => {
