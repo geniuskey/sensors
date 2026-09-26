@@ -1,0 +1,46 @@
+name: Deploy Cloudflare Pages
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.13' }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm run data:build
+      - run: npm run build
+      - name: Create Wrangler config
+        run: |
+          cat > wrangler.toml <<EOF
+          name = "sensors-euiyun"
+          pages_build_output_dir = "./dist"
+          compatibility_date = "2026-09-26"
+
+          [[d1_databases]]
+          binding = "DB"
+          database_name = "sensors-db"
+          database_id = "${{ secrets.CLOUDFLARE_D1_DATABASE_ID }}"
+          migrations_dir = "database/migrations"
+          EOF
+      - name: Apply D1 migrations
+        run: npx --yes wrangler@4 d1 migrations apply sensors-db --remote
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Refresh D1 data
+        run: npx --yes wrangler@4 d1 execute sensors-db --remote --file=database/seed.sql
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      - name: Deploy Pages
+        run: npx --yes wrangler@4 pages deploy dist --project-name sensors-euiyun
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

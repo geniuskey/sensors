@@ -1,0 +1,18 @@
+{
+  "name": "sensors-euiyun",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "python3 scripts/build_site.py",
+    "db:import": "python3 scripts/import_all_in_one.py",
+    "db:validate": "python3 scripts/validate_data.py",
+    "data:build": "npm run db:import && npm run db:validate",
+    "pages:dev": "npx wrangler pages dev dist",
+    "d1:migrate:local": "npx wrangler d1 migrations apply sensors-db --local",
+    "d1:migrate:remote": "npx wrangler d1 migrations apply sensors-db --remote",
+    "d1:seed:local": "npx wrangler d1 execute sensors-db --local --file=database/seed.sql",
+    "d1:seed:remote": "npx wrangler d1 execute sensors-db --remote --file=database/seed.sql",
+    "deploy": "npm run build && npx wrangler pages deploy dist --project-name sensors-euiyun"
+  }
+}

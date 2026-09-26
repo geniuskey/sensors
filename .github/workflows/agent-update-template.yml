@@ -1,0 +1,14 @@
+name: Data update template
+on:
+  workflow_dispatch:
+  # Intentionally not scheduled yet. Enable only after source-specific collectors are reviewed.
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.13' }
+      - run: |
+          echo "TODO: run reviewed collectors into data/raw/<source>/<date>/"
+          echo "TODO: normalize + validate; open a PR rather than writing production D1"

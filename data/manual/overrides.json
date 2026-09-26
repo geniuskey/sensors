@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "notes": "Human-reviewed corrections belong here. Collectors must never overwrite manual overrides silently.",
+  "sensor_overrides": [],
+  "phone_overrides": [],
+  "alias_overrides": []
+}

@@ -1,0 +1,2 @@
+import { json } from '../_types.js';
+export async function onRequestGet({env}){const byMaker=await env.DB.prepare(`SELECT m.name manufacturer,COUNT(*) sensors FROM sensors s JOIN manufacturers m ON m.id=s.manufacturer_id GROUP BY m.id ORDER BY sensors DESC`).all();const byRole=await env.DB.prepare(`SELECT COALESCE(camera_role,'Unknown') role,COUNT(*) mappings FROM phone_cameras GROUP BY camera_role ORDER BY mappings DESC`).all();return json({byManufacturer:byMaker.results,byRole:byRole.results})}

@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.wrangler/
+.dev.vars
+wrangler.toml
+database/local.sqlite3
+.DS_Store

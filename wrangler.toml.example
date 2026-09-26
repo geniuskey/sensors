@@ -1,0 +1,9 @@
+name = "sensors-euiyun"
+pages_build_output_dir = "./dist"
+compatibility_date = "2026-09-26"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "sensors-db"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+migrations_dir = "database/migrations"
