@@ -196,6 +196,17 @@ def split_phone_ids(rows):
     print(f'Moved {moved} mapping rows to split phone IDs')
     return rows
 
+def merge_phone_ids(rows):
+    merges={(identity_key(u['OEM']),identity_key(u['Phone'])):u for u in read_review('phone-id-merges-2026-09-26.csv')}
+    moved=0
+    for r in rows:
+        u=merges.get((identity_key(r['OEM']),identity_key(r['Phone']))) if clean(r['Phone']) else None
+        if not u: continue
+        if phone_id(r)!=clean(u['Old_ID']): raise ValueError(f"Phone merge expects {u['Old_ID']}: {r['Phone']} is {phone_id(r)}")
+        r['Phone'],r['Phone_Canonical_ID']=clean(u['New_Phone']),clean(u['New_ID']); moved+=1
+    print(f'Merged {moved} mapping rows into existing phone IDs')
+    return rows
+
 def apply_sensor_decisions(rows):
     decisions=[u for u in read_review('sensor-decisions-2026-09-26.csv') if clean(u['Action']) in ('merge','set_spec','add_alias')]
     templates={}
@@ -291,7 +302,7 @@ def add_source(cur,url,stype,title=''):
 if DB.exists(): DB.unlink()
 con=sqlite3.connect(DB); con.execute('PRAGMA foreign_keys=ON'); con.executescript(SCHEMA.read_text())
 with CSV.open(encoding='utf-8-sig',newline='') as f:
-    reader=csv.DictReader(f); fieldnames=reader.fieldnames; rows=normalize_phone_names(list(reader))
+    reader=csv.DictReader(f); fieldnames=reader.fieldnames; rows=merge_phone_ids(normalize_phone_names(list(reader)))
 rows=apply_role_updates(merge_verified_mappings(rows,fieldnames))
 rows=normalize_oems(apply_sensor_decisions(split_phone_ids(rows)))
 rows=drop_redundant_unknown(derive_roles(apply_mapping_review(apply_phone_updates(rows),fieldnames)))

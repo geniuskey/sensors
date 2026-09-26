@@ -20,7 +20,10 @@ shutil.copy2(ROOT/'public/favicon.svg',DIST/'favicon.svg')
 
 def slug(text): return re.sub(r'[^a-z0-9]+','-',str(text).lower().replace('+',' plus ')).strip('-')
 def sensor_slug(s): return slug(s['canonical_id'])
-def phone_slug(p): return slug(p.get('model') or p['canonical_id'].removeprefix('PHONE:'))
+def phone_path(p):
+    maker=(p.get('oem') or '').strip() or 'Unknown'; model=p.get('model') or p['canonical_id'].removeprefix('PHONE:')
+    if model.lower().startswith(maker.lower()+' '): model=model[len(maker)+1:]
+    return f'/phone/{slug(maker)}/{slug(model)}/'
 def e(v): return escape('' if v is None else str(v))
 def num(v, d=1): return '' if v in (None,'') else f'{float(v):.{d}f}'.rstrip('0').rstrip('.')
 def fmt_size(v): return f'{v}"' if v and not str(v).endswith('"') else (v or '')
@@ -81,7 +84,7 @@ def write(path, html):
 
 sensors=json.loads((ROOT/'public/data/sensors.json').read_text(encoding='utf-8'))
 phones=json.loads((ROOT/'public/data/phones.json').read_text(encoding='utf-8'))
-for kind,rows,fn in (('sensor',sensors,sensor_slug),('phone',phones,phone_slug)):
+for kind,rows,fn in (('sensor',sensors,sensor_slug),('phone',phones,phone_path)):
     seen={}
     for r in rows:
         s=fn(r)
@@ -99,7 +102,7 @@ for s in sensors:
     spec=', '.join(x for x in (mp and mp+' MP', size and size+' optical format', pitch and pitch+' µm pixels', s.get('af') and 'AF: '+s['af'], s.get('hdr') and 'HDR: '+s['hdr']) if x)
     desc=f'{full} image sensor specifications{": "+spec if spec else ""}. '+(f'Used in {len(ps)} phone{"s" if len(ps)!=1 else ""}, including {", ".join(p["model"] for p in ps[:3])}.' if ps else 'Camera roles, phone mappings and sources.')
     specs=[('Resolution',mp and mp+' MP'),('Resolution pixels',s.get('resolution_px')),('Optical format',size),('Pixel pitch',pitch and pitch+' µm'),('Pixel binning',s.get('pixel_binning')),('Autofocus',s.get('af')),('HDR',s.get('hdr')),('CFA',s.get('cfa')),('Full well capacity',s.get('fwc')),('Two layer transistor',s.get('two_layer_transistor')),('Transfer gate',s.get('transfer_gate')),('Internal code',s.get('internal_code')),('Camera roles',s.get('roles')),('First phone year',s.get('first_year')),('Latest phone year',s.get('latest_year')),('Phone mappings',len(ps))]
-    cards=''.join(f'<article class="camera-mapping-card"><div class="camera-mapping-head"><span class="role-tag">{e(p.get("role") or "Unspecified")}</span>{badge(p.get("confidence"))}</div><h3>'+(f'<a href="/phone/{phone_slug(phone_by_id[p["canonical_id"]])}/">{e(p["model"])}</a>' if p.get('canonical_id') in phone_by_id else e(p['model']))+f'</h3><p>{e(" · ".join(str(x) for x in (p.get("oem"),p.get("year")) if x))}</p></article>' for p in ps)
+    cards=''.join(f'<article class="camera-mapping-card"><div class="camera-mapping-head"><span class="role-tag">{e(p.get("role") or "Unspecified")}</span>{badge(p.get("confidence"))}</div><h3>'+(f'<a href="{phone_path(phone_by_id[p["canonical_id"]])}">{e(p["model"])}</a>' if p.get('canonical_id') in phone_by_id else e(p['model']))+f'</h3><p>{e(" · ".join(str(x) for x in (p.get("oem"),p.get("year")) if x))}</p></article>' for p in ps)
     srcs=s.get('sources') or ([{'url':s['source_url'],'type':'source','relationship':'spec'}] if s.get('source_url') else [])
     body=f'''<section class="detail-panel">
         <div class="detail-head"><div><div class="section-kicker">{e(maker)} IMAGE SENSOR</div><h1>{e(full)}</h1><p>{e(s["canonical_id"])} · {badge(s.get("confidence"))}</p></div></div>
@@ -114,7 +117,7 @@ for s in sensors:
     write(path,page(path,title,desc,'/catalog/',[('Home','/'),('Sensors','/catalog/'),(full,path)],body,product))
 
 for p in phones:
-    model=p['model']; cams=p.get('cameras') or []; path=f'/phone/{phone_slug(p)}/'; urls.append(path)
+    model=p['model']; cams=p.get('cameras') or []; path=phone_path(p); urls.append(path)
     main=next((c for c in cams if 'Main' in (c.get('role') or '')),cams[0] if cams else None)
     title=f'{model} camera sensors{" — "+main["sensor"]+" main" if main else ""} | Sensor Database'
     desc=f'{model}{" ("+str(p["release_year"])+")" if p.get("release_year") else ""} image sensors by camera: '+('; '.join(f'{c.get("role") or "Camera"}: {c.get("sensor_manufacturer") or ""} {c.get("sensor")}'.replace('  ',' ') for c in cams) if cams else 'no sensor mappings yet')+'.'
@@ -132,7 +135,14 @@ for p in phones:
     if p.get('release_year'): product['releaseDate']=str(p['release_year'])
     write(path,page(path,title,desc,'/phones/',[('Home','/'),('Phones','/phones/'),(model,path)],body,product))
 
+redirects=[]
+for p in phones:
+    old_names=[p['model']]
+    if p.get('oem') and not p['model'].lower().startswith(p['oem'].lower()+' '): old_names.append(f"{p['oem']} {p['model']}")
+    redirects+=[f'/phone/{slug(n)}/ {phone_path(p)} 301' for n in old_names]
+(DIST/'_redirects').write_text('\n'.join(redirects)+'\n',encoding='utf-8')
+
 today=date.today().isoformat()
 (DIST/'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join(f'  <url><loc>{e(SITE+u)}</loc><lastmod>{today}</lastmod></url>\n' for u in urls)+'</urlset>\n',encoding='utf-8')
 (DIST/'robots.txt').write_text(f'User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n',encoding='utf-8')
-print('Built',DIST,f'({len(sensors)} sensor pages, {len(phones)} phone pages, {len(urls)} sitemap URLs)')
+print('Built',DIST,f'({len(sensors)} sensor pages, {len(phones)} phone pages, {len(urls)} sitemap URLs, {len(redirects)} redirects)')
