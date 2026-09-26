@@ -1,0 +1,31 @@
+Action,Phone_Canonical_ID,Phone,Sensor_Canonical_ID,Camera_Role,Source_URL,Confidence,Evidence,Notes
+verified,PHONE:P20PRO,HUAWEI P20 Pro,SONY:IMX600,Rear Main,https://helpix.ru/huawei/p20_pro/,High,"тыловая камера: тройная ... 40 МП, f/1.8, Sony IMX600, лазерный фокус, PDAF",
+verified,PHONE:IPHONE13,iPhone 13,SONY:IMX514,Front Main,https://helpix.ru/apple/iphone_13/,High,"фронтальная камера: 12 МП, f/2.2, Sony IMX514",
+verified,PHONE:REALMEGT8PRO,Realme GT8 Pro,SONY:IMX906,Rear Main,https://helpix.ru/realme/gt8_pro_china/,High,"тыловая камера: тройная ... 50 МП, f/1.8, 1/1.56"", 1.00μm, 22.00mm, Sony IMX906, Ricoh GR, OIS",
+verified,PHONE:FINDX9PRO,OPPO Find X9 Pro,SAMSUNG:HP5,Rear Telephoto,https://helpix.ru/oppo/find_x9_pro/,High,"200 МП, телевик, f/2.1, 1/1.56"", 0.50μm, 70.00mm, Samsung ISOCELL HP5, OIS, 3X, перископ",
+verified,PHONE:POCOF6,POCO F6,SONY:IMX355,Rear Ultra-wide,https://helpix.ru/xiaomi/poco_f6/,High,"8 МП, широкоугольная, 1/4.00"", 1.12μm, Sony IMX355",
+verified,PHONE:FAIRPHONE2,Fairphone 2,OMNIVISION:OV8865,Rear Main,https://helpix.ru/isensor/omnivision_ov8865/,High,OV8865 sensor page list: Fairphone 2 тыловая основная,
+verified,PHONE:GALAXYS21ULTRA,Galaxy S21 Ultra,SAMSUNG:GH1,Front Main,https://helpix.ru/samsung/galaxy_s21_ultra/,High,"фронтальная камера: 40 МП, f/2.2, 80°, 1/2.65"", 0.70μm, Samsung ISOCELL GH1",
+verified,PHONE:FINDX,OPPO Find X,SONY:IMX519,Rear Main,https://helpix.ru/oppo/find_x/,High,"тыловая камера: двойная ... 16 МП, f/2.0, Sony IMX519, PDAF, OIS",Second rear 20MP Sony IMX376 listed without role; IMX519 listed first as main
+verified,PHONE:XPERIA1III,Xperia 1 III,SONY:IMX663,Rear Telephoto,https://helpix.ru/sony/xperia_1_iii/,High,"12 МП, телевик, f/2.8, 1/2.90"", 105.00mm, Sony IMX663",
+verified,PHONE:MAGIC8PRO,HONOR Magic 8 Pro,SAMSUNG:HP9,Rear Telephoto,https://helpix.ru/honor/magic8_pro/,High,"200 МП, телевик, f/2.6, 1/1.40"", 0.56μm, Samsung ISOCELL HP9, OIS, 3.7X",
+verified,PHONE:BQAQUARISULITE,BQ Aquaris U Lite,OMNIVISION:OV8856,Rear Main,https://helpix.ru/isensor/omnivision_ov8856/,High,OV8856 sensor page list: BQ Aquaris U Lite тыловая основная,
+verified,PHONE:GALAXYNOTE20ULTRA,Galaxy Note 20 Ultra,SAMSUNG:HM1,Rear Main,https://helpix.ru/samsung/galaxy_note20_ultra/,High,"тыловая камера: тройная ... 108 МП, f/1.8, 79°, 1/1.33"", 0.80μm, Samsung ISOCELL HM1, OIS, Laser AF",
+verified,PHONE:UMIDIGIONEMAX,UMIDIGI One Max,OMNIVISION:OV12870,Rear Main,https://helpix.ru/umidigi/one_max/,High,"тыловая камера: двойная ... 12 МП, f/2.0, OmniVision OV12870 — 2 МП, GalaxyCore GC2335",
+verified,PHONE:REDMINOTE7PRO,Redmi Note 7 Pro,SONY:IMX586,Rear Main,https://helpix.ru/xiaomi/redmi_note_7_pro/,High,"тыловая камера: двойная ... 48 МП, f/1.79, Sony IMX586, EIS, 4K",
+verified,PHONE:FINDX8PRO,OPPO Find X8 Pro,SONY:LYTIA 808 / IMX966,Rear Main,https://helpix.ru/oppo/find_x8_pro/,High,"тыловая камера: квадро ... 50 МП, f/1.6, 1/1.40"", 1.12μm, 23.00mm, Sony LYT-808, OIS",
+verified,PHONE:MI11PRO,Xiaomi Mi 11 Pro,SAMSUNG:3T2,Front Main,https://helpix.ru/xiaomi/mi_11_pro/,High,"фронтальная камера: 20 МП, f/2.2, 0.80μm, Samsung S5K3T2",
+verified,PHONE:GALAXYS20ULTRA,Galaxy S20 Ultra,SAMSUNG:HM1,Rear Main,https://helpix.ru/samsung/galaxy_s20_ultra/,High,"тыловая камера: квадро ... 108 МП, f/1.8, 79°, 0.80μm, Samsung ISOCELL HM1, OIS",
+verified,PHONE:ROGPHONE9PRO,ROG Phone 9 Pro,SONY:LYTIA 700,Rear Main,https://helpix.ru/asus/rog_phone_9_pro/,High,"тыловая камера: тройная ... 50 МП, f/1.9, 1/1.56"", 1.00μm, 23.80mm, Sony LYT-700, Gimbal OIS",
+verified,PHONE:FINDX2PRO,OPPO Find X2 Pro,SONY:IMX616,Front Main,https://helpix.ru/oppo/find_x2_pro/,High,"фронтальная камера: 32 МП, f/2.4, Sony IMX616",
+verified,PHONE:REDMINOTE12PRO,Redmi Note 12 Pro+,SAMSUNG:HPX,Rear Main,https://helpix.ru/xiaomi/redmi_note_12_pro_plus/,High,"тыловая камера: тройная ... 200 МП, f/1.65, 1/1.40"", 0.56μm, Samsung ISOCELL HPX, OIS",
+verified,PHONE:NUBIAZ80ULTRA,Nubia Z80 Ultra,OMNIVISION:OV50E,Rear Ultra-wide,https://helpix.ru/zte/nubia_z80_ultra/,High,"50 МП, широкоугольная, f/1.8, 1/1.55"", 1.00μm, 18.00mm, OmniVision OV50E",
+verified,PHONE:FINDX5PRO,OPPO Find X5 Pro,SONY:IMX766,Rear Main + Rear Ultra-wide,https://helpix.ru/oppo/find_x5_pro/,High,"50 МП, f/1.7, 84°, 1/1.56"", 1.00μm, Sony IMX766, OIS — 50 МП, широкоугольная, f/2.2, 112°, 1/1.56"", 1.00μm, Sony IMX766",Page lists IMX766 for both main and ultra-wide
+verified,PHONE:X300ULTRA,vivo X300 Ultra,SONY:LYTIA 901,Rear Main,https://helpix.ru/vivo/x300_ultra/,High,"тыловая камера: квадро ... 200 МП, f/1.85, 1/1.12"", 35.00mm, Sony LYTIA 901, OIS",Main is 35mm-equivalent
+verified,PHONE:GALAXYS24,Galaxy S24,SAMSUNG:3K1,Rear Telephoto,https://helpix.ru/samsung/galaxy_s24/,High,"10 МП, телевик, f/2.4, 36°, 1/3.94"", 1.00μm, Samsung ISOCELL 3K1, 3X, OIS",
+verified,PHONE:ONEPLUSNORD4,OnePlus Nord 4,SONY:LYTIA 600 / IMX882,Rear Main,https://helpix.ru/oneplus/nord_4/,High,"тыловая камера: двойная ... 50 МП, f/1.8, 1/1.95"", 0.80μm, 25.00mm, Sony LYT-600, OIS",
+verified,PHONE:ONEPLUSNORD,OnePlus Nord,SONY:IMX616,Front Main,https://helpix.ru/isensor/sony_imx616/,High,IMX616 sensor page list: OnePlus Nord фронтальная основная,
+verified,PHONE:ONEPLUS12,OnePlus 12,SONY:LYTIA 808 / IMX966,Rear Main,https://helpix.ru/oneplus/12/,High,"тыловая камера: тройная ... 50 МП, f/1.6, 1/1.43"", 1.12μm, 23.00mm, Sony LYT-808, OIS",
+verified,PHONE:X90PRO,vivo X90 Pro,SONY:IMX663,Rear Ultra-wide,https://helpix.ru/vivo/x90_pro/,High,"12 МП, широкоугольная, f/2.0, 108°, 1/2.93"", 1.22μm, Sony IMX663",
+verified,PHONE:ASUSZENFONE12ULTRA,ASUS Zenfone 12 Ultra,OMNIVISION:OV13B10,Rear Ultra-wide,https://helpix.ru/isensor/omnivision_ov13b/,High,OV13B sensor page list: 2025 ASUS Zenfone 12 Ultra тыловая широкоугольная,Page names OmniVision OV13B (generic); mapped to OV13B10
+verified,PHONE:ONEPLUS10PRO,OnePlus 10 Pro,SONY:IMX789 RGGB,Rear Main,https://helpix.ru/isensor/sony_imx789/,High,IMX789 sensor page list: 2022 OnePlus 10 Pro тыловая основная,

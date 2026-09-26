@@ -165,9 +165,10 @@ def derive_roles(rows):
     return rows
 
 def read_review(name):
-    path=REVIEW/name
-    if not path.exists(): return []
-    with path.open(encoding='utf-8-sig',newline='') as f: return list(csv.DictReader(f))
+    rows=[]
+    for path in sorted(REVIEW.glob(name.replace('.csv','*.csv'))):
+        with path.open(encoding='utf-8-sig',newline='') as f: rows+=list(csv.DictReader(f))
+    return rows
 
 def require_source(u,label):
     if not clean(u.get('Source_URL')).startswith('https://') or clean(u.get('Confidence')) not in ('High','Medium'):
@@ -221,13 +222,13 @@ def apply_sensor_decisions(rows):
     return rows
 
 def apply_phone_updates(rows):
-    updates=read_review('phone-updates-2026-09-26.csv'); by_model={}
+    updates=read_review('phone-updates-2026-09-26.csv'); by_id={}
     for u in updates:
         require_source(u,u['Phone'])
-        by_model[identity_key(u['Phone'])]=u
+        by_id[clean(u['Phone_Canonical_ID'])]=u
     filled=0
     for r in rows:
-        u=by_model.get(identity_key(r['Phone'])) if clean(r['Phone']) else None
+        u=by_id.get(phone_id(r)) if clean(r['Phone']) else None
         if not u: continue
         if clean(u['Release_Year']) and not clean(r['Release_Year']): r['Release_Year']=clean(u['Release_Year']); filled+=1
         if clean(u.get('SoC')) and not clean(r['SoC']): r['SoC'],r['SoC_Source_URL']=clean(u['SoC']),clean(u['Source_URL'])
@@ -236,6 +237,7 @@ def apply_phone_updates(rows):
 
 def apply_mapping_review(rows,fieldnames):
     review=[u for u in read_review('mapping-review-2026-09-26.csv') if clean(u['Action']) in ('remove','add','set_role','keep','wrong')]
+    phones={phone_id(r):r for r in rows if clean(r['Phone'])}; sensors={clean(r['Canonical_ID']):r for r in rows}
     for u in review:
         action=clean(u['Action']); pcid=clean(u['Phone_Canonical_ID']); cid=clean(u['Sensor_Canonical_ID']); label=f"{action} {u['Phone']} / {cid}"
         require_source(u,label)
@@ -243,9 +245,11 @@ def apply_mapping_review(rows,fieldnames):
         if action=='remove':
             if not match: raise ValueError(f'Nothing to remove: {label}')
             rows=[r for r in rows if r not in match]
+            if not any(clean(r['Canonical_ID'])==cid for r in rows):
+                rows.append({c:(sensors[cid][c] if c in SENSOR_FIELDS or c in ('Manufacturer','Sensor','Canonical_ID') else '') for c in fieldnames})
         elif action=='add':
             if match: continue
-            sensor=next((r for r in rows if clean(r['Canonical_ID'])==cid),None); phone=next((r for r in rows if clean(r['Phone']) and phone_id(r)==pcid),None)
+            sensor=sensors.get(cid); phone=phones.get(pcid)
             if not sensor or not phone: raise ValueError(f'Cannot add mapping without existing sensor and phone: {label}')
             row={c:(sensor[c] if c in SENSOR_FIELDS or c in ('Manufacturer','Sensor','Canonical_ID') else phone[c]) for c in fieldnames}
             row.update(Camera_Role=clean(u['Camera_Role']) or 'Unknown',Mapping_Source_URL=clean(u['Source_URL']),Mapping_Source_Type='review',Mapping_Confidence=clean(u['Confidence']))
