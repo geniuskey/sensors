@@ -211,12 +211,12 @@ def apply_sensor_decisions(rows):
         else:
             field=clean(u['Field'])
             if field not in SENSOR_FIELDS: raise ValueError(f'Unsupported sensor field: {field}')
-            note=f"{field} per {clean(u['Source_URL'])}"
+            note=f"{field} per {clean(u['Source_URL']).split(';')[0].strip()}"
             for r in rows:
                 if clean(r['Canonical_ID'])==cid:
                     r[field]=clean(u['New_Value'])
                     if note not in r['Notes']: r['Notes']=(clean(r['Notes'])+' '+note+'.').strip()
-                    if not clean(r['Additional_Source_URL']): r['Additional_Source_URL']=clean(u['Source_URL'])
+                    if not clean(r['Additional_Source_URL']): r['Additional_Source_URL']=clean(u['Source_URL']).split(';')[0].strip()
     print(f'Applied {len(decisions)} reviewed sensor decisions')
     return rows
 
