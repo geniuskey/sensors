@@ -10,6 +10,8 @@ SEED=ROOT/'database/seed.sql'
 PUBLIC=ROOT/'public/data'
 EXPORTS=ROOT/'exports'
 VERIFIED_MAPPINGS=EXPORTS/'verified-mapping-additions-2026-09-26.csv'
+ROLE_UPDATES=EXPORTS/'verified-role-updates-2026-09-26.csv'
+UNKNOWN_ROLES=('','unknown','unspecified')
 PUBLIC.mkdir(parents=True,exist_ok=True); EXPORTS.mkdir(parents=True,exist_ok=True)
 
 def clean(v): return (v or '').strip()
@@ -120,6 +122,46 @@ def merge_verified_mappings(rows,fieldnames):
     print(f'Integrated {len(additions)} verified phone-sensor mappings from {VERIFIED_MAPPINGS.name}')
     return rows
 
+def apply_role_updates(rows):
+    if not ROLE_UPDATES.exists(): return rows
+    with ROLE_UPDATES.open(encoding='utf-8-sig',newline='') as f:
+        updates=list(csv.DictReader(f))
+    socs={}; seen=set()
+    for u in updates:
+        pcid=clean(u['Phone_Canonical_ID']); cid=clean(u['Sensor_Canonical_ID']); model=identity_key(u['Phone'])
+        if (pcid,model,cid) in seen: raise ValueError(f"Duplicate role update: {u['Phone']} / {cid}")
+        seen.add((pcid,model,cid))
+        url=clean(u['Source_URL'])
+        if not url.startswith('https://') or clean(u['Confidence']) not in ('High','Medium') or not clean(u['Camera_Role']):
+            raise ValueError(f"Invalid role update: {u['Phone']} / {cid}")
+        matches=[r for r in rows if clean(r['Phone']) and clean(r['Canonical_ID'])==cid and phone_id(r)==pcid and identity_key(r['Phone'])==model]
+        if not matches: raise ValueError(f"Role update targets a missing mapping: {u['Phone']} ({pcid}) / {cid}")
+        for r in matches:
+            r.update(Camera_Role=clean(u['Camera_Role']),Mapping_Source_URL=url,Mapping_Source_Type=clean(u['Source_Type']),Mapping_Confidence=clean(u['Confidence']))
+        soc=clean(u.get('SoC'))
+        if soc:
+            if socs.get(pcid,(soc,))[0]!=soc: raise ValueError(f"Conflicting SoC updates for {pcid}: {socs[pcid][0]} / {soc}")
+            socs[pcid]=(soc,url)
+    for r in rows:
+        if clean(r['Phone']) and phone_id(r) in socs and not clean(r['SoC']):
+            r['SoC'],r['SoC_Source_URL']=socs[phone_id(r)]
+    print(f'Applied {len(updates)} verified camera-role updates from {ROLE_UPDATES.name} ({len(socs)} phones with SoC)')
+    return rows
+
+def derive_roles(rows):
+    # A pair left as Unknown inherits the role only when another sourced row for the same phone/sensor pair has exactly one role.
+    known={}
+    for r in rows:
+        if clean(r['Phone']) and clean(r['Camera_Role']).lower() not in UNKNOWN_ROLES:
+            known.setdefault((clean(r['Canonical_ID']),phone_id(r)),set()).add(clean(r['Camera_Role']))
+    derived=0
+    for r in rows:
+        roles=known.get((clean(r['Canonical_ID']),phone_id(r)),set())
+        if clean(r['Phone']) and clean(r['Camera_Role']).lower() in UNKNOWN_ROLES and len(roles)==1:
+            r['Camera_Role']=next(iter(roles)); r['Mapping_Source_Type']=clean(r['Mapping_Source_Type'])+' (role derived from same phone/sensor mapping)'; derived+=1
+    print(f'Derived {derived} camera roles from existing phone/sensor mappings')
+    return rows
+
 def add_source(cur,url,stype,title=''):
     if not url:return None
     cur.execute('INSERT OR IGNORE INTO sources(url,source_type,title) VALUES(?,?,?)',(url,source_type(stype),title))
@@ -129,7 +171,7 @@ if DB.exists(): DB.unlink()
 con=sqlite3.connect(DB); con.execute('PRAGMA foreign_keys=ON'); con.executescript(SCHEMA.read_text())
 with CSV.open(encoding='utf-8-sig',newline='') as f:
     reader=csv.DictReader(f); fieldnames=reader.fieldnames; rows=list(reader)
-rows=merge_verified_mappings(rows,fieldnames)
+rows=derive_roles(apply_role_updates(merge_verified_mappings(rows,fieldnames)))
 cur=con.cursor(); sensor_ids={}; phone_ids={}
 for r in rows:
     maker=clean(r['Manufacturer']); cur.execute('INSERT OR IGNORE INTO manufacturers(name) VALUES(?)',(maker,)); mid=cur.execute('SELECT id FROM manufacturers WHERE name=?',(maker,)).fetchone()[0]

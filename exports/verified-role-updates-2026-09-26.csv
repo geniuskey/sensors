@@ -1,0 +1,275 @@
+Phone_Canonical_ID,Phone,Sensor_Canonical_ID,Camera_Role,SoC,Source_URL,Source_Type,Confidence,Checked_At
+PHONE:10,HONOR 10,SONY:IMX550,Rear Monochrome,,https://helpix.ru/isensor/sony_imx550/,Helpix sensor database,High,2026-09-26
+PHONE:11T,Xiaomi 11T,SAMSUNG:5E9,Rear Macro,Dimensity 1200,https://helpix.ru/xiaomi/11t/,Helpix phone specification,High,2026-09-26
+PHONE:12TPRO,Xiaomi 12T Pro,SAMSUNG:HP1,Rear Main,Snapdragon 8+ Gen 1,https://helpix.ru/xiaomi/12t_pro/,Helpix phone specification,High,2026-09-26
+PHONE:13,Xiaomi 13,SONY:IMX800,Rear Main,Snapdragon 8 Gen 2,https://helpix.ru/xiaomi/13/,Helpix phone specification,High,2026-09-26
+PHONE:14T,Xiaomi 14T,OMNIVISION:OV13B10,Rear Ultra-wide,,https://helpix.ru/isensor/omnivision_ov13b/,Helpix sensor database,Medium,2026-09-26
+PHONE:14ULTRA,Xiaomi 14 Ultra,SONY:IMX858,Rear Telephoto + Rear Ultra-wide,Snapdragon 8 Gen 3,https://helpix.ru/xiaomi/14_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:14ULTRA,Xiaomi 14 Ultra,SONY:LYTIA 900 / LYT-900 / IMX06A,Rear Main,Snapdragon 8 Gen 3,https://helpix.ru/xiaomi/14_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:15,Xiaomi 15,OMNIVISION:Light Hunter / Light Fusion 900,Rear Main,Snapdragon 8 Elite,https://helpix.ru/xiaomi/15/,Helpix phone specification,High,2026-09-26
+PHONE:15,Xiaomi 15,SAMSUNG:JN1,Rear Ultra-wide,Snapdragon 8 Elite,https://helpix.ru/xiaomi/15/,Helpix phone specification,High,2026-09-26
+PHONE:15,Xiaomi 15,SAMSUNG:JN5,Rear Telephoto,Snapdragon 8 Elite,https://helpix.ru/xiaomi/15/,Helpix phone specification,High,2026-09-26
+PHONE:15PRO,Xiaomi 15 Pro,OMNIVISION:Light Hunter / Light Fusion 900,Rear Main,Snapdragon 8 Elite,https://helpix.ru/xiaomi/15_pro/,Helpix phone specification,High,2026-09-26
+PHONE:17TPRO,Xiaomi 17T Pro,OMNIVISION:Light Hunter 950,Rear Main,,https://helpix.ru/isensor/light_fusion_950_hunter_950/,Helpix sensor database,High,2026-09-26
+PHONE:200,HONOR 200,SONY:IMX856,Rear Telephoto,Snapdragon 7 Gen 3,https://helpix.ru/honor/200/,Helpix phone specification,High,2026-09-26
+PHONE:200PRO,HONOR 200 Pro,SONY:IMX856,Rear Telephoto,Snapdragon 8s Gen 3,https://helpix.ru/honor/200_pro/,Helpix phone specification,High,2026-09-26
+PHONE:ASUSROGPHONE9,ASUS ROG Phone 9,SONY:LYTIA 700,Rear Main,Snapdragon 8 Elite,https://helpix.ru/asus/rog_phone_9/,Helpix phone specification,High,2026-09-26
+PHONE:ASUSZENFONE12ULTRA,ASUS Zenfone 12 Ultra,OMNIVISION:OV13B10,Rear Ultra-wide,,https://helpix.ru/isensor/omnivision_ov13b/,Helpix sensor database,Medium,2026-09-26
+PHONE:BLACKSHARK5PRO,Black Shark 5 Pro,OMNIVISION:OV16A10,Front Main,,https://helpix.ru/isensor/omnivision_ov16a/,Helpix sensor database,Medium,2026-09-26
+PHONE:BLACKVIEWBV9300,BlackView BV9300,SAMSUNG:GD2,Front Main,Helio G99,https://helpix.ru/blackview/bv9300/,Helpix phone specification,High,2026-09-26
+PHONE:BQAQUARISU2LITE,BQ Aquaris U2 Lite,SAMSUNG:4H8,Rear Main,,https://helpix.ru/isensor/samsung_isocell_4h8/,Helpix sensor database,High,2026-09-26
+PHONE:BQAQUARISULITE,BQ Aquaris U Lite,OMNIVISION:OV8856,Rear Main,,https://helpix.ru/isensor/omnivision_ov8856/,Helpix sensor database,High,2026-09-26
+PHONE:DOOGEES41,Doogee S41,SAMSUNG:4H8,Rear Main,Helio A22,https://helpix.ru/doogee/s41/,Helpix phone specification,High,2026-09-26
+PHONE:EDGE30,Motorola Edge 30,OMNIVISION:OV50A,Rear Main,Snapdragon 778G+,https://helpix.ru/motorola/edge_30/,Helpix phone specification,High,2026-09-26
+PHONE:EDGE30ULTRA,Motorola Edge 30 Ultra,SAMSUNG:HP1,Rear Main,Snapdragon 8+ Gen 1,https://helpix.ru/motorola/edge_30_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:EDGE60PRO,Motorola Edge 60 Pro,SONY:LYTIA 700C,Rear Main,Dimensity 8350 Extreme,https://helpix.ru/motorola/edge_60_pro/,Helpix phone specification,High,2026-09-26
+PHONE:FAIRPHONE2,Fairphone 2,OMNIVISION:OV8865,Rear Main,,https://helpix.ru/isensor/omnivision_ov8865/,Helpix sensor database,High,2026-09-26
+PHONE:FINDN,OPPO Find N,SONY:IMX481,Rear Ultra-wide,Snapdragon 888,https://helpix.ru/oppo/find_n_5g/,Helpix phone specification,Medium,2026-09-26
+PHONE:FINDN2,OPPO Find N2,SONY:IMX581,Rear Ultra-wide,Snapdragon 8+ Gen 1,https://helpix.ru/oppo/find_n2/,Helpix phone specification,High,2026-09-26
+PHONE:FINDN3,OPPO Find N3,SONY:LYTIA T808,Rear Main,Snapdragon 8 Gen 2,https://helpix.ru/oppo/find_n3/,Helpix phone specification,High,2026-09-26
+PHONE:FINDN5,OPPO Find N5,SONY:LYTIA 700C,Rear Main,,https://helpix.ru/isensor/sony_lyt-700c/,Helpix sensor database,High,2026-09-26
+PHONE:FINDX,OPPO Find X,SONY:IMX519,Rear Main,Snapdragon 845,https://helpix.ru/oppo/find_x/,Helpix phone specification,High,2026-09-26
+PHONE:FINDX2PRO,OPPO Find X2 Pro,SONY:IMX616,Front Main,Snapdragon 865,https://helpix.ru/oppo/find_x2_pro/,Helpix phone specification,High,2026-09-26
+PHONE:FINDX5PRO,OPPO Find X5 Pro,SONY:IMX766,Rear Main + Rear Ultra-wide,Snapdragon 8 Gen 1,https://helpix.ru/oppo/find_x5_pro/,Helpix phone specification,Medium,2026-09-26
+PHONE:FINDX6PRO,OPPO Find X6 Pro,SONY:IMX709,Front Main,Snapdragon 8 Gen 2,https://helpix.ru/oppo/find_x6_pro/,Helpix phone specification,High,2026-09-26
+PHONE:FINDX7ULTRA,OPPO Find X7 Ultra,SONY:IMX858,Rear Telephoto,Snapdragon 8 Gen 3,https://helpix.ru/oppo/find_x7_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:FINDX8,OPPO Find X8,SAMSUNG:JN5,Rear Ultra-wide,Dimensity 9400,https://helpix.ru/oppo/find_x8/,Helpix phone specification,High,2026-09-26
+PHONE:FINDX8PRO,OPPO Find X8 Pro,SONY:LYTIA 808 / IMX966,Rear Main,Dimensity 9400,https://helpix.ru/oppo/find_x8_pro/,Helpix phone specification,High,2026-09-26
+PHONE:FINDX8ULTRA,OPPO Find X8 Ultra,SONY:LYTIA 900 / LYT-900 / IMX06A,Rear Main,Snapdragon 8 Elite,https://helpix.ru/oppo/find_x8_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:FINDX9PRO,OPPO Find X9 Pro,SAMSUNG:HP5,Rear Telephoto,Dimensity 9500,https://helpix.ru/oppo/find_x9_pro/,Helpix phone specification,High,2026-09-26
+PHONE:FINDX9PRO,OPPO Find X9 Pro,SONY:LYTIA 828,Rear Main,Dimensity 9500,https://helpix.ru/oppo/find_x9_pro/,Helpix phone specification,High,2026-09-26
+PHONE:FINDX9ULTRA,OPPO Find X9 Ultra,SONY:LYTIA 901,Rear Main,Snapdragon 8 Elite Gen 5,https://helpix.ru/oppo/find_x9_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:GALAXYA425G,Galaxy A42 5G,SAMSUNG:GM2,Rear Main,Snapdragon 750G,https://helpix.ru/samsung/galaxy_a42_5g/,Helpix phone specification,Medium,2026-09-26
+PHONE:GALAXYA50,Galaxy A50,SONY:IMX576,Rear Main,Exynos 9610,https://helpix.ru/samsung/galaxy_a50/,Helpix phone specification,High,2026-09-26
+PHONE:GALAXYA52S5G,Galaxy A52s 5G,SONY:IMX682,Rear Main,,https://helpix.ru/isensor/sony_imx682/,Helpix sensor database,High,2026-09-26
+PHONE:GALAXYA905G,Galaxy A90 5G,SAMSUNG:GM1,Rear Main,Snapdragon 855,https://helpix.ru/samsung/galaxy_a90_5g/,Helpix phone specification,High,2026-09-26
+PHONE:GALAXYNOTE20ULTRA,Galaxy Note 20 Ultra,SAMSUNG:HM1,Rear Main,Exynos 990,https://helpix.ru/samsung/galaxy_note20_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:GALAXYS20,Galaxy S20,SONY:IMX555,Rear Main,,https://helpix.ru/isensor/sony_imx555/,Helpix sensor database,High,2026-09-26
+PHONE:GALAXYS20ULTRA,Galaxy S20 Ultra,SAMSUNG:HM1,Rear Main,Exynos 990,https://helpix.ru/samsung/galaxy_s20_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:GALAXYS21,Galaxy S21,SONY:IMX555,Rear Main,,https://helpix.ru/isensor/sony_imx555/,Helpix sensor database,High,2026-09-26
+PHONE:GALAXYS21ULTRA,Galaxy S21 Ultra,SAMSUNG:GH1,Front Main,Exynos 2100,https://helpix.ru/samsung/galaxy_s21_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:GALAXYS21ULTRA,Galaxy S21 Ultra,SAMSUNG:HM3,Rear Main,Exynos 2100,https://helpix.ru/samsung/galaxy_s21_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:GALAXYS22ULTRA,Galaxy S22 Ultra,SAMSUNG:HM3,Rear Main,Exynos 2200,https://helpix.ru/samsung/galaxy_s22_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:GALAXYS22ULTRA,Galaxy S22 Ultra,SONY:IMX563,Rear Ultra-wide,Exynos 2200,https://helpix.ru/samsung/galaxy_s22_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:GALAXYS22ULTRA,Galaxy S22 Ultra,SONY:IMX754,Rear Telephoto,Exynos 2200,https://helpix.ru/samsung/galaxy_s22_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:GALAXYS23,Galaxy S23,SAMSUNG:GN3,Rear Main,Snapdragon 8 Gen 2 for Galaxy,https://helpix.ru/samsung/galaxy_s23/,Helpix phone specification,High,2026-09-26
+PHONE:GALAXYS23,Galaxy S23,SONY:IMX564,Rear Ultra-wide,Snapdragon 8 Gen 2 for Galaxy,https://helpix.ru/samsung/galaxy_s23/,Helpix phone specification,High,2026-09-26
+PHONE:GALAXYS23ULTRA,Galaxy S23 Ultra,SAMSUNG:HP2,Rear Main,Snapdragon 8 Gen 2 for Galaxy,https://helpix.ru/samsung/galaxy_s23_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:GALAXYS23ULTRA,Galaxy S23 Ultra,SONY:IMX754,Rear Telephoto,Snapdragon 8 Gen 2 for Galaxy,https://helpix.ru/samsung/galaxy_s23_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:GALAXYS24,Galaxy S24,SAMSUNG:3K1,Rear Telephoto,Exynos 2400,https://helpix.ru/samsung/galaxy_s24/,Helpix phone specification,High,2026-09-26
+PHONE:GALAXYS24,Galaxy S24,SAMSUNG:GN3,Rear Main,Exynos 2400,https://helpix.ru/samsung/galaxy_s24/,Helpix phone specification,High,2026-09-26
+PHONE:GALAXYS24ULTRA,Galaxy S24 Ultra,SAMSUNG:HP2,Rear Main,Snapdragon 8 Gen 3,https://helpix.ru/samsung/galaxy_s24_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:GALAXYS24ULTRA,Galaxy S24 Ultra,SONY:IMX854,Rear Telephoto,Snapdragon 8 Gen 3,https://helpix.ru/samsung/galaxy_s24_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:GALAXYS25ULTRA,Galaxy S25 Ultra,SAMSUNG:HP2,Rear Main,Snapdragon 8 Elite for Galaxy,https://helpix.ru/samsung/galaxy_s25_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:GALAXYS25ULTRA,Galaxy S25 Ultra,SAMSUNG:JN3,Rear Ultra-wide,Snapdragon 8 Elite for Galaxy,https://helpix.ru/samsung/galaxy_s25_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:GALAXYS25ULTRA,Galaxy S25 Ultra,SONY:IMX754,Rear Telephoto,Snapdragon 8 Elite for Galaxy,https://helpix.ru/samsung/galaxy_s25_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:GALAXYS25ULTRA,Galaxy S25 Ultra,SONY:IMX854,Rear Telephoto,Snapdragon 8 Elite for Galaxy,https://helpix.ru/samsung/galaxy_s25_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:GALAXYS26,Galaxy S26,SAMSUNG:3K1,Rear Telephoto,Snapdragon 8 Elite Gen 5 for Galaxy,https://helpix.ru/samsung/galaxy_s26/,Helpix phone specification,High,2026-09-26
+PHONE:GALAXYS26,Galaxy S26,SAMSUNG:GN3,Rear Main,Snapdragon 8 Elite Gen 5 for Galaxy,https://helpix.ru/samsung/galaxy_s26/,Helpix phone specification,High,2026-09-26
+PHONE:GALAXYS26ULTRA,Galaxy S26 Ultra,SAMSUNG:JN3,Rear Ultra-wide,Snapdragon 8 Elite Gen 5 for Galaxy,https://helpix.ru/samsung/galaxy_s26_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:GALAXYS26ULTRA,Galaxy S26 Ultra,SONY:IMX854,Rear Telephoto,Snapdragon 8 Elite Gen 5 for Galaxy,https://helpix.ru/samsung/galaxy_s26_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:GALAXYZFOLD7,Galaxy Z Fold7,SAMSUNG:3K1,Rear Telephoto,Snapdragon 8 Elite for Galaxy,https://helpix.ru/samsung/galaxy_z_fold7/,Helpix phone specification,High,2026-09-26
+PHONE:GALAXYZFOLD7,Galaxy Z Fold7,SONY:IMX564,Rear Ultra-wide,Snapdragon 8 Elite for Galaxy,https://helpix.ru/samsung/galaxy_z_fold7/,Helpix phone specification,High,2026-09-26
+PHONE:INTEXAQUANOTE55,Intex Aqua Note 5.5,SAMSUNG:4H5,Rear Main,,https://helpix.ru/isensor/samsung_s5k4h5/,Helpix sensor database,High,2026-09-26
+PHONE:IPHONE11,iPhone 11,SONY:IMX503,Rear Main,A13 Bionic,https://helpix.ru/apple/iphone_11/,Helpix phone specification,High,2026-09-26
+PHONE:IPHONE12,iPhone 12,SONY:IMX514,Front Main,A14 Bionic,https://helpix.ru/apple/iphone_12/,Helpix phone specification,High,2026-09-26
+PHONE:IPHONE12PRO,iPhone 12 Pro,SONY:IMX590,Rear Depth,A14 Bionic,https://helpix.ru/apple/iphone_12_pro/,Helpix phone specification,High,2026-09-26
+PHONE:IPHONE12PROMAX,iPhone 12 Pro Max,SONY:IMX603,Rear Main,A14 Bionic,https://helpix.ru/apple/iphone_12_pro_max/,Helpix phone specification,High,2026-09-26
+PHONE:IPHONE12PROMAX,iPhone 12 Pro Max,SONY:IMX613,Rear Telephoto,A14 Bionic,https://helpix.ru/apple/iphone_12_pro_max/,Helpix phone specification,High,2026-09-26
+PHONE:IPHONE13,iPhone 13,SONY:IMX514,Front Main,A15 Bionic,https://helpix.ru/apple/iphone_13/,Helpix phone specification,High,2026-09-26
+PHONE:IPHONE13PRO,iPhone 13 Pro,SONY:IMX590,Rear Depth,A15 Bionic,https://helpix.ru/apple/iphone_13_pro/,Helpix phone specification,High,2026-09-26
+PHONE:IPHONE14PRO,iPhone 14 Pro,SONY:IMX590,Rear Depth,A16 Bionic,https://helpix.ru/apple/iphone_14_pro/,Helpix phone specification,High,2026-09-26
+PHONE:IPHONE14PRO,iPhone 14 Pro,SONY:IMX633,Rear Ultra-wide,A16 Bionic,https://helpix.ru/apple/iphone_14_pro/,Helpix phone specification,High,2026-09-26
+PHONE:IPHONE14PRO,iPhone 14 Pro,SONY:IMX713,Rear Telephoto,A16 Bionic,https://helpix.ru/apple/iphone_14_pro/,Helpix phone specification,High,2026-09-26
+PHONE:IPHONE14PRO,iPhone 14 Pro,SONY:IMX714,Front Main,A16 Bionic,https://helpix.ru/apple/iphone_14_pro/,Helpix phone specification,High,2026-09-26
+PHONE:IPHONE14PRO,iPhone 14 Pro,SONY:IMX803,Rear Main,A16 Bionic,https://helpix.ru/apple/iphone_14_pro/,Helpix phone specification,High,2026-09-26
+PHONE:IPHONE14PROMAX,iPhone 14 Pro Max,SONY:IMX713,Rear Telephoto,A16 Bionic,https://helpix.ru/apple/iphone_14_pro_max/,Helpix phone specification,High,2026-09-26
+PHONE:IPHONE14PROMAX,iPhone 14 Pro Max,SONY:IMX714,Front Main,A16 Bionic,https://helpix.ru/apple/iphone_14_pro_max/,Helpix phone specification,High,2026-09-26
+PHONE:IPHONE15PRO,iPhone 15 Pro,SONY:IMX803,Rear Main,A17 Pro,https://helpix.ru/apple/iphone_15_pro/,Helpix phone specification,High,2026-09-26
+PHONE:IPHONE16,iPhone 16,SONY:IMX633,Rear Ultra-wide,A18,https://helpix.ru/apple/iphone_16/,Helpix phone specification,High,2026-09-26
+PHONE:IPHONE16,iPhone 16,SONY:IMX904,Rear Main,A18,https://helpix.ru/apple/iphone_16/,Helpix phone specification,High,2026-09-26
+PHONE:IPHONE16PRO,iPhone 16 Pro,SONY:IMX903,Rear Main,A18 Pro,https://helpix.ru/apple/iphone_16_pro/,Helpix phone specification,High,2026-09-26
+PHONE:IPHONE16PRO,iPhone 16 Pro,SONY:IMX972,Rear Ultra-wide,A18 Pro,https://helpix.ru/apple/iphone_16_pro/,Helpix phone specification,High,2026-09-26
+PHONE:IPHONE16PROMAX,iPhone 16 Pro Max,SONY:IMX972,Rear Ultra-wide,A18 Pro,https://helpix.ru/apple/iphone_16_pro_max/,Helpix phone specification,High,2026-09-26
+PHONE:IPHONE17,iPhone 17,SONY:IMX904,Rear Main,A19,https://helpix.ru/apple/iphone_17/,Helpix phone specification,High,2026-09-26
+PHONE:IPHONE17PRO,iPhone 17 Pro,SONY:IMX903,Rear Main,A19 Pro,https://helpix.ru/apple/iphone_17_pro/,Helpix phone specification,High,2026-09-26
+PHONE:IPHONE17PRO,iPhone 17 Pro,SONY:IMX973,Rear Telephoto,A19 Pro,https://helpix.ru/apple/iphone_17_pro/,Helpix phone specification,High,2026-09-26
+PHONE:IPHONE17PROMAX,iPhone 17 Pro Max,SONY:IMX973,Rear Telephoto,A19 Pro,https://helpix.ru/apple/iphone_17_pro_max/,Helpix phone specification,High,2026-09-26
+PHONE:IQOO11,iQOO 11,SAMSUNG:GN5,Rear Main,Snapdragon 8 Gen 2,https://helpix.ru/vivo/iqoo_11/,Helpix phone specification,High,2026-09-26
+PHONE:IQOO11PRO,iQOO 11 Pro,SONY:IMX866,Rear Main,Snapdragon 8 Gen 2,https://helpix.ru/vivo/iqoo_11_pro/,Helpix phone specification,High,2026-09-26
+PHONE:IQOO12,iQOO 12,OMNIVISION:OV50H,Rear Main,Snapdragon 8 Gen 3,https://helpix.ru/vivo/iqoo_12/,Helpix phone specification,High,2026-09-26
+PHONE:IQOO13,iQOO 13,SONY:IMX816,Rear Telephoto,Snapdragon 8 Elite,https://helpix.ru/vivo/iqoo_13/,Helpix phone specification,High,2026-09-26
+PHONE:IQOO13,iQOO 13,SONY:IMX921,Rear Main,Snapdragon 8 Elite,https://helpix.ru/vivo/iqoo_13/,Helpix phone specification,High,2026-09-26
+PHONE:IQOO8PRO,iQOO 8 Pro,SONY:IMX598,Rear Ultra-wide,Snapdragon 888+,https://helpix.ru/vivo/iqoo_8_pro/,Helpix phone specification,High,2026-09-26
+PHONE:IQOONEO9PRO,iQOO Neo 9 Pro,SONY:IMX920,Rear Main,Snapdragon 8 Gen 2,https://helpix.ru/vivo/iqoo_neo_9_pro_global/,Helpix phone specification,Medium,2026-09-26
+PHONE:LENOVOLEGION2PRO,Lenovo Legion 2 Pro,OMNIVISION:OV64A,Rear Main,Snapdragon 888,https://helpix.ru/lenovo/legion_duel_2/,Helpix phone specification,Medium,2026-09-26
+PHONE:LENOVOLEGIONY90,Lenovo Legion Y90,OMNIVISION:OV64A,Rear Main,Snapdragon 8 Gen 1,https://helpix.ru/lenovo/legion_y90/,Helpix phone specification,Medium,2026-09-26
+PHONE:MAGIC6RSR,HONOR Magic 6 RSR,OMNIVISION:OVH9800,Rear Main,,https://helpix.ru/isensor/omnivision_ovh9800/,Helpix sensor database,Medium,2026-09-26
+PHONE:MAGIC6ULTIMATE,HONOR Magic 6 Ultimate,OMNIVISION:OVH9800,Rear Main,,https://helpix.ru/isensor/omnivision_ovh9800/,Helpix sensor database,High,2026-09-26
+PHONE:MAGIC7PRO,HONOR Magic 7 Pro,SAMSUNG:HP3,Rear Telephoto,Snapdragon 8 Elite,https://helpix.ru/honor/magic7_pro/,Helpix phone specification,High,2026-09-26
+PHONE:MAGIC8PRO,HONOR Magic 8 Pro,OMNIVISION:OVH9000 / OV50H,Rear Main,Snapdragon 8 Elite Gen 5,https://helpix.ru/honor/magic8_pro/,Helpix phone specification,High,2026-09-26
+PHONE:MAGIC8PRO,HONOR Magic 8 Pro,SAMSUNG:HP9,Rear Telephoto,Snapdragon 8 Elite Gen 5,https://helpix.ru/honor/magic8_pro/,Helpix phone specification,High,2026-09-26
+PHONE:MAGICV5,HONOR Magic V5,SONY:IMX906,Rear Main,Snapdragon 8 Elite,https://helpix.ru/honor/magic_v5/,Helpix phone specification,High,2026-09-26
+PHONE:MATE20PRO,Mate 20 Pro,SONY:IMX600,Rear Main,Kirin 980,https://helpix.ru/huawei/mate_20_pro/,Helpix phone specification,High,2026-09-26
+PHONE:MATE30PRO,Mate 30 Pro,SONY:IMX600Y,Rear Main,Kirin 990,https://helpix.ru/huawei/mate_30_pro/,Helpix phone specification,High,2026-09-26
+PHONE:MATE40PRO,HUAWEI Mate 40 Pro,SONY:IMX516,Front Depth,Kirin 9000,https://helpix.ru/huawei/mate_40_pro/,Helpix phone specification,High,2026-09-26
+PHONE:MATE40PRO,HUAWEI Mate 40 Pro,SONY:IMX718,Rear Ultra-wide,Kirin 9000,https://helpix.ru/huawei/mate_40_pro/,Helpix phone specification,High,2026-09-26
+PHONE:MATE40PRO,Mate 40 Pro+,SONY:IMX718,Rear Ultra-wide,Kirin 9000,https://helpix.ru/huawei/mate_40_pro_plus/,Helpix phone specification,High,2026-09-26
+PHONE:MATE50PRO,HUAWEI Mate 50 Pro,SONY:IMX766Y,Rear Main,,https://helpix.ru/isensor/sony_imx766/,Helpix sensor database,Medium,2026-09-26
+PHONE:MEIZUPRO7,Meizu Pro 7,SONY:IMX386,Rear Main + Rear Monochrome,Helio P25,https://helpix.ru/meizu/pro_7/,Helpix phone specification,High,2026-09-26
+PHONE:MI10,Xiaomi Mi 10,SAMSUNG:HMX,Rear Main,Snapdragon 865,https://helpix.ru/xiaomi/mi_10/,Helpix phone specification,High,2026-09-26
+PHONE:MI10ULTRA,Xiaomi Mi 10 Ultra,OMNIVISION:OV48C,Rear Main,Snapdragon 865,https://helpix.ru/xiaomi/mi_10_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:MI11,Mi 11,SAMSUNG:5E9,Rear Macro,Snapdragon 888,https://helpix.ru/xiaomi/mi_11/,Helpix phone specification,High,2026-09-26
+PHONE:MI11,Xiaomi Mi 11,SAMSUNG:3T2,Front Main,Snapdragon 888,https://helpix.ru/xiaomi/mi_11/,Helpix phone specification,High,2026-09-26
+PHONE:MI11,Xiaomi Mi 11,SAMSUNG:HMX,Rear Main,Snapdragon 888,https://helpix.ru/xiaomi/mi_11/,Helpix phone specification,High,2026-09-26
+PHONE:MI11PRO,Xiaomi Mi 11 Pro,SAMSUNG:3T2,Front Main,Snapdragon 888,https://helpix.ru/xiaomi/mi_11_pro/,Helpix phone specification,High,2026-09-26
+PHONE:MI11ULTRA,Xiaomi Mi 11 Ultra,SAMSUNG:3T2,Front Main,Snapdragon 888,https://helpix.ru/xiaomi/mi_11_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:MI11ULTRA,Xiaomi Mi 11 Ultra,SAMSUNG:GN2,Rear Main,Snapdragon 888,https://helpix.ru/xiaomi/mi_11_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:MI6,Xiaomi Mi 6,SONY:IMX386,Rear Main,Snapdragon 835,https://helpix.ru/xiaomi/mi_6/,Helpix phone specification,High,2026-09-26
+PHONE:MI9,Xiaomi Mi 9,SONY:IMX586,Rear Main,Snapdragon 855,https://helpix.ru/xiaomi/mi_9/,Helpix phone specification,High,2026-09-26
+PHONE:MIA1,Xiaomi Mi A1,OMNIVISION:OV12A10,Rear Main,Snapdragon 625,https://helpix.ru/xiaomi/mi_a1/,Helpix phone specification,High,2026-09-26
+PHONE:MIA2,Xiaomi Mi A2,SONY:IMX486,Rear Main,Snapdragon 660,https://helpix.ru/xiaomi/mi_a2/,Helpix phone specification,High,2026-09-26
+PHONE:MIMIX2,Mi Mix 2,SONY:IMX386,Rear Main,,https://helpix.ru/isensor/sony_imx386/,Helpix sensor database,High,2026-09-26
+PHONE:MINOTE10,Mi Note 10,SAMSUNG:HMX,Rear Main,Snapdragon 730G,https://helpix.ru/xiaomi/mi_note_10/,Helpix phone specification,High,2026-09-26
+PHONE:NOTHINGCMFPHONE1,Nothing CMF Phone 1,SONY:IMX882,Rear Main,Dimensity 7300,https://helpix.ru/nothing/cmf_phone_1/,Helpix phone specification,High,2026-09-26
+PHONE:NOTHINGPHONE2A,Nothing Phone (2a),SAMSUNG:GN9,Rear Main,Dimensity 7200 Pro,https://helpix.ru/nothing/phone_2a/,Helpix phone specification,High,2026-09-26
+PHONE:NOTHINGPHONE3A,Nothing Phone (3a),SAMSUNG:GN9,Rear Main,Snapdragon 7s Gen 3,https://helpix.ru/nothing/phone_3a/,Helpix phone specification,High,2026-09-26
+PHONE:NOTHINGPHONE3A,Nothing Phone (3a),SONY:IMX355,Rear Ultra-wide,Snapdragon 7s Gen 3,https://helpix.ru/nothing/phone_3a/,Helpix phone specification,High,2026-09-26
+PHONE:NOTHINGPHONE3APRO,Nothing Phone (3a) Pro,SAMSUNG:GNJ,Rear Main,Snapdragon 7s Gen 3,https://helpix.ru/nothing/phone_3a_pro/,Helpix phone specification,High,2026-09-26
+PHONE:NUBIAREDMAGIC10PRO,Nubia Red Magic 10 Pro+,OMNIVISION:OV02F,Rear Macro,,https://helpix.ru/isensor/omnivision_ov02f/,Helpix sensor database,High,2026-09-26
+PHONE:NUBIAREDMAGIC10PRO,Nubia RedMagic 10 Pro,OMNIVISION:OV50D,Rear Ultra-wide,Snapdragon 8 Elite,https://helpix.ru/zte/nubia_red_magic_10_pro/,Helpix phone specification,Medium,2026-09-26
+PHONE:NUBIAREDMAGIC8PRO,Nubia Red Magic 8 Pro,OMNIVISION:OV16E10,Front Main,,https://helpix.ru/isensor/omnivision_ov16e/,Helpix sensor database,Medium,2026-09-26
+PHONE:NUBIAZ50ULTRA,Nubia Z50 Ultra,SONY:IMX787,Rear Main,Snapdragon 8 Gen 2,https://helpix.ru/zte/nubia_z50_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:NUBIAZ60ULTRA,Nubia Z60 Ultra,SONY:IMX800,Rear Main,Snapdragon 8 Gen 3,https://helpix.ru/zte/nubia_z60_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:NUBIAZ70ULTRA,Nubia Z70 Ultra,OMNIVISION:OV50D,Rear Ultra-wide,Snapdragon 8 Elite,https://helpix.ru/zte/nubia_z70_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:NUBIAZ70ULTRA,Nubia Z70 Ultra,OMNIVISION:OV64B,Rear Telephoto,Snapdragon 8 Elite,https://helpix.ru/zte/nubia_z70_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:NUBIAZ80ULTRA,Nubia Z80 Ultra,OMNIVISION:OV50E,Rear Ultra-wide,Snapdragon 8 Elite Gen 5,https://helpix.ru/zte/nubia_z80_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:NUBIAZ80ULTRA,Nubia Z80 Ultra,OMNIVISION:OV64B,Rear Telephoto,Snapdragon 8 Elite Gen 5,https://helpix.ru/zte/nubia_z80_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:NUBIAZ80ULTRA,Nubia Z80 Ultra,OMNIVISION:OV990,Rear Main,,https://helpix.ru/isensor/light_fusion_990/,Helpix sensor database,Medium,2026-09-26
+PHONE:ONEPLUS10PRO,OnePlus 10 Pro,SONY:IMX789 RGGB,Rear Main,,https://helpix.ru/isensor/sony_imx789/,Helpix sensor database,Medium,2026-09-26
+PHONE:ONEPLUS11,OnePlus 11,SONY:IMX581,Rear Ultra-wide,Snapdragon 8 Gen 2,https://helpix.ru/oneplus/11/,Helpix phone specification,High,2026-09-26
+PHONE:ONEPLUS12,OnePlus 12,SONY:LYTIA 808 / IMX966,Rear Main,Snapdragon 8 Gen 3,https://helpix.ru/oneplus/12/,Helpix phone specification,High,2026-09-26
+PHONE:ONEPLUS12R,OnePlus 12R,OMNIVISION:OV02B10,Rear Macro,,https://helpix.ru/isensor/omnivision_ov02b/,Helpix sensor database,Medium,2026-09-26
+PHONE:ONEPLUS13,OnePlus 13,SAMSUNG:JN5,Rear Ultra-wide,Snapdragon 8 Elite,https://helpix.ru/oneplus/13/,Helpix phone specification,High,2026-09-26
+PHONE:ONEPLUS13,OnePlus 13,SONY:LYTIA 808 / IMX966,Rear Main,Snapdragon 8 Elite,https://helpix.ru/oneplus/13/,Helpix phone specification,High,2026-09-26
+PHONE:ONEPLUS13R,OnePlus 13R,SONY:IMX355,Rear Ultra-wide,Snapdragon 8 Gen 3,https://helpix.ru/oneplus/13r/,Helpix phone specification,High,2026-09-26
+PHONE:ONEPLUS13R,OnePlus 13R,SONY:LYTIA 700C,Rear Main,,https://helpix.ru/isensor/sony_lyt-700c/,Helpix sensor database,High,2026-09-26
+PHONE:ONEPLUS15,OnePlus 15,SONY:IMX906,Rear Main,Snapdragon 8 Elite Gen 5,https://helpix.ru/oneplus/15/,Helpix phone specification,High,2026-09-26
+PHONE:ONEPLUS5T,OnePlus 5T,SONY:IMX398,Rear Main,Snapdragon 835,https://helpix.ru/oneplus/5t/,Helpix phone specification,High,2026-09-26
+PHONE:ONEPLUS6T,OnePlus 6T,SONY:IMX519,Rear Main,Snapdragon 845,https://helpix.ru/oneplus/6t/,Helpix phone specification,High,2026-09-26
+PHONE:ONEPLUS7PRO,OnePlus 7 Pro,SONY:IMX471,Front Main,Snapdragon 855,https://helpix.ru/oneplus/7_pro/,Helpix phone specification,High,2026-09-26
+PHONE:ONEPLUS9PRO,OnePlus 9 Pro,SONY:IMX789 RGGB,Rear Main,,https://helpix.ru/isensor/sony_imx789/,Helpix sensor database,Medium,2026-09-26
+PHONE:ONEPLUSNORD,OnePlus Nord,SONY:IMX616,Front Main,,https://helpix.ru/isensor/sony_imx616/,Helpix sensor database,High,2026-09-26
+PHONE:ONEPLUSNORD4,OnePlus Nord 4,SONY:LYTIA 600 / IMX882,Rear Main,Snapdragon 7+ Gen 3,https://helpix.ru/oneplus/nord_4/,Helpix phone specification,High,2026-09-26
+PHONE:ONEPLUSNORD5,OnePlus Nord 5,OMNIVISION:OV08D10,Rear Ultra-wide,Snapdragon 8s Gen 3,https://helpix.ru/oneplus/nord_5/,Helpix phone specification,Medium,2026-09-26
+PHONE:ONEPLUSNORDCE3LITE5G,OnePlus Nord CE3 Lite 5G,SAMSUNG:HM6,Rear Main,Snapdragon 695,https://helpix.ru/oneplus/nord_ce_3_lite_5g/,Helpix phone specification,High,2026-09-26
+PHONE:ONEPLUSOPEN,OnePlus Open,SONY:LYTIA T808,Rear Main,Snapdragon 8 Gen 2,https://helpix.ru/oneplus/open/,Helpix phone specification,High,2026-09-26
+PHONE:P20PRO,HUAWEI P20 Pro,SONY:IMX600,Rear Main,Kirin 970,https://helpix.ru/huawei/p20_pro/,Helpix phone specification,High,2026-09-26
+PHONE:P30PRO,HUAWEI P30 Pro,SAMSUNG:GD1,Front Main,Kirin 980,https://helpix.ru/huawei/p30_pro/,Helpix phone specification,High,2026-09-26
+PHONE:P30PRO,HUAWEI P30 Pro,SONY:IMX520,Rear Telephoto,Kirin 980,https://helpix.ru/huawei/p30_pro/,Helpix phone specification,High,2026-09-26
+PHONE:P30PRO,HUAWEI P30 Pro,SONY:IMX600Y,Rear Main,Kirin 980,https://helpix.ru/huawei/p30_pro/,Helpix phone specification,High,2026-09-26
+PHONE:PANASONICP9,Panasonic P9,OMNIVISION:OV8856,Rear Main,,https://helpix.ru/isensor/omnivision_ov8856/,Helpix sensor database,High,2026-09-26
+PHONE:PIXEL10,Pixel 10,SONY:IMX712,Rear Ultra-wide,Tensor G5,https://helpix.ru/google/pixel_10/,Helpix phone specification,High,2026-09-26
+PHONE:PIXEL4,Google Pixel 4,SONY:IMX481,Rear Telephoto,Snapdragon 855,https://helpix.ru/google/pixel_4/,Helpix phone specification,High,2026-09-26
+PHONE:PIXEL4,Google Pixel 4,SONY:IMX520,Front Main,Snapdragon 855,https://helpix.ru/google/pixel_4/,Helpix phone specification,High,2026-09-26
+PHONE:PIXEL6,Google Pixel 6,SAMSUNG:GN1,Rear Main,Tensor,https://helpix.ru/google/pixel_6/,Helpix phone specification,High,2026-09-26
+PHONE:PIXEL7,Google Pixel 7,SONY:IMX381,Rear Ultra-wide,Tensor G2,https://helpix.ru/google/pixel_7/,Helpix phone specification,High,2026-09-26
+PHONE:PIXEL7,Pixel 7,SAMSUNG:GN1,Rear Main,Tensor G2,https://helpix.ru/google/pixel_7/,Helpix phone specification,High,2026-09-26
+PHONE:PIXEL7A,Google Pixel 7a,SONY:IMX712,Front Main + Rear Ultra-wide,Tensor G2,https://helpix.ru/google/pixel_7a/,Helpix phone specification,High,2026-09-26
+PHONE:PIXEL7PRO,Pixel 7 Pro,SONY:IMX381,Rear Ultra-wide,Tensor G2,https://helpix.ru/google/pixel_7_pro/,Helpix phone specification,High,2026-09-26
+PHONE:PIXEL8,Google Pixel 8,SAMSUNG:GNK,Rear Main,Tensor G3,https://helpix.ru/google/pixel_8/,Helpix phone specification,High,2026-09-26
+PHONE:PIXEL8A,Google Pixel 8a,SONY:IMX787,Rear Main,Tensor G3,https://helpix.ru/google/pixel_8a/,Helpix phone specification,High,2026-09-26
+PHONE:PIXEL8PRO,Pixel 8 Pro,SAMSUNG:GNK,Rear Main,Tensor G3,https://helpix.ru/google/pixel_8_pro/,Helpix phone specification,High,2026-09-26
+PHONE:PIXEL9,Pixel 9,SAMSUNG:GNK,Rear Main,Tensor G4,https://helpix.ru/google/pixel_9/,Helpix phone specification,High,2026-09-26
+PHONE:PIXEL9A,Google Pixel 9a,SAMSUNG:GN8,Rear Main,Tensor G4,https://helpix.ru/google/pixel_9a/,Helpix phone specification,High,2026-09-26
+PHONE:POCOF3,POCO F3,SONY:IMX582,Rear Main,Snapdragon 870,https://helpix.ru/xiaomi/poco_f3/,Helpix phone specification,High,2026-09-26
+PHONE:POCOF4,POCO F4,SONY:IMX596,Front Main,Snapdragon 870,https://helpix.ru/xiaomi/poco_f4/,Helpix phone specification,High,2026-09-26
+PHONE:POCOF5,POCO F5,OMNIVISION:OV64B,Rear Main,Snapdragon 7+ Gen 2,https://helpix.ru/xiaomi/poco_f5/,Helpix phone specification,High,2026-09-26
+PHONE:POCOF5PRO,POCO F5 Pro,OMNIVISION:OV16A1Q,Front Main,,https://helpix.ru/isensor/omnivision_ov16a/,Helpix sensor database,Medium,2026-09-26
+PHONE:POCOF6,POCO F6,SONY:IMX355,Rear Ultra-wide,Snapdragon 8s Gen 3,https://helpix.ru/xiaomi/poco_f6/,Helpix phone specification,High,2026-09-26
+PHONE:POCOF6,POCO F6,SONY:IMX882,Rear Main,Snapdragon 8s Gen 3,https://helpix.ru/xiaomi/poco_f6/,Helpix phone specification,High,2026-09-26
+PHONE:POCOF7,POCO F7,SONY:LYTIA 600 / IMX882,Rear Main,Snapdragon 8s Gen 4,https://helpix.ru/xiaomi/poco_f7/,Helpix phone specification,High,2026-09-26
+PHONE:POCOF7,Xiaomi POCO F7,OMNIVISION:OV08F,Rear Ultra-wide,Snapdragon 8s Gen 4,https://helpix.ru/xiaomi/poco_f7/,Helpix phone specification,High,2026-09-26
+PHONE:POCOF8PRO,POCO F8 Pro,OMNIVISION:OV50M,Rear Telephoto,Snapdragon 8 Elite,https://helpix.ru/xiaomi/poco_f8_pro/,Helpix phone specification,High,2026-09-26
+PHONE:POCOX3,POCO X3,SONY:IMX682,Rear Main,Snapdragon 732G,https://helpix.ru/xiaomi/poco_x3/,Helpix phone specification,Medium,2026-09-26
+PHONE:POCOX7,POCO X7,OMNIVISION:OV02B10,Rear Macro,,https://helpix.ru/isensor/omnivision_ov02b/,Helpix sensor database,Medium,2026-09-26
+PHONE:RAZR50ULTRA,Motorola Razr 50 Ultra,SAMSUNG:GN8,Rear Main,Snapdragon 8s Gen 3,https://helpix.ru/motorola/razr_50_ultra/,Helpix phone specification,Medium,2026-09-26
+PHONE:REALME11PRO,Realme 11 Pro+,SONY:IMX615,Front Main,Dimensity 7050,https://helpix.ru/realme/11_pro_plus/,Helpix phone specification,High,2026-09-26
+PHONE:REALME12PRO,Realme 12 Pro,SONY:IMX709,Rear Telephoto,Snapdragon 6 Gen 1,https://helpix.ru/realme/12_pro/,Helpix phone specification,High,2026-09-26
+PHONE:REALME13PRO,Realme 13 Pro+,SONY:LYTIA 701,Rear Main,Snapdragon 7s Gen 2,https://helpix.ru/realme/13_pro_plus/,Helpix phone specification,High,2026-09-26
+PHONE:REALME14PRO5G,Realme 14 Pro+ 5G,SONY:IMX896,Rear Main,Snapdragon 7s Gen 3,https://helpix.ru/realme/14_pro_plus/,Helpix phone specification,Medium,2026-09-26
+PHONE:REALMEGT7,Realme GT7,SONY:IMX896,Rear Main,Dimensity 9400+,https://helpix.ru/realme/gt7/,Helpix phone specification,Medium,2026-09-26
+PHONE:REALMEGT7PRO,Realme GT7 Pro,SONY:IMX882,Rear Telephoto,Snapdragon 8 Elite,https://helpix.ru/realme/gt7_pro/,Helpix phone specification,High,2026-09-26
+PHONE:REALMEGT8PRO,Realme GT8 Pro,SAMSUNG:HP5,Rear Telephoto,Snapdragon 8 Elite Gen 5,https://helpix.ru/realme/gt8_pro_china/,Helpix phone specification,High,2026-09-26
+PHONE:REALMEGT8PRO,Realme GT8 Pro,SONY:IMX906,Rear Main,Snapdragon 8 Elite Gen 5,https://helpix.ru/realme/gt8_pro_china/,Helpix phone specification,High,2026-09-26
+PHONE:REDMI7,Redmi 7,OMNIVISION:OV12A10,Rear Main,Snapdragon 632,https://helpix.ru/xiaomi/redmi_7/,Helpix phone specification,High,2026-09-26
+PHONE:REDMIK30ULTRA,Redmi K30 Ultra,SONY:IMX682,Rear Main,Dimensity 1000+,https://helpix.ru/xiaomi/redmi_k30_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:REDMIK40,Redmi K40,SONY:IMX582,Rear Main,Snapdragon 870,https://helpix.ru/xiaomi/redmi_k40/,Helpix phone specification,High,2026-09-26
+PHONE:REDMIK50PRO,Redmi K50 Pro,SONY:IMX596,Front Main,Dimensity 9000,https://helpix.ru/xiaomi/redmi_k50_pro/,Helpix phone specification,High,2026-09-26
+PHONE:REDMIK60,Redmi K60,OMNIVISION:OV64B,Rear Main,Snapdragon 8+ Gen 1,https://helpix.ru/xiaomi/redmi_k60/,Helpix phone specification,High,2026-09-26
+PHONE:REDMIK80PRO,Redmi K80 Pro,OMNIVISION:Light Hunter / Light Fusion 800,Rear Main,,https://helpix.ru/isensor/light_hunter_800/,Helpix sensor database,High,2026-09-26
+PHONE:REDMINOTE105G,Redmi Note 10 5G,OMNIVISION:OV48B,Rear Main,Dimensity 700,https://helpix.ru/xiaomi/redmi_note_10_5g/,Helpix phone specification,Medium,2026-09-26
+PHONE:REDMINOTE12DISCOVERYEDITION,Redmi Note 12 Discovery Edition,SAMSUNG:HPX,Rear Main,Dimensity 1080,https://helpix.ru/xiaomi/redmi_note_12_explorer/,Helpix phone specification,Medium,2026-09-26
+PHONE:REDMINOTE12PRO,Redmi Note 12 Pro+,SAMSUNG:HPX,Rear Main,Dimensity 1080,https://helpix.ru/xiaomi/redmi_note_12_pro_plus/,Helpix phone specification,High,2026-09-26
+PHONE:REDMINOTE13PRO,Redmi Note 13 Pro+,SAMSUNG:HP3,Rear Main,Dimensity 7200-Ultra,https://helpix.ru/xiaomi/redmi_note_13_pro_plus/,Helpix phone specification,High,2026-09-26
+PHONE:REDMINOTE5PRO,Redmi Note 5 Pro,SONY:IMX486,Rear Main,Snapdragon 636,https://helpix.ru/xiaomi/redmi_note_5_pro/,Helpix phone specification,Medium,2026-09-26
+PHONE:REDMINOTE7PRO,Redmi Note 7 Pro,SONY:IMX586,Rear Main,Snapdragon 675AIE,https://helpix.ru/xiaomi/redmi_note_7_pro/,Helpix phone specification,High,2026-09-26
+PHONE:REDMINOTE9PRO,Redmi Note 9 Pro,SAMSUNG:GM2,Rear Main,Snapdragon 720G,https://helpix.ru/xiaomi/redmi_note_9_pro/,Helpix phone specification,Medium,2026-09-26
+PHONE:RENO14,OPPO Reno 14,SONY:LYTIA 600 / IMX882,Rear Main,Dimensity 8350,https://helpix.ru/oppo/reno14/,Helpix phone specification,Medium,2026-09-26
+PHONE:ROGPHONE9PRO,ROG Phone 9 Pro,SONY:LYTIA 700,Rear Main,Snapdragon 8 Elite,https://helpix.ru/asus/rog_phone_9_pro/,Helpix phone specification,High,2026-09-26
+PHONE:SHARPAQUOSR6,SHARP AQUOS R6,SONY:IMX506,Rear Main,Snapdragon 888,https://helpix.ru/sharp/aquos_r6/,Helpix phone specification,High,2026-09-26
+PHONE:TCL10PRO,TCL 10 Pro,OMNIVISION:OV24B,Front Main,Snapdragon 675,https://helpix.ru/tcl/10_pro/,Helpix phone specification,High,2026-09-26
+PHONE:TCLPLEX,TCL Plex,OMNIVISION:OV24B,Front Main,Snapdragon 675,https://helpix.ru/tcl/plex/,Helpix phone specification,High,2026-09-26
+PHONE:TECNOCAMON40PREMIER,Tecno Camon 40 Premier,SONY:LYTIA 701,Rear Main,Dimensity 8350,https://helpix.ru/tecno/camon_40_premier/,Helpix phone specification,High,2026-09-26
+PHONE:UMIDIGIONEMAX,UMIDIGI One Max,OMNIVISION:OV12870,Rear Main,Helio P23,https://helpix.ru/umidigi/one_max/,Helpix phone specification,High,2026-09-26
+PHONE:V21,vivo V21,SAMSUNG:GH1,Front Main,Dimensity 800U,https://helpix.ru/vivo/v21/,Helpix phone specification,High,2026-09-26
+PHONE:V27PRO,vivo V27 Pro,SONY:IMX766V,Rear Main,Dimensity 8200,https://helpix.ru/vivo/v27_pro/,Helpix phone specification,Medium,2026-09-26
+PHONE:V30PRO,HONOR V30 Pro,OMNIVISION:OV12D2Q,Rear Ultra-wide,,https://helpix.ru/isensor/omnivision_ov12d/,Helpix sensor database,Medium,2026-09-26
+PHONE:V405G,vivo V40 5G,SAMSUNG:GNJ,Rear Main,Snapdragon 7 Gen 3,https://helpix.ru/vivo/v40_5g/,Helpix phone specification,High,2026-09-26
+PHONE:WILEYFOXSPARK,Wileyfox Spark,OMNIVISION:OV8865,Rear Main,,https://helpix.ru/isensor/omnivision_ov8865/,Helpix sensor database,High,2026-09-26
+PHONE:X100,vivo X100,SONY:IMX920,Rear Main,Dimensity 9300,https://helpix.ru/vivo/x100/,Helpix phone specification,High,2026-09-26
+PHONE:X100ULTRA,vivo X100 Ultra,SAMSUNG:HP9,Rear Telephoto,Snapdragon 8 Gen 3,https://helpix.ru/vivo/x100_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:X100ULTRA,vivo X100 Ultra,SONY:LYTIA 900 / LYT-900 / IMX06A,Rear Main,Snapdragon 8 Gen 3,https://helpix.ru/vivo/x100_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:X200,vivo X200,SAMSUNG:JN1,Rear Ultra-wide,Dimensity 9400,https://helpix.ru/vivo/x200/,Helpix phone specification,High,2026-09-26
+PHONE:X200,vivo X200,SONY:IMX921,Rear Main,Dimensity 9400,https://helpix.ru/vivo/x200/,Helpix phone specification,High,2026-09-26
+PHONE:X200FE,vivo X200 FE,OMNIVISION:OV08D10,Rear Ultra-wide,Dimensity 9300+,https://helpix.ru/vivo/x200_fe/,Helpix phone specification,Medium,2026-09-26
+PHONE:X200PRO,vivo X200 Pro,SAMSUNG:HP9,Rear Telephoto,Dimensity 9400,https://helpix.ru/vivo/x200_pro/,Helpix phone specification,High,2026-09-26
+PHONE:X200PRO,vivo X200 Pro,SONY:LYTIA 818 / IMX06C,Rear Main,Dimensity 9400,https://helpix.ru/vivo/x200_pro/,Helpix phone specification,High,2026-09-26
+PHONE:X200ULTRA,vivo X200 Ultra,SONY:LYTIA 818 / IMX06C,Rear Main + Rear Ultra-wide,Snapdragon 8 Elite,https://helpix.ru/vivo/x200_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:X300,vivo X300,SAMSUNG:HPB,Rear Main,Dimensity 9500,https://helpix.ru/vivo/x300/,Helpix phone specification,High,2026-09-26
+PHONE:X300,vivo X300,SONY:LYTIA 602,Rear Telephoto,Dimensity 9500,https://helpix.ru/vivo/x300/,Helpix phone specification,High,2026-09-26
+PHONE:X300PRO,vivo X300 Pro,SAMSUNG:HPB,Rear Telephoto,Dimensity 9500,https://helpix.ru/vivo/x300_pro/,Helpix phone specification,High,2026-09-26
+PHONE:X300PRO,vivo X300 Pro,SONY:LYTIA 828,Rear Main,Dimensity 9500,https://helpix.ru/vivo/x300_pro/,Helpix phone specification,High,2026-09-26
+PHONE:X300ULTRA,vivo X300 Ultra,SONY:LYTIA 818 / IMX06C,Rear Ultra-wide,Snapdragon 8 Elite Gen 5,https://helpix.ru/vivo/x300_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:X300ULTRA,vivo X300 Ultra,SONY:LYTIA 901,Rear Main,Snapdragon 8 Elite Gen 5,https://helpix.ru/vivo/x300_ultra/,Helpix phone specification,High,2026-09-26
+PHONE:X50,HONOR X50,SAMSUNG:HM6,Rear Main,Snapdragon 6 Gen 1,https://helpix.ru/honor/x50/,Helpix phone specification,High,2026-09-26
+PHONE:X60PRO,vivo X60 Pro+,SONY:IMX598,Rear Ultra-wide,Snapdragon 888,https://helpix.ru/vivo/x60_pro_plus_5g/,Helpix phone specification,Medium,2026-09-26
+PHONE:X70PRO,vivo X70 Pro,SONY:IMX766V,Rear Main,,https://helpix.ru/vivo/x70_pro_china/,Helpix phone specification,Medium,2026-09-26
+PHONE:X70PRO,vivo X70 Pro+,SAMSUNG:GN1,Rear Main,,https://helpix.ru/vivo/x70_pro_plus/,Helpix phone specification,High,2026-09-26
+PHONE:X80,vivo X80,SONY:IMX866,Rear Main,Dimensity 9000,https://helpix.ru/vivo/x80/,Helpix phone specification,High,2026-09-26
+PHONE:X80PRO,vivo X80 Pro,SAMSUNG:GNV,Rear Main,Snapdragon 8 Gen 1,https://helpix.ru/vivo/x80_pro/,Helpix phone specification,High,2026-09-26
+PHONE:X80PRO,vivo X80 Pro,SONY:IMX598,Rear Ultra-wide,Snapdragon 8 Gen 1,https://helpix.ru/vivo/x80_pro/,Helpix phone specification,High,2026-09-26
+PHONE:X90,vivo X90,SONY:IMX866,Rear Main,Dimensity 9200,https://helpix.ru/vivo/x90/,Helpix phone specification,High,2026-09-26
+PHONE:X90PRO,vivo X90 Pro,SONY:IMX663,Rear Ultra-wide,,https://helpix.ru/vivo/x90_pro/,Helpix phone specification,High,2026-09-26
+PHONE:X90PRO,vivo X90 Pro,SONY:IMX758,Rear Telephoto,,https://helpix.ru/vivo/x90_pro/,Helpix phone specification,High,2026-09-26
+PHONE:X90PRO,vivo X90 Pro+,SONY:IMX758,Rear Telephoto,,https://helpix.ru/vivo/x90_pro_plus/,Helpix phone specification,High,2026-09-26
+PHONE:XFOLD3,vivo X Fold3,SONY:IMX816,Rear Telephoto,Snapdragon 8 Gen 2,https://helpix.ru/vivo/x_fold3/,Helpix phone specification,High,2026-09-26
+PHONE:XFOLD3,vivo X Fold3,SONY:IMX920,Rear Main,Snapdragon 8 Gen 2,https://helpix.ru/vivo/x_fold3/,Helpix phone specification,High,2026-09-26
+PHONE:XFOLD5,vivo X Fold5,SONY:IMX921,Rear Main,Snapdragon 8 Gen 3,https://helpix.ru/vivo/x_fold5/,Helpix phone specification,High,2026-09-26
+PHONE:XPERIA10VI,Xperia 10 VI,SONY:IMX582,Rear Main,Snapdragon 6 Gen 1,https://helpix.ru/sony/xperia_10_vi/,Helpix phone specification,High,2026-09-26
+PHONE:XPERIA1III,Xperia 1 III,SONY:IMX557,Rear Main,Snapdragon 888,https://helpix.ru/sony/xperia_1_iii/,Helpix phone specification,High,2026-09-26
+PHONE:XPERIA1III,Xperia 1 III,SONY:IMX663,Rear Telephoto,Snapdragon 888,https://helpix.ru/sony/xperia_1_iii/,Helpix phone specification,High,2026-09-26
+PHONE:XPERIA1IV,Xperia 1 IV,SONY:IMX557,Rear Main,Snapdragon 8 Gen 1,https://helpix.ru/sony/xperia_1_iv/,Helpix phone specification,High,2026-09-26
+PHONE:XPERIA1IV,Xperia 1 IV,SONY:IMX650,Rear Telephoto,Snapdragon 8 Gen 1,https://helpix.ru/sony/xperia_1_iv/,Helpix phone specification,High,2026-09-26
+PHONE:XPERIA1V,Xperia 1 V,SONY:IMX888,Rear Main,Snapdragon 8 Gen 2,https://helpix.ru/sony/xperia_1_v/,Helpix phone specification,High,2026-09-26
+PHONE:XPERIA1VI,Xperia 1 VI,SONY:IMX650,Rear Telephoto,Snapdragon 8 Gen 3,https://helpix.ru/sony/xperia_1_vi/,Helpix phone specification,High,2026-09-26
+PHONE:XPERIA1VII,Xperia 1 VII,SONY:IMX650,Rear Telephoto,Snapdragon 8 Elite,https://helpix.ru/sony/xperia_1_vii/,Helpix phone specification,High,2026-09-26
+PHONE:XPERIA1VII,Xperia 1 VII,SONY:IMX888,Rear Main,Snapdragon 8 Elite,https://helpix.ru/sony/xperia_1_vii/,Helpix phone specification,High,2026-09-26
+PHONE:XPERIA1VII,Xperia 1 VII,SONY:IMX906,Rear Ultra-wide,Snapdragon 8 Elite,https://helpix.ru/sony/xperia_1_vii/,Helpix phone specification,High,2026-09-26
+PHONE:XPERIA5IV,Xperia 5 IV,SONY:IMX557,Rear Main,Snapdragon 8 Gen 1,https://helpix.ru/sony/xperia_5_iv/,Helpix phone specification,High,2026-09-26
+PHONE:XPERIA5V,Xperia 5 V,SONY:IMX888,Rear Main,Snapdragon 8 Gen 2,https://helpix.ru/sony/xperia_5_v/,Helpix phone specification,High,2026-09-26
+PHONE:XPERIAXZ2,Xperia XZ2,SONY:IMX400,Rear Main,,https://helpix.ru/isensor/sony_imx400/,Helpix sensor database,High,2026-09-26
+PHONE:XPERIAXZPREMIUM,Xperia XZ Premium,SONY:IMX400,Rear Main,,https://helpix.ru/isensor/sony_imx400/,Helpix sensor database,High,2026-09-26
+PHONE:Z1PRO,vivo Z1 Pro,SONY:IMX499,Rear Main,Snapdragon 712,https://helpix.ru/vivo/z1_pro/,Helpix phone specification,High,2026-09-26
+PHONE:ZENFONE9,Zenfone 9,SONY:IMX663,Front Main,Snapdragon 8+ Gen 1,https://helpix.ru/asus/zenfone_9/,Helpix phone specification,High,2026-09-26
+PHONE:ZOPOCOLORS55,Zopo Color S5.5,OMNIVISION:OV8858,Rear Main,,https://helpix.ru/isensor/omnivision_ov8858/,Helpix sensor database,High,2026-09-26
