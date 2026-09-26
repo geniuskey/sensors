@@ -10,4 +10,6 @@ for asset in ('main.js', 'dashboard.js', 'style.css'):
 (DIST/'catalog').mkdir()
 shutil.copy2(ROOT/'catalog/index.html', DIST/'catalog/index.html')
 shutil.copytree(ROOT/'public/data',DIST/'data')
+shutil.copytree(ROOT/'public/images',DIST/'images')
+shutil.copy2(ROOT/'public/favicon.svg',DIST/'favicon.svg')
 print('Built',DIST)

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Explore mobile image sensor trends, specifications and manufacturer coverage." />
     <title>Mobile Image Sensor Database</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body class="overview-page">
@@ -32,7 +33,7 @@
           <p>Search mobile image sensors, compare specifications, and see which phones use them. Every record stays connected to its source.</p>
           <a class="button button-primary" href="/catalog/">Explore sensors <span aria-hidden="true">→</span></a>
         </div>
-        <div class="sensor-art" aria-hidden="true"><div class="sensor-art-frame"><div class="sensor-art-core"><span>CIS</span><i></i><i></i><i></i><i></i></div></div><span class="sensor-art-caption">IMAGE SENSOR / DATA INDEX</span></div>
+        <figure class="sensor-art"><div class="sensor-art-frame"><img src="/images/isocell-gn5.png" alt="Samsung ISOCELL GN5 image sensor" width="448" height="336" /></div><figcaption class="sensor-art-caption">IMAGE: SAMSUNG ISOCELL GN5</figcaption></figure>
       </section>
 
       <section class="stats overview-stats" aria-label="Catalog summary">
@@ -73,6 +74,7 @@
       </section>
       <footer class="page-footer"><span>Source-traceable mobile image sensor data</span><span class="footer-links"><a href="/data/all-in-one.csv">Download CSV ↓</a><a href="https://github.com/geniuskey/sensors" target="_blank" rel="noopener noreferrer">How this catalog is maintained ↗</a></span></footer>
     </main>
+    <div id="chart-tooltip" class="chart-tooltip" role="tooltip" hidden><strong></strong><span></span></div>
     <script type="module" src="/src/dashboard.js"></script>
   </body>
 </html>

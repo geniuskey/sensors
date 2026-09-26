@@ -227,9 +227,12 @@ function showDetail(id, updateUrl = true) {
     }
   }
   const detail = qs('#detail');
+  const sensorImage = row.canonical_id === 'SAMSUNG:GN5'
+    ? '<figure class="detail-sensor-image"><img src="/images/isocell-gn5.png" alt="Samsung ISOCELL GN5 image sensor" width="448" height="336"><figcaption>Samsung ISOCELL GN5 sensor image</figcaption></figure>'
+    : '';
   detail.hidden = false;
   detail.innerHTML = '<div class="detail-head"><div><div class="section-kicker">SENSOR DETAILS</div><h2>' + esc(row.sensor) + '</h2><p>' + esc(row.manufacturer) + ' · ' + esc(row.canonical_id) + '</p></div><button class="icon-button" type="button" data-detail-close aria-label="Close sensor details">×</button></div>' +
-    '<div class="detail-grid">' +
+    sensorImage + '<div class="detail-grid">' +
     '<div class="detail-item"><span>Resolution</span><strong>' + (row.resolution_mp == null ? '—' : formatNumber(row.resolution_mp) + ' MP') + '</strong></div>' +
     '<div class="detail-item"><span>Resolution pixels</span><strong>' + esc(row.resolution_px || '—') + '</strong></div>' +
     '<div class="detail-item"><span>Optical format</span><strong>' + esc(row.sensor_size || '—') + '</strong></div>' +

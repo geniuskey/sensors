@@ -46,7 +46,7 @@ function renderScatter(target, data, xKey, yKey, xLabel, yLabel, options = {}) {
     const x = X(Number(point[xKey])), y = Y(Number(point[yKey]));
     const r = options.hitRadius || 7;
     const metadata = `${number(point[xKey], 2)} ${xLabel} · ${number(point[yKey], 1)} ${yLabel}`;
-    svg += `<a class="chart-point${protocol ? ` chart-point-${esc(protocol.toLowerCase())}` : ''}" href="${esc(href)}"${protocol ? ` data-protocol="${esc(protocol)}"` : ''} aria-label="${esc(label)}. ${esc(metadata)}. Open matching catalog results."><title>${esc(label)} · ${esc(metadata)}${protocol ? ` · ${esc(protocol)}` : ''}</title><circle class="chart-hit" cx="${x}" cy="${y}" r="${r}"/><circle class="chart-dot" cx="${x}" cy="${y}" r="${options.dotRadius || 4}" fill="${color}" opacity=".78"/></a>`;
+    svg += `<a class="chart-point${protocol ? ` chart-point-${esc(protocol.toLowerCase())}` : ''}" href="${esc(href)}" data-tooltip-title="${esc(label)}" data-tooltip-detail="${esc(metadata)}"${protocol ? ` data-protocol="${esc(protocol)}"` : ''} aria-label="${esc(label)}. ${esc(metadata)}. Open matching catalog results."><circle class="chart-hit" cx="${x}" cy="${y}" r="${r}"/><circle class="chart-dot" cx="${x}" cy="${y}" r="${options.dotRadius || 4}" fill="${color}" opacity=".78"/></a>`;
   });
 
   svg += `<text class="chart-axis" x="${(w + p.l - p.r) / 2}" y="${h - 7}" text-anchor="middle">${esc(xLabel)}</text><text class="chart-axis" transform="translate(14 ${h / 2}) rotate(-90)" text-anchor="middle">${esc(yLabel)}</text></svg>`;
@@ -75,6 +75,7 @@ function dxomarkSearchTerm(point, sensors) {
 }
 
 function setProtocolFilter(protocol) {
+  hideTooltip();
   qsa('[data-dx-filter]').forEach((button) => {
     const active = button.dataset.dxFilter === protocol;
     button.classList.toggle('is-active', active);
@@ -84,6 +85,43 @@ function setProtocolFilter(protocol) {
     point.hidden = protocol !== 'all' && point.dataset.protocol !== protocol;
   });
 }
+
+const chartTooltip = qs('#chart-tooltip');
+function hideTooltip() {
+  chartTooltip.hidden = true;
+}
+function showTooltip(point) {
+  chartTooltip.querySelector('strong').textContent = point.dataset.tooltipTitle;
+  chartTooltip.querySelector('span').textContent = point.dataset.tooltipDetail;
+  chartTooltip.hidden = false;
+  const dot = point.querySelector('.chart-dot').getBoundingClientRect();
+  const width = chartTooltip.offsetWidth;
+  const height = chartTooltip.offsetHeight;
+  const center = dot.left + dot.width / 2;
+  const below = dot.top < height + 18;
+  chartTooltip.classList.toggle('is-below', below);
+  chartTooltip.style.left = `${Math.max(12, Math.min(center - width / 2, window.innerWidth - width - 12))}px`;
+  chartTooltip.style.top = `${below ? dot.bottom + 12 : dot.top - height - 12}px`;
+}
+qsa('.chart-area').forEach((area) => {
+  area.addEventListener('pointerover', (event) => {
+    const point = event.target.closest('.chart-point');
+    if (point && !point.hidden) showTooltip(point);
+  });
+  area.addEventListener('pointerout', (event) => {
+    const point = event.target.closest('.chart-point');
+    if (point && !point.contains(event.relatedTarget)) hideTooltip();
+  });
+  area.addEventListener('focusin', (event) => {
+    const point = event.target.closest('.chart-point');
+    if (point && !point.hidden) showTooltip(point);
+  });
+  area.addEventListener('focusout', (event) => {
+    if (event.target.closest('.chart-point')) hideTooltip();
+  });
+});
+window.addEventListener('scroll', hideTooltip, true);
+window.addEventListener('resize', hideTooltip);
 
 async function init() {
   try {
