@@ -21,7 +21,7 @@ npm run data:build
 npm run build
 ```
 
-This imports `data/raw/bootstrap_2026-09.csv`, produces `database/local.sqlite3`, `database/seed.sql`, `public/data/sensors.json`, and `public/data/all-in-one.csv`.
+This imports `data/raw/bootstrap_2026-09.csv` and merges the verified Helpix phone mappings in `exports/verified-mapping-additions-2026-09-26.csv`. It produces `database/local.sqlite3`, `database/seed.sql`, `public/data/sensors.json`, and refreshed CSV exports.
 
 ## Cloudflare setup
 

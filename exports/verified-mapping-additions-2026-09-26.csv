@@ -1,0 +1,60 @@
+﻿Manufacturer,Sensor,Phone,OEM,Camera_Role,Release_Year,Mapping_Source_URL,Mapping_Source_Type,Mapping_Confidence
+GalaxyCore,GC02M1,Vivo iQOO Z11x Global,Vivo,Rear Depth,2026,https://helpix.ru/isensor/galaxycore_gc02m1/,Helpix sensor database,High
+GalaxyCore,GC02M2,Oukitel WP35S,Oukitel,Rear Macro,2024,https://helpix.ru/isensor/galaxycore_gc02m2/,Helpix sensor database,High
+GalaxyCore,GC0310,Sigma mobile X-treme PQ55,Sigma mobile,Rear Depth,2023,https://helpix.ru/isensor/galaxycore_gc0310/,Helpix sensor database,High
+GalaxyCore,GC2355,Cubot Dinosaur,Cubot,Front Main,2016,https://helpix.ru/isensor/galaxycore_gc2355/,Helpix sensor database,High
+GalaxyCore,GC2375H,Doogee S Punk Pro,Doogee,Rear Macro,2025,https://helpix.ru/isensor/galaxycore_gc2375h/,Helpix sensor database,High
+GalaxyCore,GC5024,Doogee Mix,Doogee,Front Main,2017,https://helpix.ru/isensor/galaxycore_gc5024/,Helpix sensor database,High
+GalaxyCore,GC5035,Oukitel WP55 Ultra,Oukitel,Rear Unknown,2025,https://helpix.ru/isensor/galaxycore_gc5035/,Helpix sensor database,High
+GalaxyCore,GC8034,Blackview BV8800,Blackview,Rear Ultra-wide,2021,https://helpix.ru/isensor/galaxycore_gc8034/,Helpix sensor database,High
+GalaxyCore,GC8054,Realme 6 Pro,Realme,Front Ultra-wide,2020,https://helpix.ru/isensor/galaxycore_gc8054/,Helpix sensor database,High
+OmniVision,OV02A,Ulefone RugKing,Ulefone,Rear Macro,2025,https://helpix.ru/isensor/omnivision_ov02a/,Helpix sensor database,High
+OmniVision,OV13855,ASUS ROG Phone 3,ASUS,Rear Ultra-wide,2020,https://helpix.ru/isensor/omnivision_ov13855/,Helpix sensor database,High
+OmniVision,OV13858,Intex Aqua Crystal+,Intex,Rear Main,2017,https://helpix.ru/isensor/omnivision_ov13858/,Helpix sensor database,High
+OmniVision,OV16885,Motorola Moto G Pro,Motorola,Rear Ultra-wide,2020,https://helpix.ru/isensor/omnivision_ov16885/,Helpix sensor database,High
+OmniVision,OV20880,Honor 8X (View 10 Lite),Honor,Rear Main,2018,https://helpix.ru/isensor/omnivision_ov20880/,Helpix sensor database,High
+OmniVision,OV5640,Pine64 PinePhone Pro,Pine64,Front Main,2021,https://helpix.ru/isensor/omnivision_ov5640/,Helpix sensor database,High
+OmniVision,OV5695,Motorola Moto G5,Motorola,Front Main,2017,https://helpix.ru/isensor/omnivision_ov5695/,Helpix sensor database,High
+OmniVision,OV9762,Gretel A7,Gretel,Front Main,2017,https://helpix.ru/isensor/omnivision_ov9762/,Helpix sensor database,High
+OmniVision,OVA0B,OPPO Reno8 T 4G,OPPO,Rear Main,2023,https://helpix.ru/isensor/omnivision_ova0b/,Helpix sensor database,High
+SK hynix,Hi-1332,Ulefone Note 14,Ulefone,Rear Main,2022,https://helpix.ru/isensor/hynix_hi-1332/,Helpix sensor database,High
+SK hynix,Hi-1333,Huawei P Smart Z,Huawei,Rear Main,2019,https://helpix.ru/isensor/hynix_hi-1333/,Helpix sensor database,High
+SK hynix,Hi-1337,Samsung Galaxy Z Fold3 5G,Samsung,Rear Telephoto,2021,https://helpix.ru/isensor/hynix_hi-1337/,Helpix sensor database,High
+SK hynix,Hi-1339,Samsung Galaxy A24 4G,Samsung,Front Main,2023,https://helpix.ru/isensor/hynix_hi-1339/,Helpix sensor database,High
+SK hynix,Hi-1634,Realme 12 Pro,Realme,Front Main,2024,https://helpix.ru/isensor/hynix_hi-1634/,Helpix sensor database,High
+SK hynix,Hi-553,Hotwav T5 Pro,Hotwav,Front Main,2022,https://helpix.ru/isensor/hynix_hi-553/,Helpix sensor database,High
+SK hynix,Hi-556,HTC U23 pro,HTC,Rear Macro,2023,https://helpix.ru/isensor/hynix_hi-556/,Helpix sensor database,High
+SK hynix,Hi-846,Oukitel WP500,Oukitel,Rear Night,2026,https://helpix.ru/isensor/hynix_hi-846/,Helpix sensor database,High
+SK hynix,Hi-847,Doogee S300 Plus,Doogee,Rear Telephoto,2026,https://helpix.ru/isensor/hynix_hi-847/,Helpix sensor database,High
+Samsung,ISOCELL 2L8,Vivo X21,Vivo,Front Main,2018,https://helpix.ru/isensor/samsung_isocell_2l8/,Helpix sensor database,High
+Samsung,ISOCELL 2L9,Vivo X21,Vivo,Rear Main,2018,https://helpix.ru/isensor/samsung_isocell_2l9/,Helpix sensor database,High
+Samsung,ISOCELL 2LD,Samsung Galaxy S21,Samsung,Rear Main,2021,https://helpix.ru/isensor/samsung_isocell_2ld/,Helpix sensor database,High
+Samsung,ISOCELL 2P6,Samsung Galaxy A30,Samsung,Rear Main,2019,https://helpix.ru/isensor/samsung_isocell_2p6/,Helpix sensor database,High
+Samsung,ISOCELL 2X5,Samsung Galaxy A50,Samsung,Front Main,2019,https://helpix.ru/isensor/samsung_isocell_2x5/,Helpix sensor database,High
+Samsung,ISOCELL 3L2,Xiaomi Redmi 4A,Xiaomi,Rear Main,2016,https://helpix.ru/isensor/samsung_isocell_3l2/,Helpix sensor database,High
+Samsung,ISOCELL 3L5,Nokia 3.1,Nokia,Rear Main,2018,https://helpix.ru/isensor/samsung_isocell_3l5/,Helpix sensor database,High
+Samsung,ISOCELL 3L6,Samsung Galaxy A53 5G,Samsung,Rear Ultra-wide,2022,https://helpix.ru/isensor/samsung_isocell_3l6/,Helpix sensor database,High
+Samsung,ISOCELL 3L8,Xiaomi Mi 10T Pro 5G,Xiaomi,Rear Ultra-wide,2020,https://helpix.ru/isensor/samsung_isocell_3l8/,Helpix sensor database,High
+SmartSens,SC1320CS,Sony Xperia 10 VII,Sony,Rear Ultra-wide,2025,https://helpix.ru/isensor/smartsens_sc1320cs/,Helpix sensor database,High
+SmartSens,SC202CS,Xiaomi Redmi Note 14 4G,Xiaomi,Rear Macro,2025,https://helpix.ru/isensor/smartsens_sc202cs/,Helpix sensor database,High
+SmartSens,SC5000CS,Huawei Pura 90,Huawei,Front Main,2026,https://helpix.ru/isensor/smartsens_sc5000cs/,Helpix sensor database,High
+SmartSens,SC520CS,Realme P4 Lite 4G India,Realme,Front Main,2026,https://helpix.ru/isensor/smartsens_sc520cs/,Helpix sensor database,High
+SmartSens,SC800CS,Realme C30,Realme,Rear Main,2022,https://helpix.ru/isensor/smartsens_sc800cs/,Helpix sensor database,High
+SmartSens,SC820CS,Xiaomi Poco X7 Pro,Xiaomi,Rear Ultra-wide,2025,https://helpix.ru/isensor/smartsens_sc820cs/,Helpix sensor database,High
+SmartSens,SC821CS,Xiaomi Poco X8 Pro,Xiaomi,Front Main,2026,https://helpix.ru/isensor/smartsens_sc821cs/,Helpix sensor database,High
+SmartSens,SCC80XS,Huawei Pura 90 Pro Max,Huawei,Rear Telephoto,2026,https://helpix.ru/isensor/smartsens_scc80xs/,Helpix sensor database,High
+Sony,IMX091,Samsung I9500 Galaxy S4,Samsung,Rear Main,2013,https://helpix.ru/isensor/sony_imx091/,Helpix sensor database,High
+Sony,IMX105,Xiaomi Mi-1S,Xiaomi,Rear Main,2012,https://helpix.ru/isensor/sony_imx105/,Helpix sensor database,High
+Sony,IMX111,LG E960 Google Nexus 4,LG,Rear Main,2012,https://helpix.ru/isensor/sony_imx111/,Helpix sensor database,High
+Sony,IMX132,Sony Xperia Z2,Sony,Front Main,2014,https://helpix.ru/isensor/sony_imx132/,Helpix sensor database,High
+Sony,IMX134,Blackview BV4900,Blackview,Rear Main,2020,https://helpix.ru/isensor/sony_imx134/,Helpix sensor database,High
+Sony,IMX135,Oukitel WP36,Oukitel,Rear Main,2024,https://helpix.ru/isensor/sony_imx135/,Helpix sensor database,High
+Sony,IMX145,Apple iPhone 6,Apple,Rear Main,2014,https://helpix.ru/isensor/sony_imx145/,Helpix sensor database,High
+Sony,IMX149,AllCall Atom,AllCall,Rear Main,2017,https://helpix.ru/isensor/sony_imx149/,Helpix sensor database,High
+Sony,IMX164,Blackview Ultra Plus,Blackview,Rear Main,2015,https://helpix.ru/isensor/sony_imx164/,Helpix sensor database,High
+Sony,IMX175,Samsung I9301I Galaxy S3 Neo,Samsung,Rear Main,2014,https://helpix.ru/isensor/sony_imx175/,Helpix sensor database,High
+Sony,IMX219PQ,Oukitel C67,Oukitel,Front Main,2026,https://helpix.ru/isensor/sony_imx219pq/,Helpix sensor database,High
+Sony,IMX220,Meizu MX5,Meizu,Rear Main,2015,https://helpix.ru/isensor/sony_imx220/,Helpix sensor database,High
+Sony,IMX234,Sony Xperia XA1 Ultra,Sony,Front Main,2017,https://helpix.ru/isensor/sony_imx234/,Helpix sensor database,High
+Sony,IMX240,Samsung Galaxy S6,Samsung,Rear Main,2015,https://helpix.ru/isensor/sony_imx240/,Helpix sensor database,High
+Sony,IMX268,LG G5,LG,Rear Ultra-wide,2016,https://helpix.ru/isensor/sony_imx268/,Helpix sensor database,High

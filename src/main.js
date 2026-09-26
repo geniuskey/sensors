@@ -5,8 +5,9 @@ let staticRows = [];
 let sortState = { key: 'resolution_mp', direction: 'desc' };
 const compareIds = new Set();
 let currentChips = [];
+let exactPhoneFilter = '';
 let visibleCount = window.matchMedia('(max-width: 720px)').matches ? 24 : 60;
-const roleOptions = ['Main', 'Ultra-wide', 'Telephoto', 'Front', 'Macro', 'Depth', 'Unspecified'];
+const roleOptions = ['Main', 'Ultra-wide', 'Telephoto', 'Front', 'Front Ultra-wide', 'Macro', 'Depth', 'Night', 'Unspecified'];
 
 async function getData() {
   try {
@@ -42,28 +43,52 @@ function formatNumber(value, digits = 1) {
 }
 function normalizeRole(value = '') {
   const role = String(value).toLowerCase().replace(/^rear\s+/, '').replaceAll('ultrawide', 'ultra-wide').trim();
+  if (!role || ['unknown', 'unspecified', 'unknown role', 'not specified', 'n/a'].includes(role)) return 'Unspecified';
+  if (role.includes('front') && role.includes('ultra') && role.includes('wide')) return 'Front Ultra-wide';
   if (role.includes('ultra') && role.includes('wide')) return 'Ultra-wide';
   if (role.includes('tele')) return 'Telephoto';
   if (role.includes('front')) return 'Front';
   if (role.includes('macro')) return 'Macro';
   if (role.includes('depth') || role.includes('tof')) return 'Depth';
+  if (role.includes('night')) return 'Night';
   if (role.includes('main') || role === 'wide' || role.includes('wide angle')) return 'Main';
-  return '';
+  return 'Unspecified';
 }
 function rolesFor(row) {
-  if (!row.roles) return [];
-  return Array.from(new Set(String(row.roles).split(/[,;+]/).map((part) => normalizeRole(part)).filter(Boolean)));
+  const hasMappings = Number(row.phone_count || 0) > 0 || (Array.isArray(row.phones) && row.phones.length > 0);
+  if (!hasMappings) return [];
+  const source = Array.isArray(row.phones) && row.phones.length
+    ? row.phones.map((phone) => phone.role)
+    : String(row.roles || '').split(',');
+  const roles = source.flatMap((value) => String(value || '').split(/[;+]/).map((part) => normalizeRole(part)));
+  return Array.from(new Set(roles));
 }
 function rowHasRole(row, selectedRole) {
-  if (selectedRole === 'Unspecified') return rolesFor(row).length === 0;
+  if (selectedRole === 'Unspecified') return rolesFor(row).includes('Unspecified');
   return rolesFor(row).includes(normalizeRole(selectedRole));
 }
 function checkedValues(name) {
   return qsa('input[name="' + name + '"]:checked').map((input) => input.value);
 }
 function sortValue(row, key) {
-  if (key === 'roles') return rolesFor(row).join(', ') || 'Unspecified';
+  if (key === 'roles') return rolesFor(row).join(', ') || 'No phone mapping';
   return row[key];
+}
+function phoneRole(phone) {
+  return normalizeRole(phone.role);
+}
+function renderPhoneMappings(row) {
+  const phones = row.phones || [];
+  if (!phones.length) return '<span class="phone-none">No phone mapping</span>';
+  const visible = phones.slice(0, 3);
+  const entries = visible.map((phone) => {
+    const role = phoneRole(phone);
+    return '<li><button class="phone-match" type="button" data-phone-search="' + esc(phone.model) + '" title="Show all sensors mapped to ' + esc(phone.model) + '">' + esc(phone.model) + '</button><span class="phone-role">' + esc(role) + '</span></li>';
+  }).join('');
+  const more = phones.length > visible.length
+    ? '<li><button class="phone-more" type="button" data-open="' + esc(row.canonical_id) + '">+' + (phones.length - visible.length) + ' more · details</button></li>'
+    : '';
+  return '<ul class="phone-match-list">' + entries + more + '</ul>';
 }
 function compareRows(left, right) {
   const a = sortValue(left, sortState.key);
@@ -84,7 +109,7 @@ function makeFacets() {
     return '<label class="facet-option"><input type="checkbox" name="manufacturer" value="' + esc(maker.name) + '"><span class="facet-name">' + esc(maker.name) + '</span><span class="facet-count">' + maker.count + '</span></label>';
   }).join('');
   const availableRoles = new Set(staticRows.flatMap(rolesFor));
-  if (staticRows.some((row) => rolesFor(row).length === 0)) availableRoles.add('Unspecified');
+  if (staticRows.some((row) => rolesFor(row).includes('Unspecified'))) availableRoles.add('Unspecified');
   const roles = roleOptions.filter((role) => availableRoles.has(role)).map((role) => ({ role, count: staticRows.filter((row) => rowHasRole(row, role)).length })).sort((a, b) => b.count - a.count || a.role.localeCompare(b.role));
   qs('#role-facets').innerHTML = roles.map(({ role, count }) => {
     return '<label class="facet-option"><input type="checkbox" name="role" value="' + esc(role) + '"><span class="facet-name">' + esc(role) + '</span><span class="facet-count">' + count + '</span></label>';
@@ -104,6 +129,8 @@ function applyUrlFilters() {
   if (roles.length) qsa('input[name="role"]').forEach((input) => { input.checked = roles.includes(input.value); });
   const query = params.get('q');
   if (query) qs('#q').value = query;
+  exactPhoneFilter = (params.get('phone') || '').toLowerCase();
+  if (exactPhoneFilter) qs('#q').value = params.get('phone');
   const mapped = params.get('mapped');
   if (['any', 'mapped', 'unmapped'].includes(mapped)) qs('input[name="mapped"][value="' + mapped + '"]').checked = true;
   const size = params.get('size');
@@ -120,7 +147,7 @@ function currentFilters() {
   const min = qs('#min-mp').value === '' ? null : Number(qs('#min-mp').value);
   const max = qs('#max-mp').value === '' ? null : Number(qs('#max-mp').value);
   const mapped = qs('input[name="mapped"]:checked').value;
-  return { makers, roles, query, size, min, max, mapped };
+  return { makers, roles, query, size, min, max, mapped, exactPhone: exactPhoneFilter };
 }
 function rowMatches(row, filters) {
   if (filters.makers.length && !filters.makers.includes(row.manufacturer)) return false;
@@ -130,6 +157,7 @@ function rowMatches(row, filters) {
   if (filters.max != null && (row.resolution_mp == null || Number(row.resolution_mp) > filters.max)) return false;
   if (filters.mapped === 'mapped' && !(Number(row.phone_count) > 0)) return false;
   if (filters.mapped === 'unmapped' && Number(row.phone_count) > 0) return false;
+  if (filters.exactPhone && !(row.phones || []).some((phone) => String(phone.model || '').toLowerCase() === filters.exactPhone)) return false;
   if (filters.query) {
     const phoneModels = (row.phones || []).map((phone) => phone.model).join(' ');
     const haystack = [row.manufacturer, row.sensor, row.marketing_name, row.internal_code, row.canonical_id, row.example_phones, phoneModels, row.roles].join(' ').toLowerCase();
@@ -183,8 +211,8 @@ function render(resetList = false) {
       '<td class="number-cell emphasis" data-label="Resolution">' + (row.resolution_mp == null ? '—' : formatNumber(row.resolution_mp) + ' MP') + '</td>' +
       '<td class="number-cell" data-label="Format">' + esc(row.sensor_size || '—') + '</td>' +
       '<td class="number-cell" data-label="Pixel">' + (row.pixel_size_um ? formatNumber(row.pixel_size_um, 2) + ' µm' : '—') + '</td>' +
-      '<td class="role-cell" data-label="Camera roles">' + (rolesFor(row).length ? rolesFor(row).map((role) => '<span class="role-tag">' + esc(role) + '</span>').join('') : '<span class="role-tag role-muted">Unspecified</span>') + '</td>' +
-      '<td class="number-cell" data-label="Phones"><span class="phone-count">' + Number(row.phone_count || 0).toLocaleString() + '</span></td>' +
+      '<td class="role-cell" data-label="Camera roles">' + (rolesFor(row).length ? rolesFor(row).map((role) => '<span class="role-tag' + (role === 'Unspecified' ? ' role-muted' : '') + '">' + esc(role) + '</span>').join('') : '<span class="role-empty">—</span>') + '</td>' +
+      '<td class="phone-cell" data-label="Phones / camera role">' + renderPhoneMappings(row) + '</td>' +
       '<td class="number-cell" data-label="Latest use">' + (row.latest_year || '—') + '</td>' +
       '<td class="open-col"><button class="icon-button row-open" type="button" data-open="' + esc(row.canonical_id) + '" aria-label="View ' + esc(row.sensor) + ' details">↗</button></td></tr>';
   }).join('');
@@ -198,6 +226,7 @@ function render(resetList = false) {
 }
 function clearFilters() {
   qs('#q').value = '';
+  exactPhoneFilter = '';
   qsa('input[name="manufacturer"], input[name="role"]').forEach((input) => { input.checked = false; });
   qs('#min-mp').value = '';
   qs('#max-mp').value = '';
@@ -209,7 +238,7 @@ function removeChip(chip) {
   if (chip.key === 'manufacturer' || chip.key === 'role') {
     const input = qsa('input[name="' + chip.key + '"]').find((candidate) => candidate.value === chip.value);
     if (input) input.checked = false;
-  } else if (chip.key === 'query') qs('#q').value = '';
+  } else if (chip.key === 'query') { qs('#q').value = ''; exactPhoneFilter = ''; }
   else if (chip.key === 'size') qs('#sensor-size').value = '';
   else if (chip.key === 'min') qs('#min-mp').value = '';
   else if (chip.key === 'max') qs('#max-mp').value = '';
@@ -234,7 +263,7 @@ function showDetail(id, updateUrl = true) {
     '<div class="detail-item"><span>Resolution pixels</span><strong>' + esc(row.resolution_px || '—') + '</strong></div>' +
     '<div class="detail-item"><span>Optical format</span><strong>' + esc(row.sensor_size || '—') + '</strong></div>' +
     '<div class="detail-item"><span>Pixel pitch</span><strong>' + (row.pixel_size_um ? formatNumber(row.pixel_size_um, 2) + ' µm' : '—') + '</strong></div>' +
-    '<div class="detail-item"><span>Camera roles</span><strong>' + esc(rolesFor(row).join(', ') || 'Unspecified') + '</strong></div>' +
+    '<div class="detail-item"><span>Camera roles</span><strong>' + esc(rolesFor(row).join(', ') || 'No phone mapping') + '</strong></div>' +
     '<div class="detail-item"><span>Internal / alias</span><strong>' + esc(row.internal_code || '—') + '</strong></div>' +
     '<div class="detail-item"><span>Autofocus</span><strong>' + esc(row.af || '—') + '</strong></div>' +
     '<div class="detail-item"><span>HDR</span><strong>' + esc(row.hdr || '—') + '</strong></div>' +
@@ -247,7 +276,7 @@ function showDetail(id, updateUrl = true) {
     '<div class="detail-item"><span>Data confidence</span><strong>' + esc(row.confidence || '—') + '</strong></div>' +
     '<div class="detail-item"><span>Phone mappings</span><strong>' + Number(row.phone_count || 0).toLocaleString() + '</strong></div>' +
     '<div class="detail-item"><span>Example phones</span><strong>' + esc(row.example_phones || '—') + '</strong></div>' +
-    '</div><div class="detail-extra"><h3>Aliases</h3><p>' + esc((row.aliases || []).join(' · ') || '—') + '</p><h3>Mapped phones (' + Number(row.phone_count || 0) + ')</h3><ul>' + (row.phones || []).map(p=>'<li>'+esc([p.model,p.year,p.role,p.confidence&&('confidence '+p.confidence)].filter(Boolean).join(' · '))+'</li>').join('') + '</ul><h3>Notes</h3><p>' + esc(row.notes || '—') + '</p></div><div class="detail-source">' + (row.sources||[]).map(s=>'<a href="'+esc(s.url)+'" target="_blank" rel="noopener noreferrer">'+esc(s.type+' · '+s.relationship)+' ↗</a>').join('') + (row.source_url && !(row.sources||[]).length ? '<a href="' + esc(row.source_url) + '" target="_blank" rel="noopener noreferrer">Open source ↗</a>' : '') + '</div>';
+    '</div><div class="detail-extra"><h3>Aliases</h3><p>' + esc((row.aliases || []).join(' · ') || '—') + '</p><h3>Mapped phones (' + Number(row.phone_count || 0).toLocaleString() + ')</h3><ul>' + (row.phones || []).map((phone) => '<li>' + esc([phone.model, phone.year, 'Camera role: ' + phoneRole(phone), phone.confidence && ('confidence ' + phone.confidence)].filter(Boolean).join(' · ')) + '</li>').join('') + '</ul><h3>Notes</h3><p>' + esc(row.notes || '—') + '</p></div><div class="detail-source">' + (row.sources||[]).map(s=>'<a href="'+esc(s.url)+'" target="_blank" rel="noopener noreferrer">'+esc(s.type+' · '+s.relationship)+' ↗</a>').join('') + (row.source_url && !(row.sources||[]).length ? '<a href="' + esc(row.source_url) + '" target="_blank" rel="noopener noreferrer">Open source ↗</a>' : '') + '</div>';
   detail.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 function comparisonTable() {
@@ -258,7 +287,7 @@ function comparisonTable() {
     ['Resolution', (row) => row.resolution_mp == null ? '—' : formatNumber(row.resolution_mp) + ' MP'],
     ['Optical format', (row) => row.sensor_size || '—'],
     ['Pixel pitch', (row) => row.pixel_size_um ? formatNumber(row.pixel_size_um, 2) + ' µm' : '—'],
-    ['Camera roles', (row) => rolesFor(row).join(', ') || 'Unspecified'],
+    ['Camera roles', (row) => rolesFor(row).join(', ') || 'No phone mapping'],
     ['Mapped phones', (row) => Number(row.phone_count || 0).toLocaleString()],
     ['Latest phone year', (row) => row.latest_year || '—'],
     ['Internal code', (row) => row.internal_code || '—'],
@@ -281,7 +310,7 @@ function setDrawer(open) {
 
 qs('#manufacturer-facets').addEventListener('change', () => render(true));
 qs('#role-facets').addEventListener('change', () => render(true));
-qs('#q').addEventListener('input', () => render(true));
+qs('#q').addEventListener('input', () => { exactPhoneFilter = ''; render(true); });
 qs('#min-mp').addEventListener('input', () => render(true));
 qs('#max-mp').addEventListener('input', () => render(true));
 qs('#sensor-size').addEventListener('change', () => render(true));
@@ -316,6 +345,13 @@ qs('#sensor-table').addEventListener('click', (event) => {
   }
   const detailButton = event.target.closest('[data-open]');
   if (detailButton) showDetail(detailButton.dataset.open);
+  const phoneButton = event.target.closest('[data-phone-search]');
+  if (phoneButton) {
+    qs('#q').value = phoneButton.dataset.phoneSearch;
+    exactPhoneFilter = phoneButton.dataset.phoneSearch.toLowerCase();
+    render(true);
+    qs('#q').focus();
+  }
 });
 qs('#sensor-table').addEventListener('change', (event) => {
   const input = event.target.closest('[data-compare]');

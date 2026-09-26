@@ -17,10 +17,10 @@
           <button class="icon-button drawer-close" id="drawer-close" type="button" aria-label="Close filters">×</button>
         </div>
         <label class="field-label" for="q">Search</label>
-        <input id="q" class="text-field" type="search" name="search" autocomplete="off" spellcheck="false" placeholder="IMX989, GN3, S5KGN3…">
+        <input id="q" class="text-field" type="search" name="search" autocomplete="off" spellcheck="false" placeholder="Sensor or phone, e.g. IMX989, S25 Ultra…">
 
         <fieldset class="filter-group"><legend>Manufacturer <span id="maker-hint" class="facet-hint">sorted by count</span></legend><div class="facet-list" id="manufacturer-facets"></div></fieldset>
-        <fieldset class="filter-group"><legend>Camera role <span class="facet-hint">select any</span></legend><div class="facet-list" id="role-facets"></div></fieldset>
+        <fieldset class="filter-group"><legend>Camera role <span class="facet-hint">sensor count</span></legend><div class="facet-list" id="role-facets"></div></fieldset>
         <fieldset class="filter-group"><legend>Resolution <span class="unit-label">MP</span></legend>
           <div class="range-fields"><label>Min<input id="min-mp" name="min-resolution" type="number" min="0" step="0.1" inputmode="decimal" autocomplete="off" aria-label="Minimum resolution in megapixels"></label><label>Max<input id="max-mp" name="max-resolution" type="number" min="0" step="0.1" inputmode="decimal" autocomplete="off" aria-label="Maximum resolution in megapixels"></label></div>
         </fieldset>
@@ -63,7 +63,7 @@
                 <th scope="col" data-sort="sensor_size" aria-sort="none"><button class="sort-button" data-sort="sensor_size" type="button">Format <span aria-hidden="true">↕</span></button></th>
                 <th scope="col" data-sort="pixel_size_um" aria-sort="none"><button class="sort-button" data-sort="pixel_size_um" type="button">Pixel <span aria-hidden="true">↕</span></button></th>
                 <th scope="col" data-sort="roles" aria-sort="none"><button class="sort-button" data-sort="roles" type="button">Camera roles <span aria-hidden="true">↕</span></button></th>
-                <th scope="col" data-sort="phone_count" aria-sort="none"><button class="sort-button" data-sort="phone_count" type="button">Phones <span aria-hidden="true">↕</span></button></th>
+                <th scope="col">Phones &amp; role</th>
                 <th scope="col" data-sort="latest_year" aria-sort="none"><button class="sort-button" data-sort="latest_year" type="button">Latest use <span aria-hidden="true">↕</span></button></th>
                 <th scope="col" class="open-col"><span class="sr-only">Details</span></th>
               </tr></thead>
