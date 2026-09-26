@@ -380,7 +380,6 @@ qs('#sensor-table').addEventListener('click', (event) => {
     }
     sortSelect.value = sortValue;
     render();
-    try { const resp=await fetch('/data/dashboard.json'); renderCharts(resp.ok?await resp.json():{}); } catch (_) { renderCharts(); }
     return;
   }
   const detailButton = event.target.closest('[data-open]');
@@ -448,6 +447,7 @@ window.addEventListener('resize', () => {
     qs('#phones').textContent = Number(statsData.phones ?? 0).toLocaleString();
     qs('#mappings').textContent = Number(statsData.mappings ?? 0).toLocaleString();
     render();
+    try { const resp = await fetch('/data/dashboard.json'); renderCharts(resp.ok ? await resp.json() : {}); } catch (_) { renderCharts(); }
   } catch (error) {
     qs('#status').textContent = 'Could not load the sensor catalog. Please refresh to try again.';
     qs('#empty-state').hidden = false;
