@@ -65,9 +65,20 @@ for r in rows:
 con.commit()
 
 # Static fallback JSON used before D1 is configured.
-q='''SELECT s.canonical_id,m.name manufacturer,s.canonical_name sensor,s.marketing_name,s.internal_code,s.resolution_mp,s.sensor_size,s.pixel_size_um,s.af,s.hdr,s.cfa,s.example_phones,COUNT(DISTINCT pc.phone_id) phone_count,GROUP_CONCAT(DISTINCT pc.camera_role) roles,MIN(p.release_year) first_year,MAX(p.release_year) latest_year,(SELECT src.url FROM sensor_sources ss JOIN sources src ON src.id=ss.source_id WHERE ss.sensor_id=s.id ORDER BY CASE src.source_type WHEN 'official' THEN 0 ELSE 1 END,src.id LIMIT 1) source_url FROM sensors s JOIN manufacturers m ON m.id=s.manufacturer_id LEFT JOIN phone_cameras pc ON pc.sensor_id=s.id LEFT JOIN phones p ON p.id=pc.phone_id GROUP BY s.id ORDER BY m.name,s.canonical_name'''
+q='''SELECT s.*,m.name manufacturer,COUNT(DISTINCT pc.phone_id) phone_count,GROUP_CONCAT(DISTINCT pc.camera_role) roles,MIN(p.release_year) first_year,MAX(p.release_year) latest_year,(SELECT src.url FROM sensor_sources ss JOIN sources src ON src.id=ss.source_id WHERE ss.sensor_id=s.id ORDER BY CASE src.source_type WHEN 'official' THEN 0 ELSE 1 END,src.id LIMIT 1) source_url FROM sensors s JOIN manufacturers m ON m.id=s.manufacturer_id LEFT JOIN phone_cameras pc ON pc.sensor_id=s.id LEFT JOIN phones p ON p.id=pc.phone_id GROUP BY s.id ORDER BY m.name,s.canonical_name'''
 cols=[d[0] for d in con.execute(q).description]; items=[dict(zip(cols,row)) for row in con.execute(q)]
+for item in items:
+    sid=item['id']
+    item['aliases']=[r[0] for r in con.execute('SELECT alias FROM sensor_aliases WHERE sensor_id=? ORDER BY alias',(sid,))]
+    item['sources']=[dict(url=r[0],type=r[1],relationship=r[2]) for r in con.execute('SELECT src.url,src.source_type,ss.relationship FROM sensor_sources ss JOIN sources src ON src.id=ss.source_id WHERE ss.sensor_id=? ORDER BY src.source_type,src.url',(sid,))]
+    item['phones']=[dict(model=r[0],oem=r[1],year=r[2],role=r[3],confidence=r[4]) for r in con.execute('SELECT p.model,p.oem,p.release_year,pc.camera_role,pc.mapping_confidence FROM phone_cameras pc JOIN phones p ON p.id=pc.phone_id WHERE pc.sensor_id=? ORDER BY p.release_year DESC,p.model',(sid,))]
 (PUBLIC/'sensors.json').write_text(json.dumps(items,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+dashboard={
+ 'manufacturers':[dict(name=r[0],count=r[1]) for r in con.execute('SELECT m.name,COUNT(*) FROM sensors s JOIN manufacturers m ON m.id=s.manufacturer_id GROUP BY m.name ORDER BY COUNT(*) DESC,m.name')],
+ 'dxomark':[]
+}
+dashboard['dxomark']=[dict(device=r[0],score=r[1],protocol=r[2],pitch=r[3],sensors=r[4]) for r in con.execute('''SELECT p.model,d.camera_score,d.camera_protocol,AVG(s.pixel_size_um),GROUP_CONCAT(DISTINCT s.canonical_name) FROM dxomark_results d JOIN phones p ON p.id=d.phone_id JOIN phone_cameras pc ON pc.phone_id=p.id JOIN sensors s ON s.id=pc.sensor_id WHERE d.camera_score IS NOT NULL AND s.pixel_size_um IS NOT NULL GROUP BY p.id''')]
+(PUBLIC/'dashboard.json').write_text(json.dumps(dashboard,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
 stats={
  'sensors': con.execute('SELECT COUNT(*) FROM sensors').fetchone()[0],
  'manufacturers': con.execute('SELECT COUNT(*) FROM manufacturers').fetchone()[0],

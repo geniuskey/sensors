@@ -239,3 +239,27 @@ tbody tr:last-child td { border-bottom: 0; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
+.dashboard-panel { margin: 22px 0; padding: 22px; border: 1px solid #e4eaf2; border-radius: 18px; background: #fff; }
+.dashboard-panel h2 { margin: 5px 0 4px; color: #14243a; font-size: 22px; letter-spacing: -.03em; }
+.dashboard-intro { margin: 0 0 18px; color: #65748a; font-size: 13px; }
+.chart-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+.chart-card { min-width: 0; padding: 16px; border: 1px solid #e8edf4; border-radius: 14px; background: #fbfcfe; }
+.chart-card h3 { margin: 0; color: #1e2d42; font-size: 14px; }
+.chart-card > p { min-height: 30px; margin: 5px 0 10px; color: #738196; font-size: 11px; line-height: 1.4; }
+.chart-wide { grid-column: 1 / -1; }
+.chart-area { width: 100%; overflow-x: auto; }
+.chart-area svg { display: block; width: 100%; min-width: 440px; height: auto; }
+.chart-gridline { stroke: #e5eaf1; stroke-width: 1; }
+.chart-tick,.chart-axis { fill: #6c7b90; font: 11px system-ui,sans-serif; }
+.chart-empty { padding: 35px 10px; color: #7b8798; text-align: center; font-size: 12px; }
+.bar-chart { display: grid; gap: 8px; }
+.bar-row { display: grid; grid-template-columns: minmax(110px,180px) 1fr 35px; align-items: center; gap: 10px; color: #46566c; font-size: 11px; }
+.bar-track { height: 10px; overflow: hidden; border-radius: 8px; background: #edf1f6; }
+.bar-track i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg,#4c8de8,#7866d7); }
+.bar-row b { color: #20334c; text-align: right; }
+.detail-extra { margin-top: 18px; padding-top: 14px; border-top: 1px solid #e7ecf2; }
+.detail-extra h3 { margin: 12px 0 4px; color: #526176; font-size: 11px; text-transform: uppercase; letter-spacing: .07em; }
+.detail-extra p,.detail-extra ul { margin: 0; color: #26374d; font-size: 12px; line-height: 1.6; }
+.detail-extra ul { padding-left: 18px; max-height: 220px; overflow: auto; }
+.detail-source { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; }
+@media (max-width: 760px) { .dashboard-panel { padding: 14px; } .chart-grid { grid-template-columns: 1fr; } .chart-wide { grid-column: auto; } }

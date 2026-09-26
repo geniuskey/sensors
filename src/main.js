@@ -42,6 +42,14 @@ app.innerHTML = `
         <div class="stat-card"><span class="stat-icon stat-amber" aria-hidden="true">↔</span><div><div id="mappings" class="metric">—</div><div class="label">Camera mappings</div></div></div>
       </section>
 
+      <section class="dashboard-panel" id="dashboard" aria-labelledby="dashboard-title">
+        <div class="section-kicker">DATA OVERVIEW</div><h2 id="dashboard-title">Sensor landscape</h2>
+        <p class="dashboard-intro">Explore how sensor pixel pitch relates to resolution and compare mapped devices with published DxOMark camera scores.</p>
+        <div class="chart-grid"><article class="chart-card"><h3>Pixel pitch vs resolution</h3><p>Each point is a sensor; resolution uses a logarithmic scale.</p><div id="pitch-chart" class="chart-area"></div></article>
+        <article class="chart-card"><h3>DxOMark camera score vs mapped sensor pitch</h3><p>Device level scores are shown against the mean pixel pitch of mapped sensors. Protocols are labeled separately.</p><div id="dxo-chart" class="chart-area"></div></article>
+        <article class="chart-card chart-wide"><h3>Sensors by manufacturer</h3><div id="maker-chart" class="chart-area"></div></article></div>
+      </section>
+
       <section class="catalog-panel" id="catalog" aria-labelledby="catalog-title">
         <div class="catalog-heading">
           <div><div class="section-kicker">SENSOR CATALOG</div><h2 id="catalog-title">Browse & compare</h2><p class="status" id="status" role="status" aria-live="polite">Loading sensors…</p></div>
@@ -92,7 +100,14 @@ async function getData() {
     const response = await fetch('/api/sensors?limit=500');
     if (response.ok) {
       const data = await response.json();
-      if (Array.isArray(data.items)) return data;
+      if (Array.isArray(data.items)) {
+        const local = await fetch('/data/sensors.json');
+        if (local.ok) {
+          const rich = await local.json(), byId = new Map(rich.map(row => [row.canonical_id, row]));
+          data.items = data.items.map(row => ({ ...(byId.get(row.canonical_id) || {}), ...row, aliases: byId.get(row.canonical_id)?.aliases || [], sources: byId.get(row.canonical_id)?.sources || [], phones: byId.get(row.canonical_id)?.phones || [] }));
+        }
+        return data;
+      }
     }
   } catch (_) {}
   const response = await fetch('/data/sensors.json');
@@ -129,6 +144,22 @@ function rolesFor(row) {
 function rowHasRole(row, selectedRole) {
   if (selectedRole === 'Unspecified') return rolesFor(row).length === 0;
   return rolesFor(row).includes(normalizeRole(selectedRole));
+}
+function renderCharts(dashboard = {}) {
+  const sensors = staticRows.filter((r) => Number(r.pixel_size_um) > 0 && Number(r.resolution_mp) > 0);
+  const scatter = (target, data, xKey, yKey, xLabel, yLabel, logY = false) => {
+    const w=680,h=300,p={l:54,r:18,t:15,b:42}, xs=data.map(d=>Number(d[xKey])), ys=data.map(d=>Number(d[yKey]));
+    if (!data.length) { qs(target).innerHTML='<div class="chart-empty">No records have both measurements.</div>'; return; }
+    const xmin=Math.min(...xs),xmax=Math.max(...xs), ymin=logY?Math.min(...ys):0,ymax=Math.max(...ys), ly=v=>logY?Math.log10(v):v, low=ly(ymin),high=ly(ymax);
+    const X=v=>p.l+(v-xmin)/(xmax-xmin||1)*(w-p.l-p.r), Y=v=>h-p.b-(ly(v)-low)/(high-low||1)*(h-p.t-p.b);
+    let svg=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(yLabel)} by ${esc(xLabel)}">`;
+    for(let i=0;i<5;i++){const yy=p.t+i*(h-p.t-p.b)/4, val=logY?Math.pow(10,high-i*(high-low)/4):ymax-i*(ymax-ymin)/4; svg+=`<line class="chart-gridline" x1="${p.l}" x2="${w-p.r}" y1="${yy}" y2="${yy}"/><text class="chart-tick" x="${p.l-8}" y="${yy+4}" text-anchor="end">${formatNumber(val,1)}</text>`;}
+    data.forEach(d=>{const protocol=d.protocol||'',color=protocol.includes('V5')?'#e78b38':protocol.includes('V6')?'#7866d7':'#3182ce';svg+=`<circle cx="${X(Number(d[xKey]))}" cy="${Y(Number(d[yKey]))}" r="${xKey==='pitch'?3.5:6}" fill="${color}" opacity=".72"><title>${esc(d.sensor||d.device)} · ${formatNumber(d[xKey],2)} µm · ${formatNumber(d[yKey],1)} ${esc(protocol)}</title></circle>`;});
+    svg+=`<text class="chart-axis" x="${(w+p.l-p.r)/2}" y="${h-6}" text-anchor="middle">${esc(xLabel)}</text><text class="chart-axis" transform="translate(14 ${h/2}) rotate(-90)" text-anchor="middle">${esc(yLabel)}</text></svg>`;qs(target).innerHTML=svg;
+  };
+  scatter('#pitch-chart',sensors,'pixel_size_um','resolution_mp','Pixel pitch (µm)','Resolution (MP)',true);
+  const dx=(dashboard.dxomark||[]).filter(d=>Number(d.pitch)>0&&Number(d.score)>0);scatter('#dxo-chart',dx,'pitch','score','Mean mapped sensor pitch (µm)','DxOMark camera score');
+  const makers=dashboard.manufacturers||[], max=Math.max(...makers.map(x=>x.count),1);qs('#maker-chart').innerHTML='<div class="bar-chart">'+makers.map(m=>`<div class="bar-row"><span>${esc(m.name)}</span><div class="bar-track"><i style="width:${100*m.count/max}%"></i></div><b>${m.count}</b></div>`).join('')+'</div>';
 }
 function checkedValues(name) {
   return qsa('input[name="' + name + '"]:checked').map((input) => input.value);
@@ -269,15 +300,23 @@ function showDetail(id) {
   detail.innerHTML = '<div class="detail-head"><div><div class="section-kicker">SENSOR DETAILS</div><h2>' + esc(row.sensor) + '</h2><p>' + esc(row.manufacturer) + ' · ' + esc(row.canonical_id) + '</p></div><button class="icon-button" type="button" data-detail-close aria-label="Close sensor details">×</button></div>' +
     '<div class="detail-grid">' +
     '<div class="detail-item"><span>Resolution</span><strong>' + (row.resolution_mp == null ? '—' : formatNumber(row.resolution_mp) + ' MP') + '</strong></div>' +
+    '<div class="detail-item"><span>Resolution pixels</span><strong>' + esc(row.resolution_px || '—') + '</strong></div>' +
     '<div class="detail-item"><span>Optical format</span><strong>' + esc(row.sensor_size || '—') + '</strong></div>' +
     '<div class="detail-item"><span>Pixel pitch</span><strong>' + (row.pixel_size_um ? formatNumber(row.pixel_size_um, 2) + ' µm' : '—') + '</strong></div>' +
     '<div class="detail-item"><span>Camera roles</span><strong>' + esc(rolesFor(row).join(', ') || 'Unspecified') + '</strong></div>' +
     '<div class="detail-item"><span>Internal / alias</span><strong>' + esc(row.internal_code || '—') + '</strong></div>' +
     '<div class="detail-item"><span>Autofocus</span><strong>' + esc(row.af || '—') + '</strong></div>' +
     '<div class="detail-item"><span>HDR</span><strong>' + esc(row.hdr || '—') + '</strong></div>' +
+    '<div class="detail-item"><span>CFA</span><strong>' + esc(row.cfa || '—') + '</strong></div>' +
+    '<div class="detail-item"><span>Pixel binning</span><strong>' + esc(row.pixel_binning || '—') + '</strong></div>' +
+    '<div class="detail-item"><span>Full well capacity</span><strong>' + esc(row.fwc || '—') + '</strong></div>' +
+    '<div class="detail-item"><span>Two layer transistor</span><strong>' + esc(row.two_layer_transistor || '—') + '</strong></div>' +
+    '<div class="detail-item"><span>Transfer gate</span><strong>' + esc(row.transfer_gate || '—') + '</strong></div>' +
+    '<div class="detail-item"><span>First listed</span><strong>' + esc(row.first_listed_year || '—') + '</strong></div>' +
+    '<div class="detail-item"><span>Data confidence</span><strong>' + esc(row.confidence || '—') + '</strong></div>' +
     '<div class="detail-item"><span>Phone mappings</span><strong>' + Number(row.phone_count || 0).toLocaleString() + '</strong></div>' +
     '<div class="detail-item"><span>Example phones</span><strong>' + esc(row.example_phones || '—') + '</strong></div>' +
-    '</div><div class="detail-source">' + (row.source_url ? '<a href="' + esc(row.source_url) + '" target="_blank" rel="noopener noreferrer">Open source ↗</a>' : '<span>No source URL available</span>') + '</div>';
+    '</div><div class="detail-extra"><h3>Aliases</h3><p>' + esc((row.aliases || []).join(' · ') || '—') + '</p><h3>Mapped phones (' + Number(row.phone_count || 0) + ')</h3><ul>' + (row.phones || []).map(p=>'<li>'+esc([p.model,p.year,p.role,p.confidence&&('confidence '+p.confidence)].filter(Boolean).join(' · '))+'</li>').join('') + '</ul><h3>Notes</h3><p>' + esc(row.notes || '—') + '</p></div><div class="detail-source">' + (row.sources||[]).map(s=>'<a href="'+esc(s.url)+'" target="_blank" rel="noopener noreferrer">'+esc(s.type+' · '+s.relationship)+' ↗</a>').join('') + (row.source_url && !(row.sources||[]).length ? '<a href="' + esc(row.source_url) + '" target="_blank" rel="noopener noreferrer">Open source ↗</a>' : '') + '</div>';
   detail.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 function comparisonTable() {
@@ -341,6 +380,7 @@ qs('#sensor-table').addEventListener('click', (event) => {
     }
     sortSelect.value = sortValue;
     render();
+    try { const resp=await fetch('/data/dashboard.json'); renderCharts(resp.ok?await resp.json():{}); } catch (_) { renderCharts(); }
     return;
   }
   const detailButton = event.target.closest('[data-open]');
