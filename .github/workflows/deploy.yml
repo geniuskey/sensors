@@ -8,6 +8,7 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: CLOUDFLARE
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
