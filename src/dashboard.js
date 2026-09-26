@@ -14,6 +14,40 @@ function catalogUrl(filters) {
   return '/catalog/?' + params.toString();
 }
 
+const PROTOCOL_COLORS = { V5: '#f08a3c', V6: '#7c5cf0' };
+const DOT_COLOR = '#3b6cf6';
+
+function niceStep(raw) {
+  const pow = Math.pow(10, Math.floor(Math.log10(raw)));
+  const r = raw / pow;
+  return (r <= 1 ? 1 : r <= 2 ? 2 : r <= 2.5 ? 2.5 : r <= 5 ? 5 : 10) * pow;
+}
+
+function axisScale(values, { log, ticks, step }) {
+  const t = log ? Math.log10 : (value) => value;
+  let min = Math.min(...values), max = Math.max(...values);
+  if (step) {
+    const top = Math.ceil(max / step) * step;
+    min = Math.floor(min / step) * step - step;
+    max = top - max < step * 0.3 ? top + step : top;
+  }
+  let lo = t(min), hi = t(max);
+  if (hi === lo) { lo -= log ? 0.5 : 1; hi += log ? 0.5 : 1; }
+  if (!step) { const pad = (hi - lo) * 0.05; lo -= pad; hi += pad; }
+  let list;
+  if (log) list = (ticks || [0.1, 0.3, 1, 3, 10, 30, 100, 300, 1000]).filter((value) => t(value) >= lo && t(value) <= hi);
+  else {
+    const s = step || niceStep((hi - lo) / 6);
+    list = [];
+    for (let value = Math.ceil(lo / s - 1e-9) * s; value <= hi + 1e-9; value += s) list.push(Number(value.toFixed(6)));
+  }
+  return { t, lo, hi, ticks: list };
+}
+
+function tickLabel(value) {
+  return number(value, value < 1 ? 2 : 1);
+}
+
 function renderScatter(target, data, xKey, yKey, xLabel, yLabel, options = {}) {
   const valid = data.filter((point) => Number(point[xKey]) > 0 && Number(point[yKey]) > 0);
   if (!valid.length) {
@@ -21,35 +55,44 @@ function renderScatter(target, data, xKey, yKey, xLabel, yLabel, options = {}) {
     return;
   }
 
-  const w = 680, h = 300, p = { l: 58, r: 18, t: 18, b: 44 };
-  const xs = valid.map((point) => Number(point[xKey]));
-  const ys = valid.map((point) => Number(point[yKey]));
-  const xmin = Math.min(...xs), xmax = Math.max(...xs);
-  const ymin = options.logY ? Math.min(...ys) : 0, ymax = Math.max(...ys);
-  const scaleY = (value) => options.logY ? Math.log10(value) : value;
-  const low = scaleY(ymin), high = scaleY(ymax);
-  const X = (value) => p.l + (value - xmin) / (xmax - xmin || 1) * (w - p.l - p.r);
-  const Y = (value) => h - p.b - (scaleY(value) - low) / (high - low || 1) * (h - p.t - p.b);
+  const w = 680, h = 340, p = { l: 58, r: 20, t: 20, b: 54 };
+  const pw = w - p.l - p.r, ph = h - p.t - p.b;
+  const sx = axisScale(valid.map((point) => Number(point[xKey])), { log: options.logX, ticks: options.xTicks, step: options.xStep });
+  const sy = axisScale(valid.map((point) => Number(point[yKey])), { log: options.logY, ticks: options.yTicks, step: options.yStep });
+  const X = (value) => p.l + (sx.t(value) - sx.lo) / (sx.hi - sx.lo) * pw;
+  const Y = (value) => h - p.b - (sy.t(value) - sy.lo) / (sy.hi - sy.lo) * ph;
   let svg = `<svg viewBox="0 0 ${w} ${h}" role="group" aria-label="${esc(yLabel)} by ${esc(xLabel)}">`;
 
-  for (let i = 0; i < 5; i++) {
-    const y = p.t + i * (h - p.t - p.b) / 4;
-    const value = options.logY ? Math.pow(10, high - i * (high - low) / 4) : ymax - i * (ymax - ymin) / 4;
-    svg += `<line class="chart-gridline" x1="${p.l}" x2="${w - p.r}" y1="${y}" y2="${y}"/><text class="chart-tick" x="${p.l - 8}" y="${y + 4}" text-anchor="end">${number(value, 1)}</text>`;
-  }
+  sy.ticks.forEach((value) => {
+    const y = Y(value).toFixed(1);
+    svg += `<line class="chart-gridline" x1="${p.l}" x2="${w - p.r}" y1="${y}" y2="${y}"/><text class="chart-tick" x="${p.l - 8}" y="${y}" dy=".32em" text-anchor="end">${tickLabel(value)}</text>`;
+  });
+  sx.ticks.forEach((value) => {
+    const x = X(value).toFixed(1);
+    svg += `<line class="chart-gridline chart-gridline-v" x1="${x}" x2="${x}" y1="${p.t}" y2="${h - p.b}"/><text class="chart-tick" x="${x}" y="${h - p.b + 18}" text-anchor="middle">${tickLabel(value)}</text>`;
+  });
+  svg += `<line class="chart-baseline" x1="${p.l}" x2="${w - p.r}" y1="${h - p.b}" y2="${h - p.b}"/>`;
 
   valid.forEach((point) => {
     const label = options.label(point);
     const href = options.href(point);
     const protocol = point.protocol || '';
-    const color = protocol.includes('V5') ? '#e78b38' : protocol.includes('V6') ? '#7866d7' : '#3182ce';
-    const x = X(Number(point[xKey])), y = Y(Number(point[yKey]));
+    const color = protocol.includes('V5') ? PROTOCOL_COLORS.V5 : protocol.includes('V6') ? PROTOCOL_COLORS.V6 : DOT_COLOR;
+    const x = X(Number(point[xKey])).toFixed(1), y = Y(Number(point[yKey])).toFixed(1);
     const r = options.hitRadius || 7;
     const metadata = `${number(point[xKey], 2)} ${xLabel} · ${number(point[yKey], 1)} ${yLabel}`;
-    svg += `<a class="chart-point${protocol ? ` chart-point-${esc(protocol.toLowerCase())}` : ''}" href="${esc(href)}" data-tooltip-title="${esc(label)}" data-tooltip-detail="${esc(metadata)}"${protocol ? ` data-protocol="${esc(protocol)}"` : ''} aria-label="${esc(label)}. ${esc(metadata)}. Open matching catalog results."><circle class="chart-hit" cx="${x}" cy="${y}" r="${r}"/><circle class="chart-dot" cx="${x}" cy="${y}" r="${options.dotRadius || 4}" fill="${color}" opacity=".78"/></a>`;
+    svg += `<a class="chart-point${protocol ? ` chart-point-${esc(protocol.toLowerCase())}` : ''}" href="${esc(href)}" data-tooltip-title="${esc(label)}" data-tooltip-detail="${esc(metadata)}"${protocol ? ` data-protocol="${esc(protocol)}"` : ''} aria-label="${esc(label)}. ${esc(metadata)}. Open matching catalog results."><circle class="chart-hit" cx="${x}" cy="${y}" r="${r}"/><circle class="chart-dot" cx="${x}" cy="${y}" r="${options.dotRadius || 4}" fill="${color}" fill-opacity=".72" stroke="#fff" stroke-width="1"/></a>`;
   });
 
-  svg += `<text class="chart-axis" x="${(w + p.l - p.r) / 2}" y="${h - 7}" text-anchor="middle">${esc(xLabel)}</text><text class="chart-axis" transform="translate(14 ${h / 2}) rotate(-90)" text-anchor="middle">${esc(yLabel)}</text></svg>`;
+  if (options.legend) {
+    const lx = w - p.r - 10;
+    options.legend.slice().reverse().forEach((item, index) => {
+      const x = lx - index * 56;
+      svg += `<g aria-hidden="true"><circle cx="${x - 30}" cy="${p.t + 12}" r="5" fill="${item.color}" fill-opacity=".72" stroke="#fff" stroke-width="1"/><text class="chart-legend" x="${x - 21}" y="${p.t + 12}" dy=".32em">${esc(item.label)}</text></g>`;
+    });
+  }
+
+  svg += `<text class="chart-axis" x="${p.l + pw / 2}" y="${h - 10}" text-anchor="middle">${esc(xLabel)}</text><text class="chart-axis" transform="translate(16 ${p.t + ph / 2}) rotate(-90)" text-anchor="middle">${esc(yLabel)}</text></svg>`;
   qs(target).innerHTML = svg;
 }
 
@@ -137,7 +180,10 @@ async function init() {
     qs('#mappings').textContent = number(stats.mappings, 0);
 
     renderScatter('#pitch-chart', sensors.filter((row) => Number(row.pixel_size_um) > 0 && Number(row.resolution_mp) > 0), 'pixel_size_um', 'resolution_mp', 'Pixel pitch (µm)', 'Resolution (MP)', {
+      logX: true,
       logY: true,
+      xTicks: [0.5, 0.7, 1, 1.4, 2, 3, 5, 10],
+      yTicks: [0.1, 0.3, 1, 3, 10, 30, 100, 200],
       label: (row) => row.sensor,
       href: (row) => catalogUrl({ sensor: row.canonical_id }),
       hitRadius: 8,
@@ -145,6 +191,8 @@ async function init() {
     });
 
     renderScatter('#dxo-chart', dashboard.dxomark || [], 'pitch', 'score', 'Mean sensor pitch (µm)', 'Camera score', {
+      yStep: 10,
+      legend: [{ label: 'V5', color: PROTOCOL_COLORS.V5 }, { label: 'V6', color: PROTOCOL_COLORS.V6 }],
       label: (row) => `${row.device} · ${row.protocol}`,
       href: (row) => catalogUrl({ q: dxomarkSearchTerm(row, sensors) }),
       hitRadius: 8,
