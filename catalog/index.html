@@ -19,7 +19,7 @@
         <label class="field-label" for="q">Search</label>
         <input id="q" class="text-field" type="search" name="search" autocomplete="off" spellcheck="false" placeholder="Sensor or phone, e.g. IMX989, S25 Ultra…">
 
-        <fieldset class="filter-group"><legend>Manufacturer <span id="maker-hint" class="facet-hint">sorted by count</span></legend><div class="facet-list" id="manufacturer-facets"></div></fieldset>
+        <fieldset class="filter-group"><legend>Sensor manufacturer <span id="maker-hint" class="facet-hint">sorted by count</span></legend><div class="facet-list" id="manufacturer-facets"></div></fieldset>
         <fieldset class="filter-group"><legend>Camera role <span class="facet-hint">sensor count</span></legend><div class="facet-list" id="role-facets"></div></fieldset>
         <fieldset class="filter-group"><legend>Resolution <span class="unit-label">MP</span></legend>
           <div class="range-fields"><label>Min<input id="min-mp" name="min-resolution" type="number" min="0" step="0.1" inputmode="decimal" autocomplete="off" aria-label="Minimum resolution in megapixels"></label><label>Max<input id="max-mp" name="max-resolution" type="number" min="0" step="0.1" inputmode="decimal" autocomplete="off" aria-label="Maximum resolution in megapixels"></label></div>
@@ -37,7 +37,7 @@
       <main class="workspace" id="main-content">
         <header class="page-header">
           <div class="brand-lockup"><a class="brand-mark" href="/" aria-label="Overview"><img src="/images/image-sensor.png" alt="" width="448" height="336" /></a><div><div class="eyebrow">SENSORS.EUIYUN.COM <span class="live-dot"></span> LIVE CATALOG</div><h1>Sensor catalog</h1><p>Search, filter and compare sensors across mapped phones.</p></div></div>
-          <nav class="site-nav" aria-label="Main navigation"><a href="/">Overview</a><a class="is-current" href="/catalog/" aria-current="page">Sensor catalog</a></nav>
+          <nav class="site-nav" aria-label="Main navigation"><a href="/">Overview</a><a class="is-current" href="/catalog/" aria-current="page">Sensor catalog</a><a href="/phones/">Phone catalog</a></nav>
           <div class="header-actions" aria-label="Catalog actions">
             <button class="button button-filter" id="filter-toggle" type="button" aria-controls="filters" aria-expanded="true"><span aria-hidden="true">☷</span> Filters</button>
             <a class="button button-secondary" href="/data/all-in-one.csv">Download CSV</a>
@@ -56,7 +56,7 @@
             <table id="sensor-table">
               <thead><tr>
                 <th class="check-col" scope="col"><span class="sr-only">Compare</span></th>
-                <th scope="col" data-sort="manufacturer" aria-sort="none"><button class="sort-button" data-sort="manufacturer" type="button">Maker <span aria-hidden="true">↕</span></button></th>
+                <th scope="col" data-sort="manufacturer" aria-sort="none"><button class="sort-button" data-sort="manufacturer" type="button">Sensor maker <span aria-hidden="true">↕</span></button></th>
                 <th scope="col" data-sort="sensor" aria-sort="none"><button class="sort-button" data-sort="sensor" type="button">Sensor <span aria-hidden="true">↕</span></button></th>
                 <th scope="col" data-sort="internal_code" aria-sort="none"><button class="sort-button" data-sort="internal_code" type="button">Part / alias <span aria-hidden="true">↕</span></button></th>
                 <th scope="col" data-sort="resolution_mp" aria-sort="descending"><button class="sort-button" data-sort="resolution_mp" type="button">Resolution <span aria-hidden="true">↓</span></button></th>

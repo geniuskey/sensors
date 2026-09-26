@@ -83,7 +83,8 @@ function renderPhoneMappings(row) {
   const visible = phones.slice(0, 3);
   const entries = visible.map((phone) => {
     const role = phoneRole(phone);
-    return '<li><button class="phone-match" type="button" data-phone-search="' + esc(phone.model) + '" title="Show all sensors mapped to ' + esc(phone.model) + '">' + esc(phone.model) + '</button><span class="phone-role">' + esc(role) + '</span></li>';
+    const phoneUrl = phone.canonical_id ? '/phones/?phone=' + encodeURIComponent(phone.canonical_id) : '/phones/?q=' + encodeURIComponent(phone.model);
+    return '<li><a class="phone-match" href="' + esc(phoneUrl) + '" title="View sensors in ' + esc(phone.model) + '">' + esc(phone.model) + '</a><span class="phone-role">' + esc(role) + '</span></li>';
   }).join('');
   const more = phones.length > visible.length
     ? '<li><button class="phone-more" type="button" data-open="' + esc(row.canonical_id) + '">+' + (phones.length - visible.length) + ' more · details</button></li>'

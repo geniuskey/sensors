@@ -19,6 +19,7 @@
         <nav class="site-nav" aria-label="Main navigation">
           <a class="is-current" href="/" aria-current="page">Overview</a>
           <a href="/catalog/">Sensor catalog</a>
+          <a href="/phones/">Phone catalog</a>
         </nav>
         <div class="header-actions">
           <a class="button button-secondary" href="/data/all-in-one.csv">Download CSV</a>
@@ -32,14 +33,15 @@
           <h1 id="overview-title">Explore the sensors behind every shot.</h1>
           <p>Search mobile image sensors, compare specifications, and see which phones use them. Every record stays connected to its source.</p>
           <a class="button button-primary" href="/catalog/">Explore sensors <span aria-hidden="true">→</span></a>
+          <a class="text-link overview-phone-link" href="/phones/">Browse phones and their sensors <span aria-hidden="true">→</span></a>
         </div>
         <figure class="sensor-art"><div class="sensor-art-frame"><img src="/images/image-sensor.png" alt="Representative mobile image sensor chip" width="448" height="336" /></div><figcaption class="sensor-art-caption">IMAGE SENSOR / SAMSUNG SEMICONDUCTOR</figcaption></figure>
       </section>
 
       <section class="stats overview-stats" aria-label="Catalog summary">
         <a class="stat-card" href="/catalog/"><span class="stat-icon stat-blue" aria-hidden="true">◈</span><span><span id="sensors" class="metric">—</span><span class="label">Image sensors</span></span><span class="stat-arrow" aria-hidden="true">↗</span></a>
-        <a class="stat-card" href="/catalog/?mapped=mapped"><span class="stat-icon stat-violet" aria-hidden="true">▣</span><span><span id="phones" class="metric">—</span><span class="label">Mapped phones</span></span><span class="stat-arrow" aria-hidden="true">↗</span></a>
-        <a class="stat-card" href="/catalog/"><span class="stat-icon stat-teal" aria-hidden="true">◉</span><span><span id="makers" class="metric">—</span><span class="label">Manufacturers</span></span><span class="stat-arrow" aria-hidden="true">↗</span></a>
+        <a class="stat-card" href="/phones/?mapped=mapped"><span class="stat-icon stat-violet" aria-hidden="true">▣</span><span><span id="phones" class="metric">—</span><span class="label">Mapped phones</span></span><span class="stat-arrow" aria-hidden="true">↗</span></a>
+        <a class="stat-card" href="/catalog/"><span class="stat-icon stat-teal" aria-hidden="true">◉</span><span><span id="makers" class="metric">—</span><span class="label">Sensor manufacturers</span></span><span class="stat-arrow" aria-hidden="true">↗</span></a>
         <a class="stat-card" href="/catalog/?mapped=mapped"><span class="stat-icon stat-amber" aria-hidden="true">↔</span><span><span id="mappings" class="metric">—</span><span class="label">Camera mappings</span></span><span class="stat-arrow" aria-hidden="true">↗</span></a>
       </section>
 
@@ -67,7 +69,7 @@
             <p class="chart-hint">Select a point to browse sensors mapped to that phone.</p>
           </article>
           <article class="chart-card chart-wide">
-            <div class="maker-chart-head"><div><h3>Sensors by manufacturer</h3><p>Bars are ordered by sensor count. Select one to filter the catalog.</p></div><span id="maker-total" class="maker-total"></span></div>
+            <div class="maker-chart-head"><div><h3>Sensors by sensor manufacturer</h3><p>Bars are ordered by sensor count. Select one to filter the catalog.</p></div><span id="maker-total" class="maker-total"></span></div>
             <div id="maker-chart" class="chart-area"><div class="chart-empty">Loading manufacturer data…</div></div>
           </article>
         </div>

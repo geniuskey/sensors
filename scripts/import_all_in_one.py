@@ -168,8 +168,23 @@ for item in items:
     sid=item['id']
     item['aliases']=[r[0] for r in con.execute('SELECT alias FROM sensor_aliases WHERE sensor_id=? ORDER BY alias',(sid,))]
     item['sources']=[dict(url=r[0],type=r[1],relationship=r[2]) for r in con.execute('SELECT src.url,src.source_type,ss.relationship FROM sensor_sources ss JOIN sources src ON src.id=ss.source_id WHERE ss.sensor_id=? ORDER BY src.source_type,src.url',(sid,))]
-    item['phones']=[dict(model=r[0],oem=r[1],year=r[2],role=r[3],confidence=r[4]) for r in con.execute('SELECT p.model,p.oem,p.release_year,pc.camera_role,pc.mapping_confidence FROM phone_cameras pc JOIN phones p ON p.id=pc.phone_id WHERE pc.sensor_id=? ORDER BY p.release_year DESC,p.model',(sid,))]
+    item['phones']=[dict(canonical_id=r[0],model=r[1],oem=r[2],year=r[3],role=r[4],confidence=r[5]) for r in con.execute('SELECT p.canonical_id,p.model,p.oem,p.release_year,pc.camera_role,pc.mapping_confidence FROM phone_cameras pc JOIN phones p ON p.id=pc.phone_id WHERE pc.sensor_id=? ORDER BY p.release_year DESC,p.model',(sid,))]
 (PUBLIC/'sensors.json').write_text(json.dumps(items,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+phone_query='''SELECT p.*,d.camera_score,d.photo_score,d.video_score,d.camera_protocol FROM phones p LEFT JOIN dxomark_results d ON d.phone_id=p.id ORDER BY p.release_year DESC,p.model'''
+phone_cols=[d[0] for d in con.execute(phone_query).description]
+phone_items=[dict(zip(phone_cols,row)) for row in con.execute(phone_query)]
+for phone in phone_items:
+    phone['cameras']=[dict(
+        role=r[0],confidence=r[1],sensor_id=r[2],sensor=r[3],sensor_manufacturer=r[4],
+        resolution_mp=r[5],sensor_size=r[6],pixel_size_um=r[7],
+        source_url=r[8]
+    ) for r in con.execute('''SELECT pc.camera_role,pc.mapping_confidence,s.canonical_id,s.canonical_name,m.name,
+        s.resolution_mp,s.sensor_size,s.pixel_size_um,
+        (SELECT src.url FROM camera_sources cs JOIN sources src ON src.id=cs.source_id WHERE cs.camera_id=pc.id ORDER BY CASE src.source_type WHEN 'official' THEN 0 ELSE 1 END,src.id LIMIT 1)
+        FROM phone_cameras pc JOIN sensors s ON s.id=pc.sensor_id JOIN manufacturers m ON m.id=s.manufacturer_id
+        WHERE pc.phone_id=? ORDER BY pc.camera_role,s.canonical_name''',(phone['id'],))]
+    phone['camera_count']=len(phone['cameras'])
+(PUBLIC/'phones.json').write_text(json.dumps(phone_items,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
 dashboard={
  'manufacturers':[dict(name=r[0],count=r[1]) for r in con.execute('SELECT m.name,COUNT(*) FROM sensors s JOIN manufacturers m ON m.id=s.manufacturer_id GROUP BY m.name ORDER BY COUNT(*) DESC,m.name')],
  'dxomark':[]

@@ -10,10 +10,11 @@
 
 ## Core tables
 
-- `manufacturers`: Sony, Samsung, OmniVision, SmartSens, GalaxyCore, SK hynix, etc.
+- `manufacturers`: sensor manufacturers only (Sony, Samsung, OmniVision, SmartSens, GalaxyCore, SK hynix, etc.). This is independent from phone makers.
 - `sensors`: canonical sensor specification.
 - `sensor_aliases`: marketing names, internal part numbers, OEM aliases.
 - `phones`: canonicalized smartphone identity.
+- `phones.oem`: phone manufacturer used by phone search and the phone-catalog manufacturer filter. Do not join it to or populate it from the sensor `manufacturers` table.
 - `phone_cameras`: `(phone, sensor, role)` relationship.
 - `dxomark_results`: phone-level benchmark metadata. Store `camera_protocol`; V5/V6 must not be treated as directly comparable without normalization.
 - `sources`: URL registry and source type.
