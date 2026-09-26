@@ -8,7 +8,7 @@ if DIST.exists(): shutil.rmtree(DIST)
 DIST.mkdir()
 shutil.copy2(ROOT/'index.html',DIST/'index.html')
 (DIST/'src').mkdir()
-for asset in ('main.js', 'dashboard.js', 'phones.js', 'style.css'):
+for asset in ('main.js', 'dashboard.js', 'phones.js', 'sticky-head.js', 'style.css'):
     shutil.copy2(ROOT/'src'/asset, DIST/'src'/asset)
 (DIST/'sensors').mkdir()
 shutil.copy2(ROOT/'sensors/index.html', DIST/'sensors/index.html')

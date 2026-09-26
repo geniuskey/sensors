@@ -1,6 +1,9 @@
+import { stickyTableHead } from './sticky-head.js';
+
 const qs = (selector, root = document) => root.querySelector(selector);
 const qsa = (selector, root = document) => Array.from(root.querySelectorAll(selector));
 const appShell = qs('#app-shell');
+stickyTableHead(qs('#tablewrap'));
 let staticRows = [];
 let sortState = { key: 'resolution_mp', direction: 'desc' };
 const compareIds = new Set();

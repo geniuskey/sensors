@@ -1,6 +1,9 @@
+import { stickyTableHead } from './sticky-head.js';
+
 const qs = (selector, root = document) => root.querySelector(selector);
 const qsa = (selector, root = document) => Array.from(root.querySelectorAll(selector));
 const appShell = qs('#app-shell');
+stickyTableHead(qs('#tablewrap'));
 let phoneRows = [];
 let sortState = { key: 'release_year', direction: 'desc' };
 let visibleCount = window.matchMedia('(max-width: 720px)').matches ? 24 : 60;

@@ -170,9 +170,6 @@ svg { flex: 0 0 auto; }
 /* Catalog layout */
 .app-shell { display: grid; grid-template-columns: 272px minmax(0, 1fr); align-items: start; gap: 28px; max-width: 1680px; margin: 0 auto; padding: 28px 28px 80px; }
 .workspace { min-width: 0; }
-.page-title { margin-bottom: 20px; }
-.page-title h1 { margin: 0; font-size: 28px; font-weight: 750; letter-spacing: -.03em; }
-.page-title p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
 
 .filters { position: sticky; top: calc(var(--topbar-h) + 20px); max-height: calc(100vh - var(--topbar-h) - 40px); overflow: auto; overscroll-behavior: contain; padding: 20px; border: 1px solid var(--line); border-radius: 16px; background: var(--paper); box-shadow: var(--shadow-sm); scrollbar-width: thin; scrollbar-color: #d4dbe4 transparent; }
 .filter-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
@@ -204,8 +201,9 @@ svg { flex: 0 0 auto; }
 .filter-count { color: var(--subtle); font-size: 12px; white-space: nowrap; }
 
 .catalog-panel { padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: var(--paper); box-shadow: var(--shadow-sm); }
-.catalog-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px 18px; margin-bottom: 16px; }
-.catalog-heading h2 { margin: 4px 0 2px; font-size: 20px; font-weight: 700; }
+.catalog-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px 18px; margin-bottom: 14px; }
+.catalog-title { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; min-width: 0; }
+.catalog-title h1 { margin: 0; font-size: 22px; font-weight: 750; letter-spacing: -.02em; }
 .status { margin: 0; color: var(--muted); font-size: 13px; }
 .catalog-tools { display: flex; align-items: center; gap: 8px; }
 .sort-select-wrap { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13px; white-space: nowrap; }
@@ -218,11 +216,13 @@ svg { flex: 0 0 auto; }
 .filter-chip:hover span { background: rgba(59, 91, 253, .15); }
 
 /* Tables */
-.tablewrap { position: relative; overflow: auto; max-height: calc(100vh - var(--topbar-h) - 24px); max-height: calc(100dvh - var(--topbar-h) - 24px); border: 1px solid var(--line); border-radius: 12px; scrollbar-width: thin; scrollbar-color: #d4dbe4 transparent; }
+.tablewrap { position: relative; overflow: auto hidden; border: 1px solid var(--line); border-radius: 12px; scrollbar-width: thin; scrollbar-color: #d4dbe4 transparent; }
 table { width: 100%; border-collapse: separate; border-spacing: 0; }
 #sensor-table { min-width: 1040px; }
 th, td { padding: 12px; border-bottom: 1px solid #f0f2f5; text-align: left; vertical-align: middle; font-size: 13px; }
-thead th { position: sticky; z-index: 2; top: 0; height: 44px; color: var(--muted); background: var(--tint); border-bottom-color: var(--line); font-size: 12px; font-weight: 600; white-space: nowrap; }
+.tablewrap thead { position: relative; z-index: 2; will-change: transform; }
+.tablewrap thead.is-stuck th { box-shadow: 0 1px 0 var(--line), 0 6px 12px -8px rgba(15, 23, 42, .25); }
+thead th { height: 44px; color: var(--muted); background: var(--tint); border-bottom-color: var(--line); font-size: 12px; font-weight: 600; white-space: nowrap; }
 tbody tr { background: var(--paper); transition: background-color .1s; }
 tbody tr:hover { background: #fafbfd; }
 tbody tr.is-selected { background: #f5f7ff; box-shadow: inset 3px 0 0 var(--accent); }
@@ -326,7 +326,7 @@ th[aria-sort="ascending"] .sort-button span, th[aria-sort="descending"] .sort-bu
 .compare-table-wrap { max-height: calc(min(86vh, 880px) - 100px); overflow: auto; overscroll-behavior: contain; }
 .comparison-table { min-width: 680px; }
 .comparison-table th, .comparison-table td { min-width: 160px; padding: 12px 16px; font-size: 13px; }
-.comparison-table thead th { z-index: 3; height: auto; background: var(--tint); }
+.comparison-table thead th { position: sticky; top: 0; z-index: 3; height: auto; background: var(--tint); }
 .comparison-table thead th:first-child, .comparison-table tbody th { position: sticky; left: 0; z-index: 4; min-width: 150px; color: var(--muted); background: var(--tint); font-weight: 600; }
 .comparison-table tbody th { z-index: 2; text-align: left; }
 .comparison-table thead th strong, .compare-maker { display: block; }
@@ -401,8 +401,7 @@ th[aria-sort="ascending"] .sort-button span, th[aria-sort="descending"] .sort-bu
   .bar-row { grid-template-columns: minmax(80px, 110px) 1fr 32px; gap: 10px; padding: 4px 6px; font-size: 12px; }
 
   .app-shell { padding: 18px 14px 90px; }
-  .page-title h1 { font-size: 24px; }
-  .page-title p { font-size: 13px; }
+  .catalog-title h1 { font-size: 20px; }
   .catalog-panel { padding: 16px 14px; border-radius: 16px; }
   .catalog-heading { align-items: stretch; flex-direction: column; }
   .catalog-tools { width: 100%; }
