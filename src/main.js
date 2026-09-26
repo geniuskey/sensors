@@ -1,5 +1,3 @@
-import './style.css';
-
 const app=document.querySelector('#app');
 app.innerHTML=`<main class="shell">
 <section class="hero"><div><div class="eyebrow">sensors.euiyun.com</div><h1>Mobile Image Sensor Database</h1><p>Open, source-traceable catalog of mobile CIS products and their smartphone adoption. Samsung names are canonicalized to ISOCELL, while S5K codes are retained as aliases/internal codes.</p></div><div class="links"><a class="button" href="/data/all-in-one.csv">Download CSV</a><a class="button" href="https://github.com/geniuskey/sensors" target="_blank">GitHub</a></div></section>
