@@ -218,7 +218,7 @@ svg { flex: 0 0 auto; }
 .filter-chip:hover span { background: rgba(59, 91, 253, .15); }
 
 /* Tables */
-.tablewrap { position: relative; overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; scrollbar-width: thin; scrollbar-color: #d4dbe4 transparent; }
+.tablewrap { position: relative; overflow: auto; max-height: calc(100vh - var(--topbar-h) - 24px); max-height: calc(100dvh - var(--topbar-h) - 24px); border: 1px solid var(--line); border-radius: 12px; scrollbar-width: thin; scrollbar-color: #d4dbe4 transparent; }
 table { width: 100%; border-collapse: separate; border-spacing: 0; }
 #sensor-table { min-width: 1040px; }
 th, td { padding: 12px; border-bottom: 1px solid #f0f2f5; text-align: left; vertical-align: middle; font-size: 13px; }
@@ -409,7 +409,7 @@ th[aria-sort="ascending"] .sort-button span, th[aria-sort="descending"] .sort-bu
   .sort-select-wrap { flex: 1; min-width: 0; gap: 8px; }
   .sort-select-wrap select { flex: 1; min-width: 0; }
 
-  .tablewrap { overflow: visible; border: 0; }
+  .tablewrap { overflow: visible; max-height: none; border: 0; }
   #sensor-table, #phone-table { display: block; min-width: 0; }
   #sensor-table thead, #phone-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
   #sensor-table tbody, #phone-table tbody { display: grid; gap: 10px; }

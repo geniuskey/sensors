@@ -10,8 +10,8 @@ shutil.copy2(ROOT/'index.html',DIST/'index.html')
 (DIST/'src').mkdir()
 for asset in ('main.js', 'dashboard.js', 'phones.js', 'style.css'):
     shutil.copy2(ROOT/'src'/asset, DIST/'src'/asset)
-(DIST/'catalog').mkdir()
-shutil.copy2(ROOT/'catalog/index.html', DIST/'catalog/index.html')
+(DIST/'sensors').mkdir()
+shutil.copy2(ROOT/'sensors/index.html', DIST/'sensors/index.html')
 (DIST/'phones').mkdir()
 shutil.copy2(ROOT/'phones/index.html', DIST/'phones/index.html')
 shutil.copytree(ROOT/'public/data',DIST/'data')
@@ -30,7 +30,7 @@ def fmt_size(v): return f'{v}"' if v and not str(v).endswith('"') else (v or '')
 def badge(c): return f'<span class="badge badge-{"high" if c=="High" else "medium" if c and c.startswith("Medium") else "low"}">{e(c or "Unrated")}</span>'
 def ld(obj): return '<script type="application/ld+json">'+json.dumps(obj,ensure_ascii=False).replace('</','<\\/')+'</script>'
 
-catalog=(ROOT/'catalog/index.html').read_text(encoding='utf-8')
+catalog=(ROOT/'sensors/index.html').read_text(encoding='utf-8')
 TOPBAR=re.search(r'<header class="topbar">.*?</header>',catalog,re.S).group(0)
 NAV_PLAIN=re.sub(r'<a class="is-current" href="([^"]+)" aria-current="page">',r'<a href="\1">',TOPBAR)
 def topbar(section): return NAV_PLAIN.replace(f'<a href="{section}">',f'<a class="is-current" href="{section}" aria-current="page">',1)
@@ -91,7 +91,7 @@ for kind,rows,fn in (('sensor',sensors,sensor_slug),('phone',phones,phone_path))
         if not s or s in seen: raise SystemExit(f'Duplicate or empty {kind} slug {s!r}: {seen.get(s)} / {r["canonical_id"]}')
         seen[s]=r['canonical_id']
 sensor_by_id={s['canonical_id']:s for s in sensors}; phone_by_id={p['canonical_id']:p for p in phones}
-urls=['/','/catalog/','/phones/']
+urls=['/','/sensors/','/phones/']
 
 for s in sensors:
     name=s.get('sensor') or s.get('marketing_name') or s['canonical_name']; maker=s.get('manufacturer') or ''; full=f'{maker} {name}'.strip()
@@ -110,11 +110,11 @@ for s in sensors:
         <div class="detail-extra"><h2>Aliases</h2><p>{e(" · ".join(s.get("aliases") or []) or "—")}</p>{f"<h2>Notes</h2><p>{e(s['notes'])}</p>" if s.get("notes") else ""}</div>
       </section>
       <section class="detail-panel"><div class="section-kicker">PHONES USING THIS SENSOR</div><h2 class="detail-section-title">{len(ps)} mapped phone{"s" if len(ps)!=1 else ""}</h2>{f'<div class="camera-mapping-list">{cards}</div>' if ps else '<p class="phone-none">No phone mappings are available for this sensor yet.</p>'}</section>
-      <section class="detail-panel"><div class="section-kicker">SOURCES</div><ul class="source-list">{"".join(f'<li><a href="{e(x["url"])}" target="_blank" rel="noopener noreferrer">{e(x["url"])} ↗</a> <span class="badge badge-source">{e(x.get("type") or "source")}</span> <span class="badge badge-source">{e(x.get("relationship") or "spec")}</span></li>' for x in srcs) or "<li>No sources listed.</li>"}</ul><p class="detail-cta"><a class="button button-secondary" href="/catalog/?sensor={e(quote(s["canonical_id"]))}">Open in sensor catalog →</a></p></section>'''
+      <section class="detail-panel"><div class="section-kicker">SOURCES</div><ul class="source-list">{"".join(f'<li><a href="{e(x["url"])}" target="_blank" rel="noopener noreferrer">{e(x["url"])} ↗</a> <span class="badge badge-source">{e(x.get("type") or "source")}</span> <span class="badge badge-source">{e(x.get("relationship") or "spec")}</span></li>' for x in srcs) or "<li>No sources listed.</li>"}</ul><p class="detail-cta"><a class="button button-secondary" href="/sensors/?sensor={e(quote(s["canonical_id"]))}">Open in sensor catalog →</a></p></section>'''
     props=[{'@type':'PropertyValue','name':k,'value':str(v)} for k,v in specs if v not in (None,'')]
     product={'@context':'https://schema.org','@type':'Product','name':full,'description':desc,'url':SITE+path,'image':OG_IMAGE,'sku':s['canonical_id'],'category':'Mobile image sensor','brand':{'@type':'Brand','name':maker},'manufacturer':{'@type':'Organization','name':maker},'additionalProperty':props}
     if s.get('aliases'): product['alternateName']=s['aliases']
-    write(path,page(path,title,desc,'/catalog/',[('Home','/'),('Sensors','/catalog/'),(full,path)],body,product))
+    write(path,page(path,title,desc,'/sensors/',[('Home','/'),('Sensors','/sensors/'),(full,path)],body,product))
 
 for p in phones:
     model=p['model']; cams=p.get('cameras') or []; path=phone_path(p); urls.append(path)
@@ -140,6 +140,7 @@ for p in phones:
     old_names=[p['model']]
     if p.get('oem') and not p['model'].lower().startswith(p['oem'].lower()+' '): old_names.append(f"{p['oem']} {p['model']}")
     redirects+=[f'/phone/{slug(n)}/ {phone_path(p)} 301' for n in old_names]
+redirects+=['/catalog/ /sensors/ 301','/catalog /sensors/ 301']
 (DIST/'_redirects').write_text('\n'.join(redirects)+'\n',encoding='utf-8')
 
 today=date.today().isoformat()

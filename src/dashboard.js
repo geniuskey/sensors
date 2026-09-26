@@ -11,7 +11,7 @@ function number(value, digits = 1) {
 
 function catalogUrl(filters) {
   const params = new URLSearchParams(filters);
-  return '/catalog/?' + params.toString();
+  return '/sensors/?' + params.toString();
 }
 
 const PROTOCOL_COLORS = { V5: '#f08a3c', V6: '#7c5cf0' };

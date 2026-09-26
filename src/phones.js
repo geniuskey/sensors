@@ -135,7 +135,7 @@ function filterChips(filters) {
 function cameraPreview(cameras, phoneId) {
   if (!cameras.length) return '<span class="phone-none">No sensor mapping yet</span>';
   const shown = cameras.slice(0, 3).map((camera) =>
-    '<li><span class="phone-role">' + esc(camera.role || 'Unspecified') + '</span><a class="phone-sensor-link" href="/catalog/?q=' + encodeURIComponent(camera.sensor || camera.sensor_id || '') + '">' + esc(camera.sensor || 'Unknown sensor') + '</a><span class="sensor-maker-hint">' + esc(camera.sensor_manufacturer || '') + '</span></li>'
+    '<li><span class="phone-role">' + esc(camera.role || 'Unspecified') + '</span><a class="phone-sensor-link" href="/sensors/?q=' + encodeURIComponent(camera.sensor || camera.sensor_id || '') + '">' + esc(camera.sensor || 'Unknown sensor') + '</a><span class="sensor-maker-hint">' + esc(camera.sensor_manufacturer || '') + '</span></li>'
   ).join('');
   const more = cameras.length > 3 ? '<li><button class="phone-more" type="button" data-open-phone="' + esc(phoneId) + '">+' + (cameras.length - 3) + ' more · details</button></li>' : '';
   return '<ul class="phone-camera-preview">' + shown + more + '</ul>';
@@ -210,7 +210,7 @@ function cameraSpec(camera) {
 function compareCamera(camera) {
   const sensorName = camera.sensor || camera.sensor_id || 'Unknown sensor';
   const spec = cameraSpec(camera);
-  return '<div><a href="/catalog/?q=' + encodeURIComponent(sensorName) + '">' + esc(sensorName) + '</a>' + (spec ? '<span class="compare-sub">' + esc(spec) + '</span>' : '') + '</div>';
+  return '<div><a href="/sensors/?q=' + encodeURIComponent(sensorName) + '">' + esc(sensorName) + '</a>' + (spec ? '<span class="compare-sub">' + esc(spec) + '</span>' : '') + '</div>';
 }
 function bestCamera(phone, score) {
   return (phone.cameras || []).reduce((best, camera) => {
@@ -285,7 +285,7 @@ function removeChip(chip) {
 function detailCamera(camera) {
   const sensorName = camera.sensor || camera.sensor_id || 'Unknown sensor';
   const info = [camera.sensor_manufacturer, camera.resolution_mp == null ? '' : formatNumber(camera.resolution_mp) + ' MP', camera.sensor_size, camera.pixel_size_um ? formatNumber(camera.pixel_size_um, 2) + ' µm pixels' : ''].filter(Boolean).join(' · ');
-  return '<article class="camera-mapping-card"><div class="camera-mapping-head"><span class="role-tag">' + esc(camera.role || 'Unspecified') + '</span><span class="camera-confidence">' + (camera.confidence ? esc(camera.confidence) + ' confidence' : '') + '</span></div><h3><a href="/catalog/?q=' + encodeURIComponent(sensorName) + '">' + esc(sensorName) + '</a></h3><p>' + esc(info || 'Sensor specifications are not listed.') + '</p>' + (camera.source_url ? '<a class="mapping-source" href="' + esc(camera.source_url) + '" target="_blank" rel="noopener noreferrer">Mapping source ↗</a>' : '') + '</article>';
+  return '<article class="camera-mapping-card"><div class="camera-mapping-head"><span class="role-tag">' + esc(camera.role || 'Unspecified') + '</span><span class="camera-confidence">' + (camera.confidence ? esc(camera.confidence) + ' confidence' : '') + '</span></div><h3><a href="/sensors/?q=' + encodeURIComponent(sensorName) + '">' + esc(sensorName) + '</a></h3><p>' + esc(info || 'Sensor specifications are not listed.') + '</p>' + (camera.source_url ? '<a class="mapping-source" href="' + esc(camera.source_url) + '" target="_blank" rel="noopener noreferrer">Mapping source ↗</a>' : '') + '</article>';
 }
 function showPhone(id, updateUrl = true) {
   const phone = phoneRows.find((item) => item.canonical_id === id);
