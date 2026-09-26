@@ -48,6 +48,36 @@ function tickLabel(value) {
   return number(value, value < 1 ? 2 : 1);
 }
 
+function makerTally(points) {
+  const counts = new Map();
+  points.forEach((point) => counts.set(point.manufacturer, (counts.get(point.manufacturer) || 0) + 1));
+  return [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+}
+
+function groupedPoints(valid, xKey, yKey, X, Y, options) {
+  const groups = new Map();
+  valid.forEach((point) => {
+    const key = `${Number(point[xKey])}|${Number(point[yKey])}`;
+    groups.set(key, [...(groups.get(key) || []), point]);
+  });
+  const near = (a, b, ratio) => Math.abs(Math.log(a / b)) <= Math.log(ratio);
+  return [...groups.values()].sort((a, b) => b.length - a.length).map((points) => {
+    const xv = Number(points[0][xKey]), yv = Number(points[0][yKey]);
+    const tally = makerTally(points), nearby = valid.filter((point) => near(Number(point[xKey]), xv, 1.1) && near(Number(point[yKey]), yv, 1.25));
+    const color = options.makerColor(tally[0][0]);
+    const names = points.map((point) => point.canonical_name).sort();
+    const title = `${number(yv, 1)} MP · ${number(xv, 2)} µm — ${points.length} sensor${points.length === 1 ? '' : 's'}`;
+    const detail = [
+      tally.map(([name, count]) => `${name} ${count}`).join(' · '),
+      names.slice(0, 6).join(', ') + (names.length > 6 ? ` +${names.length - 6} more` : ''),
+      nearby.length > points.length ? `Nearby (±10% pitch, ±25% MP): ${nearby.length} sensors — ` + makerTally(nearby).slice(0, 4).map(([name, count]) => `${name} ${count}`).join(' · ') : ''
+    ].filter(Boolean).join('\n');
+    const href = points.length === 1 ? options.href(points[0]) : catalogUrl({ min: yv, max: yv });
+    const x = X(xv).toFixed(1), y = Y(yv).toFixed(1), r = Math.min(3.5 + Math.sqrt(points.length - 1) * 1.8, 11);
+    return `<a class="chart-point" href="${esc(href)}" data-tooltip-title="${esc(title)}" data-tooltip-detail="${esc(detail)}" aria-label="${esc(title)}. ${esc(detail.replaceAll('\n', '. '))}. Open matching catalog results."><circle class="chart-hit" cx="${x}" cy="${y}" r="${Math.max(r + 3, 8)}"/><circle class="chart-dot" cx="${x}" cy="${y}" r="${r.toFixed(1)}" fill="${color}" fill-opacity=".75" stroke="#fff" stroke-width="1"/></a>`;
+  }).join('');
+}
+
 function renderScatter(target, data, xKey, yKey, xLabel, yLabel, options = {}) {
   const valid = data.filter((point) => Number(point[xKey]) > 0 && Number(point[yKey]) > 0);
   if (!valid.length) {
@@ -73,7 +103,8 @@ function renderScatter(target, data, xKey, yKey, xLabel, yLabel, options = {}) {
   });
   svg += `<line class="chart-baseline" x1="${p.l}" x2="${w - p.r}" y1="${h - p.b}" y2="${h - p.b}"/>`;
 
-  valid.forEach((point) => {
+  if (options.group) svg += groupedPoints(valid, xKey, yKey, X, Y, options);
+  else valid.forEach((point) => {
     const label = options.label(point);
     const href = options.href(point);
     const protocol = point.protocol || '';
@@ -319,12 +350,17 @@ async function init() {
     qs('#makers').textContent = number(stats.manufacturers, 0);
     qs('#mappings').textContent = number(stats.mappings, 0);
 
+    const pitchMakers = makerTally(sensors).slice(0, 5).map(([name]) => name);
+    const pitchMakerColors = new Map(pitchMakers.map((name, index) => [name, TREND_COLORS[index]]));
+    qs('#pitch-legend').innerHTML = [...pitchMakers.map((name) => [name, pitchMakerColors.get(name)]), ['Other', OTHER_COLOR]].map(([name, color]) => `<span><i style="background:${color}"></i>${esc(name)}</span>`).join('');
     renderScatter('#pitch-chart', sensors.filter((row) => Number(row.pixel_size_um) > 0 && Number(row.resolution_mp) > 0), 'pixel_size_um', 'resolution_mp', 'Pixel pitch (µm)', 'Resolution (MP)', {
       logX: true,
       logY: true,
       xTicks: [0.5, 0.7, 1, 1.4, 2, 3, 5, 10],
       yTicks: [0.1, 0.3, 1, 3, 10, 30, 100, 200],
-      label: (row) => row.sensor,
+      group: true,
+      makerColor: (name) => pitchMakerColors.get(name) || OTHER_COLOR,
+      label: (row) => row.canonical_name,
       href: (row) => catalogUrl({ sensor: row.canonical_id }),
       hitRadius: 8,
       dotRadius: 3.5
