@@ -145,6 +145,15 @@ svg { flex: 0 0 auto; }
 .chart-filter { min-height: 30px; padding: 0 12px; border: 0; border-radius: 8px; color: var(--muted); background: transparent; font-size: 12px; font-weight: 600; cursor: pointer; }
 .chart-filter:hover { color: var(--ink); }
 .chart-filter.is-active { color: var(--ink); background: var(--paper); box-shadow: var(--shadow-sm); }
+.maker-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0 0 10px; }
+.maker-filter { display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 0 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: var(--paper); font-size: 12px; font-weight: 600; cursor: pointer; }
+.maker-filter i { width: 10px; height: 10px; border-radius: 3px; }
+.maker-filter:hover { color: var(--ink); }
+.maker-filter[aria-pressed="true"] { color: var(--ink); border-color: var(--ink); }
+.maker-filters.has-selection .maker-filter[aria-pressed="false"] { opacity: .55; }
+.maker-filters.has-selection .maker-filter[aria-pressed="false"] i { filter: grayscale(1); }
+.maker-filter-clear { display: none; min-height: 28px; padding: 0 6px; border: 0; color: var(--muted); background: none; font-size: 12px; font-weight: 600; text-decoration: underline; cursor: pointer; }
+.maker-filters.has-selection .maker-filter-clear { display: inline-block; }
 .maker-chart-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
 .maker-chart-head > div > p { margin: 4px 0 14px; color: var(--muted); font-size: 13px; }
 .maker-total { padding: 4px 10px; border-radius: 999px; color: var(--muted); background: #f1f4f8; font-size: 12px; font-weight: 600; white-space: nowrap; }

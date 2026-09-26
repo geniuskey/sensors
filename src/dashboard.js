@@ -109,8 +109,9 @@ function renderScatter(target, data, xKey, yKey, xLabel, yLabel, options = {}) {
 
   const w = 680, h = 340, p = { l: 58, r: 20, t: 20, b: 54 };
   const pw = w - p.l - p.r, ph = h - p.t - p.b;
-  const sx = axisScale(valid.map((point) => Number(point[xKey])), { log: options.logX, ticks: options.xTicks, step: options.xStep });
-  const sy = axisScale(valid.map((point) => Number(point[yKey])), { log: options.logY, ticks: options.yTicks, step: options.yStep });
+  const scaled = options.scaleData || valid;
+  const sx = axisScale(scaled.map((point) => Number(point[xKey])), { log: options.logX, ticks: options.xTicks, step: options.xStep });
+  const sy = axisScale(scaled.map((point) => Number(point[yKey])), { log: options.logY, ticks: options.yTicks, step: options.yStep });
   const X = (value) => p.l + (sx.t(value) - sx.lo) / (sx.hi - sx.lo) * pw;
   const Y = (value) => h - p.b - (sy.t(value) - sy.lo) / (sy.hi - sy.lo) * ph;
   let svg = `<svg viewBox="0 0 ${w} ${h}" role="group" aria-label="${esc(yLabel)} by ${esc(xLabel)}">`;
@@ -320,7 +321,7 @@ function setProtocolFilter(protocol) {
     button.setAttribute('aria-pressed', String(active));
   });
   qsa('#dxo-chart [data-protocol]').forEach((point) => {
-    point.hidden = protocol !== 'all' && point.dataset.protocol !== protocol;
+    point.toggleAttribute('hidden', protocol !== 'all' && point.dataset.protocol !== protocol);
   });
 }
 
@@ -344,7 +345,7 @@ function showTooltip(point) {
 qsa('.chart-area').forEach((area) => {
   area.addEventListener('pointerover', (event) => {
     const point = event.target.closest('.chart-point');
-    if (point && !point.hidden) showTooltip(point);
+    if (point && !point.hasAttribute('hidden')) showTooltip(point);
   });
   area.addEventListener('pointerout', (event) => {
     const point = event.target.closest('.chart-point');
@@ -352,7 +353,7 @@ qsa('.chart-area').forEach((area) => {
   });
   area.addEventListener('focusin', (event) => {
     const point = event.target.closest('.chart-point');
-    if (point && !point.hidden) showTooltip(point);
+    if (point && !point.hasAttribute('hidden')) showTooltip(point);
   });
   area.addEventListener('focusout', (event) => {
     if (event.target.closest('.chart-point')) hideTooltip();
@@ -374,19 +375,37 @@ async function init() {
 
     const pitchMakers = makerTally(sensors).slice(0, 5).map(([name]) => name);
     const pitchMakerColors = new Map(pitchMakers.map((name, index) => [name, TREND_COLORS[index]]));
-    qs('#pitch-legend').innerHTML = [...pitchMakers.map((name) => [name, pitchMakerColors.get(name)]), ['Other', OTHER_COLOR]].map(([name, color]) => `<span><i style="background:${color}"></i>${esc(name)}</span>`).join('');
-    renderScatter('#pitch-chart', sensors.filter((row) => Number(row.pixel_size_um) > 0 && Number(row.resolution_mp) > 0), 'pixel_size_um', 'resolution_mp', 'Pixel pitch (µm)', 'Resolution (MP)', {
-      logX: true,
-      logY: true,
-      xTicks: [0.5, 0.7, 1, 1.4, 2, 3, 5, 10],
-      yTicks: [0.1, 0.3, 1, 3, 10, 30, 100, 200],
-      group: true,
-      makerColor: (name) => pitchMakerColors.get(name) || OTHER_COLOR,
-      label: (row) => row.canonical_name,
-      href: (row) => catalogUrl({ sensor: row.canonical_id }),
-      hitRadius: 8,
-      dotRadius: 3.5
+    const pitchSensors = sensors.filter((row) => Number(row.pixel_size_um) > 0 && Number(row.resolution_mp) > 0);
+    const pitchGroup = (sensor) => pitchMakerColors.has(sensor.manufacturer) ? sensor.manufacturer : 'Other';
+    const pitchSelection = new Set();
+    const renderPitch = () => {
+      hideTooltip();
+      qsa('#pitch-legend [data-maker]').forEach((button) => button.setAttribute('aria-pressed', String(pitchSelection.has(button.dataset.maker))));
+      qs('#pitch-legend').classList.toggle('has-selection', pitchSelection.size > 0);
+      renderScatter('#pitch-chart', pitchSelection.size ? pitchSensors.filter((row) => pitchSelection.has(pitchGroup(row))) : pitchSensors, 'pixel_size_um', 'resolution_mp', 'Pixel pitch (µm)', 'Resolution (MP)', {
+        logX: true,
+        logY: true,
+        xTicks: [0.5, 0.7, 1, 1.4, 2, 3, 5, 10],
+        yTicks: [0.1, 0.3, 1, 3, 10, 30, 100, 200],
+        scaleData: pitchSensors,
+        group: true,
+        makerColor: (name) => pitchMakerColors.get(name) || OTHER_COLOR,
+        label: (row) => row.canonical_name,
+        href: (row) => catalogUrl({ sensor: row.canonical_id }),
+        hitRadius: 8,
+        dotRadius: 3.5
+      });
+    };
+    qs('#pitch-legend').innerHTML = [...pitchMakers.map((name) => [name, pitchMakerColors.get(name)]), ['Other', OTHER_COLOR]].map(([name, color]) => `<button class="maker-filter" type="button" data-maker="${esc(name)}" aria-pressed="false"><i style="background:${color}"></i>${esc(name)}</button>`).join('') + '<button class="maker-filter-clear" type="button" data-maker-clear>Show all</button>';
+    qs('#pitch-legend').addEventListener('click', (event) => {
+      const button = event.target.closest('[data-maker], [data-maker-clear]');
+      if (!button) return;
+      if (button.dataset.maker == null) pitchSelection.clear();
+      else if (!pitchSelection.delete(button.dataset.maker)) pitchSelection.add(button.dataset.maker);
+      if (pitchSelection.size === pitchMakerColors.size + 1) pitchSelection.clear();
+      renderPitch();
     });
+    renderPitch();
 
     renderScatter('#dxo-chart', dashboard.dxomark || [], 'pitch', 'score', 'Mean sensor pitch (µm)', 'Camera score', {
       yStep: 10,
