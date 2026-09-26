@@ -485,4 +485,28 @@ th[aria-sort="ascending"] .sort-button span, th[aria-sort="descending"] .sort-bu
 }
 @media (max-width: 560px) {
   .trend-pair { grid-template-columns: 1fr; }
+/* Static detail pages */
+.detail-page { max-width: 1200px; margin: 0 auto; padding: 24px 28px 40px; }
+.detail-page .detail-panel { animation: none; }
+.detail-page .detail-head h1 { margin: 4px 0 4px; font-size: 30px; font-weight: 800; letter-spacing: -.03em; }
+.detail-page .detail-head p { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.detail-page .detail-extra h2 { margin: 16px 0 6px; color: var(--muted); font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+.detail-section-title { margin: 4px 0 14px; font-size: 20px; font-weight: 750; letter-spacing: -.02em; }
+.breadcrumb { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 16px; color: var(--subtle); font-size: 13px; }
+.breadcrumb a { color: var(--muted); text-decoration: none; }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb [aria-current] { overflow-wrap: anywhere; color: var(--ink); font-weight: 600; }
+.badge { display: inline-flex; align-items: center; padding: 2px 8px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: var(--paper); font-size: 11px; font-weight: 600; line-height: 1.5; white-space: nowrap; }
+.badge-high { color: #047857; border-color: #a7f3d0; background: #ecfdf5; }
+.badge-medium { color: #b45309; border-color: #fde68a; background: #fffbeb; }
+.badge-low { color: #b91c1c; border-color: #fecaca; background: #fef2f2; }
+.badge-source { color: var(--accent-dark); border-color: var(--accent-line); background: var(--accent-soft); }
+.source-list { display: grid; gap: 8px; margin: 10px 0 0; padding: 0; list-style: none; font-size: 13px; }
+.source-list li { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.source-list a { overflow-wrap: anywhere; color: var(--accent); font-weight: 600; text-decoration: none; }
+.source-list a:hover { text-decoration: underline; }
+.detail-cta { margin: 16px 0 0; }
+@media (max-width: 720px) {
+  .detail-page { padding: 16px 16px 32px; }
+  .detail-page .detail-head h1 { font-size: 24px; }
 }

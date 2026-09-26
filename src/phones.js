@@ -22,6 +22,7 @@ async function getPhones() {
   return response.json();
 }
 
+const slug = (text) => String(text ?? '').toLowerCase().replace(/\+/g, ' plus ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 function esc(value) {
   return String(value ?? '').replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[character]));
 }
@@ -292,7 +293,7 @@ function showPhone(id, updateUrl = true) {
     ['DXOMARK camera score', phone.camera_score == null ? '—' : formatNumber(phone.camera_score)],
     ['DXOMARK protocol', phone.camera_protocol || '—'],
   ];
-  detail.innerHTML = '<div class="detail-head"><div><div class="section-kicker">PHONE DETAILS</div><h2>' + esc(phone.model) + '</h2><p>' + esc(phoneMakerLabel(phone)) + ' · ' + esc(phone.canonical_id) + '</p></div><button class="icon-button" type="button" data-detail-close aria-label="Close phone details">×</button></div>' +
+  detail.innerHTML = '<div class="detail-head"><div><div class="section-kicker">PHONE DETAILS</div><h2>' + esc(phone.model) + '</h2><p>' + esc(phoneMakerLabel(phone)) + ' · ' + esc(phone.canonical_id) + ' · <a href="/phone/' + slug(phone.model || String(phone.canonical_id).replace(/^PHONE:/, '')) + '/">Permalink</a></p></div><button class="icon-button" type="button" data-detail-close aria-label="Close phone details">×</button></div>' +
     '<div class="detail-grid phone-detail-grid">' + facts.map(([label, value]) => '<div class="detail-item"><span>' + esc(label) + '</span><strong>' + esc(value) + '</strong></div>').join('') + '</div>' +
     '<div class="phone-camera-detail"><h3>Image sensors by camera</h3>' + (cameras.length ? '<div class="camera-mapping-list">' + cameras.map(detailCamera).join('') + '</div>' : '<p class="phone-none">No image sensor mappings are available for this phone yet.</p>') + '</div>';
   detail.hidden = false;

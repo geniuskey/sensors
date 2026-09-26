@@ -35,6 +35,7 @@ async function getData() {
   return { items, stats };
 }
 
+const slug = (text) => String(text ?? '').toLowerCase().replace(/\+/g, ' plus ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 function esc(value) {
   return String(value ?? '').replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[character]));
 }
@@ -258,7 +259,7 @@ function showDetail(id, updateUrl = true) {
   }
   const detail = qs('#detail');
   detail.hidden = false;
-  detail.innerHTML = '<div class="detail-head"><div><div class="section-kicker">SENSOR DETAILS</div><h2>' + esc(row.sensor) + '</h2><p>' + esc(row.manufacturer) + ' · ' + esc(row.canonical_id) + '</p></div><button class="icon-button" type="button" data-detail-close aria-label="Close sensor details">×</button></div>' +
+  detail.innerHTML = '<div class="detail-head"><div><div class="section-kicker">SENSOR DETAILS</div><h2>' + esc(row.sensor) + '</h2><p>' + esc(row.manufacturer) + ' · ' + esc(row.canonical_id) + ' · <a href="/sensors/' + slug(row.canonical_id) + '/">Permalink</a></p></div><button class="icon-button" type="button" data-detail-close aria-label="Close sensor details">×</button></div>' +
     '<div class="detail-grid">' +
     '<div class="detail-item"><span>Resolution</span><strong>' + (row.resolution_mp == null ? '—' : formatNumber(row.resolution_mp) + ' MP') + '</strong></div>' +
     '<div class="detail-item"><span>Resolution pixels</span><strong>' + esc(row.resolution_px || '—') + '</strong></div>' +
