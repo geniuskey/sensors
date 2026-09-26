@@ -262,9 +262,9 @@ th[aria-sort="ascending"] .sort-button span, th[aria-sort="descending"] .sort-bu
 
 /* Phone table */
 #phone-table { min-width: 900px; }
-#phone-table th:nth-child(4), #phone-table td:nth-child(4) { display: none; }
-#phone-table th:nth-child(2) { min-width: 200px; }
-#phone-table th:nth-child(6) { min-width: 320px; }
+#phone-table th:nth-child(5), #phone-table td:nth-child(5) { display: none; }
+#phone-table th:nth-child(3) { min-width: 200px; }
+#phone-table th:nth-child(7) { min-width: 320px; }
 .phone-maker-cell .maker-label { color: var(--muted); font-weight: 600; }
 .phone-model-link { display: block; max-width: 320px; padding: 0; border: 0; color: var(--ink); background: transparent; font-size: 14px; font-weight: 650; text-align: left; cursor: pointer; }
 .phone-model-link:hover { color: var(--accent); }
@@ -414,11 +414,11 @@ th[aria-sort="ascending"] .sort-button span, th[aria-sort="descending"] .sort-bu
   #sensor-table thead, #phone-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
   #sensor-table tbody, #phone-table tbody { display: grid; gap: 10px; }
   #sensor-table tbody tr, #phone-table tbody tr { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; padding: 16px; border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow-sm); }
-  #sensor-table tbody tr.is-selected { border-color: var(--accent-line); }
+  #sensor-table tbody tr.is-selected, #phone-table tbody tr.is-selected { border-color: var(--accent-line); }
   #sensor-table tbody td, #phone-table tbody td { display: block; min-width: 0; max-width: none; padding: 0; border: 0; font-size: 13px; }
   #sensor-table tbody td::before, #phone-table tbody td::before { display: block; margin-bottom: 2px; color: var(--subtle); font-size: 11px; font-weight: 500; content: attr(data-label); }
-  #sensor-table tbody .check-col { position: absolute; top: 16px; right: 16px; width: 24px; }
-  #sensor-table tbody .check-col::before, #sensor-table tbody td:nth-child(2)::before, #sensor-table tbody .sensor-cell::before { display: none; }
+  #sensor-table tbody .check-col, #phone-table tbody .check-col { position: absolute; top: 16px; right: 16px; width: 24px; }
+  #sensor-table tbody .check-col::before, #phone-table tbody .check-col::before, #sensor-table tbody td:nth-child(2)::before, #sensor-table tbody .sensor-cell::before { display: none; }
   #sensor-table tbody td:nth-child(2), #sensor-table tbody .sensor-cell, #sensor-table tbody .role-cell, #sensor-table tbody .phone-cell { grid-column: 1 / -1; }
   #sensor-table tbody td:nth-child(2) { padding-right: 32px; }
   #sensor-table tbody .maker-label { color: var(--muted); font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
@@ -430,6 +430,7 @@ th[aria-sort="ascending"] .sort-button span, th[aria-sort="descending"] .sort-bu
   #phone-table tbody tr { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   #phone-table tbody .phone-maker-cell, #phone-table tbody .phone-model-cell, #phone-table tbody .phone-camera-cell { grid-column: 1 / -1; }
   #phone-table tbody .phone-maker-cell::before, #phone-table tbody .phone-model-cell::before { display: none; }
+  #phone-table tbody .phone-maker-cell { padding-right: 32px; }
   #phone-table tbody .phone-maker-cell .maker-label { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
   #phone-table tbody .phone-model-cell { margin-top: -10px; }
   #phone-table tbody .phone-model-link { max-width: 100%; font-size: 18px; }
@@ -458,3 +459,12 @@ th[aria-sort="ascending"] .sort-button span, th[aria-sort="descending"] .sort-bu
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
+
+/* Phone comparison */
+.comparison-table td.is-best { background: var(--accent-soft); }
+.comparison-table td.is-best strong, .comparison-table td.is-best > span:first-child { color: var(--accent-dark); }
+.compare-cell-list { display: grid; gap: 8px; }
+.compare-cell-list a { color: var(--ink); font-weight: 650; text-decoration: none; }
+.compare-cell-list a:hover { color: var(--accent); text-decoration: underline; }
+.compare-sub { display: block; margin-top: 2px; color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.compare-empty { color: var(--subtle); }

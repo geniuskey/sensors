@@ -6,6 +6,8 @@ let sortState = { key: 'release_year', direction: 'desc' };
 let visibleCount = window.matchMedia('(max-width: 720px)').matches ? 24 : 60;
 let currentChips = [];
 let makerLabelByKey = new Map();
+const compareIds = new Set();
+const compareRoleOrder = ['Rear Main', 'Rear Ultra-wide', 'Rear Telephoto', 'Rear Macro', 'Rear Depth', 'Rear Night', 'Rear Unknown', 'Front Main', 'Front Ultra-wide'];
 
 async function getPhones() {
   try {
@@ -148,7 +150,9 @@ function render(resetList = false) {
   qs('#rows').innerHTML = shown.map((phone) => {
     const cameras = phone.cameras || [];
     const uniqueSensors = new Set(cameras.map((camera) => camera.sensor_id || camera.sensor).filter(Boolean)).size;
-    return '<tr><td class="phone-maker-cell" data-label="Phone manufacturer"><span class="maker-label">' + esc(phoneMakerLabel(phone)) + '</span></td>' +
+    const selected = compareIds.has(phone.canonical_id);
+    return '<tr class="' + (selected ? 'is-selected' : '') + '"><td class="check-col"><input class="compare-check" type="checkbox" data-compare="' + esc(phone.canonical_id) + '" aria-label="Select ' + esc(phone.model) + ' for comparison"' + (selected ? ' checked' : '') + '></td>' +
+      '<td class="phone-maker-cell" data-label="Phone manufacturer"><span class="maker-label">' + esc(phoneMakerLabel(phone)) + '</span></td>' +
       '<td class="phone-model-cell"><button class="phone-model-link" type="button" data-open-phone="' + esc(phone.canonical_id) + '">' + esc(phone.model) + '</button><span class="phone-canonical-id">' + esc(phone.canonical_id || '') + '</span></td>' +
       '<td class="number-cell" data-label="Year">' + esc(phone.release_year || '—') + '</td>' +
       '<td class="phone-soc-cell" data-label="SoC">' + esc(phone.soc || '—') + '</td>' +
@@ -162,6 +166,97 @@ function render(resetList = false) {
   qs('#results-count').textContent = 'Showing ' + shown.length.toLocaleString() + ' of ' + filtered.length.toLocaleString();
   qs('#show-more').hidden = shown.length >= filtered.length;
   updateSortIndicators();
+  updateComparisonBar();
+}
+function updateComparisonBar() {
+  const count = compareIds.size;
+  qs('#compare-bar').hidden = count === 0;
+  qs('#compare-count').textContent = count + (count === 1 ? ' phone selected' : ' phones selected');
+  qs('#compare-notice').textContent = count < 4 ? 'Select up to 4 phones to compare.' : 'Comparison limit reached.';
+  qs('#open-comparison').disabled = count < 2;
+  const url = new URL(location.href);
+  const value = Array.from(compareIds).join(',');
+  if ((url.searchParams.get('compare') || '') === value) return;
+  if (value) url.searchParams.set('compare', value);
+  else url.searchParams.delete('compare');
+  history.replaceState(history.state, '', url);
+}
+function cameraRole(camera) {
+  return String(camera.role || '').trim() || 'Unspecified';
+}
+function roleRank(role) {
+  const parts = role.split(' + ');
+  const index = compareRoleOrder.indexOf(parts[0]);
+  const base = index >= 0 ? index : role.startsWith('Rear') ? compareRoleOrder.indexOf('Front Main') - 0.5 : role.startsWith('Front') ? compareRoleOrder.length : compareRoleOrder.length + 1;
+  return base + (parts.length > 1 ? 0.25 : 0);
+}
+function sensorInches(size) {
+  const text = String(size || '').trim();
+  const fraction = text.match(/^1\s*\/\s*(\d+(?:\.\d+)?)/);
+  if (fraction) return 1 / Number(fraction[1]);
+  const whole = text.match(/^(\d+(?:\.\d+)?)\s*(?:"|″|inch)?$/);
+  return whole ? Number(whole[1]) : null;
+}
+function cameraSpec(camera) {
+  return [camera.resolution_mp == null ? '' : formatNumber(camera.resolution_mp) + ' MP', camera.sensor_size, camera.pixel_size_um ? formatNumber(camera.pixel_size_um, 2) + ' µm' : ''].filter(Boolean).join(' · ');
+}
+function compareCamera(camera) {
+  const sensorName = camera.sensor || camera.sensor_id || 'Unknown sensor';
+  const spec = cameraSpec(camera);
+  return '<div><a href="/catalog/?q=' + encodeURIComponent(sensorName) + '">' + esc(sensorName) + '</a>' + (spec ? '<span class="compare-sub">' + esc(spec) + '</span>' : '') + '</div>';
+}
+function bestCamera(phone, score) {
+  return (phone.cameras || []).reduce((best, camera) => {
+    const value = score(camera);
+    return value != null && Number.isFinite(value) && (!best || value > best.value) ? { camera, value } : best;
+  }, null);
+}
+function comparisonMarkup(phones) {
+  const empty = '<span class="compare-empty">—</span>';
+  const hasScore = (phone) => phone.camera_score != null && phone.camera_score !== '';
+  const sensorCount = (phone) => new Set((phone.cameras || []).map((camera) => camera.sensor_id || camera.sensor).filter(Boolean)).size;
+  const largest = (phone) => bestCamera(phone, (camera) => sensorInches(camera.sensor_size));
+  const sharpest = (phone) => bestCamera(phone, (camera) => camera.resolution_mp == null || camera.resolution_mp === '' ? null : Number(camera.resolution_mp));
+  const bestSub = (best) => '<span class="compare-sub">' + esc([best.camera.sensor || best.camera.sensor_id, cameraRole(best.camera)].filter(Boolean).join(' · ')) + '</span>';
+  const rows = [
+    { label: 'Phone maker', cell: (phone) => esc(phoneMakerLabel(phone)) },
+    { label: 'Release year', cell: (phone) => phone.release_year ? esc(phone.release_year) : empty },
+    { label: 'SoC', cell: (phone) => phone.soc ? esc(phone.soc) : empty },
+    { label: 'DXOMARK score', value: (phone) => hasScore(phone) ? Number(phone.camera_score) : null, cell: (phone) => hasScore(phone) ? '<strong>' + esc(formatNumber(phone.camera_score)) + '</strong>' + (phone.camera_protocol ? '<span class="compare-sub">' + esc(phone.camera_protocol) + '</span>' : '') : empty },
+    { label: 'Mapped sensors', value: sensorCount, cell: (phone) => '<strong>' + sensorCount(phone) + '</strong>' },
+  ];
+  const roles = Array.from(new Set(phones.flatMap((phone) => (phone.cameras || []).map(cameraRole)))).sort((a, b) => roleRank(a) - roleRank(b) || a.localeCompare(b));
+  roles.forEach((role) => rows.push({ label: role, cell: (phone) => {
+    const cameras = (phone.cameras || []).filter((camera) => cameraRole(camera) === role);
+    return cameras.length ? '<div class="compare-cell-list">' + cameras.map(compareCamera).join('') + '</div>' : empty;
+  } }));
+  rows.push(
+    { label: 'Largest sensor', value: (phone) => largest(phone)?.value ?? null, cell: (phone) => {
+      const best = largest(phone);
+      return best ? '<strong>' + esc(best.camera.sensor_size) + '</strong>' + bestSub(best) : empty;
+    } },
+    { label: 'Highest resolution', value: (phone) => sharpest(phone)?.value ?? null, cell: (phone) => {
+      const best = sharpest(phone);
+      return best ? '<strong>' + esc(formatNumber(best.value)) + ' MP</strong>' + bestSub(best) : empty;
+    } },
+  );
+  const body = rows.map((row) => {
+    const values = row.value ? phones.map(row.value) : [];
+    const known = values.filter((value) => value != null && Number.isFinite(value));
+    const top = known.length > 1 && new Set(known).size > 1 ? Math.max(...known) : null;
+    return '<tr><th scope="row">' + esc(row.label) + '</th>' + phones.map((phone, index) => '<td' + (top != null && values[index] === top ? ' class="is-best"' : '') + '>' + row.cell(phone) + '</td>').join('') + '</tr>';
+  }).join('');
+  return '<table class="comparison-table"><thead><tr><th scope="col">Specification</th>' + phones.map((phone) => '<th scope="col"><span class="compare-maker">' + esc(phoneMakerLabel(phone)) + '</span><strong>' + esc(phone.model) + '</strong><button class="remove-compare" type="button" data-remove-compare="' + esc(phone.canonical_id) + '" aria-label="Remove ' + esc(phone.model) + ' from comparison">Remove</button></th>').join('') + '</tr></thead><tbody>' + body + '</tbody></table>';
+}
+function comparisonTable() {
+  const phones = Array.from(compareIds).map((id) => phoneRows.find((phone) => phone.canonical_id === id)).filter(Boolean);
+  qs('#compare-subtitle').textContent = phones.length + ' phones · camera sensors at a glance';
+  qs('#comparison-content').innerHTML = comparisonMarkup(phones);
+}
+function openComparison() {
+  if (compareIds.size < 2) return;
+  comparisonTable();
+  if (!qs('#compare-dialog').open) qs('#compare-dialog').showModal();
 }
 function clearFilters() {
   qs('#q').value = '';
@@ -255,6 +350,32 @@ qs('#phone-table').addEventListener('click', (event) => {
   const button = event.target.closest('[data-open-phone]');
   if (button) showPhone(button.dataset.openPhone);
 });
+qs('#phone-table').addEventListener('change', (event) => {
+  const input = event.target.closest('[data-compare]');
+  if (!input) return;
+  const id = input.dataset.compare;
+  if (input.checked) {
+    if (compareIds.size >= 4) {
+      qs('#compare-notice').textContent = 'You can compare up to 4 phones. Remove one to add another.';
+      input.checked = false;
+      return;
+    }
+    compareIds.add(id);
+  } else compareIds.delete(id);
+  render();
+});
+qs('#clear-comparison').addEventListener('click', () => { compareIds.clear(); render(); });
+qs('#open-comparison').addEventListener('click', openComparison);
+qs('#close-comparison').addEventListener('click', () => qs('#compare-dialog').close());
+qs('#compare-dialog').addEventListener('click', (event) => {
+  if (event.target === qs('#compare-dialog')) qs('#compare-dialog').close();
+  const remove = event.target.closest('[data-remove-compare]');
+  if (!remove) return;
+  compareIds.delete(remove.dataset.removeCompare);
+  render();
+  if (compareIds.size < 2) qs('#compare-dialog').close();
+  else comparisonTable();
+});
 qs('#sort-select').addEventListener('change', (event) => {
   const [key, direction] = event.target.value.split(':');
   sortState = { key, direction };
@@ -287,8 +408,10 @@ window.addEventListener('resize', () => {
     phoneRows = await getPhones();
     makeFacets();
     const phoneToOpen = applyUrlFilters();
+    (new URLSearchParams(location.search).get('compare') || '').split(',').filter((id) => phoneRows.some((phone) => phone.canonical_id === id)).slice(0, 4).forEach((id) => compareIds.add(id));
     render();
     if (phoneToOpen) showPhone(phoneToOpen, false);
+    openComparison();
   } catch (_) {
     qs('#status').textContent = 'Could not load the phone catalog. Please refresh to try again.';
     qs('#empty-state').hidden = false;
