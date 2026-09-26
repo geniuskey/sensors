@@ -132,7 +132,9 @@ function isMainCamera(camera) {
   return /\bRear Main\b/i.test(camera.role || '');
 }
 
-function yearGroups(phones, minimum = 3) {
+const TREND_MIN_MAPPINGS = 10, TREND_MIN_MAIN = 3;
+
+function yearGroups(phones, minimum = TREND_MIN_MAPPINGS) {
   const groups = new Map();
   phones.forEach((phone) => {
     const year = Number(phone.release_year);
@@ -165,12 +167,12 @@ function mainCameraMedians(groups, value) {
   return groups.map(({ year, cameras }) => {
     const values = cameras.filter(isMainCamera).map(value).filter((item) => Number(item) > 0).map(Number);
     return { year, value: median(values), n: values.length };
-  }).filter((row) => row.n);
+  }).filter((row) => row.n >= TREND_MIN_MAIN);
 }
 
 function renderShareChart(target, share) {
-  const w = 680, h = 300, p = { l: 44, r: 8, t: 12, b: 48 };
-  const pw = w - p.l - p.r, ph = h - p.t - p.b, band = pw / share.rows.length, bar = Math.min(44, band * 0.64);
+  const w = 1100, h = 320, p = { l: 48, r: 8, t: 12, b: 48 };
+  const pw = w - p.l - p.r, ph = h - p.t - p.b, band = pw / share.rows.length, bar = Math.min(44, band * 0.56);
   const Y = (ratio) => h - p.b - ratio * ph;
   let svg = `<svg viewBox="0 0 ${w} ${h}" role="group" aria-label="Sensor manufacturer share of camera mappings by phone release year">`;
   [0, 0.25, 0.5, 0.75, 1].forEach((ratio) => {
@@ -201,21 +203,20 @@ function renderTrendLine(target, rows, years, options) {
     qs(target).innerHTML = '<div class="chart-empty">No main camera data for these years.</div>';
     return;
   }
-  const w = 340, h = 230, p = { l: 48, r: 14, t: 30, b: 30 };
+  const w = 400, h = 240, p = { l: 52, r: 16, t: 14, b: 30 };
   const pw = w - p.l - p.r, ph = h - p.t - p.b, first = years[0], last = years[years.length - 1];
   const values = rows.map((row) => row.value);
   let lo, hi, ticks;
   if (options.ticks) {
-    const pad = (Math.max(...values) - Math.min(...values)) * 0.12 || Math.max(...values) * 0.1;
-    lo = Math.min(...values) - pad; hi = Math.max(...values) + pad;
+    lo = Math.min(...values, ...(options.domain || [])); hi = Math.max(...values, ...(options.domain || []));
+    const pad = (hi - lo) * 0.08; lo -= pad; hi += pad;
     ticks = options.ticks.filter((value) => value >= lo && value <= hi);
-  } else ({ lo, hi, ticks } = axisScale(values, {}));
+  } else ({ lo, hi, ticks } = axisScale([...values, ...(options.domain || [])], {}));
   const X = (year) => p.l + (last === first ? 0.5 : (year - first) / (last - first)) * pw;
   const Y = (value) => h - p.b - (value - lo) / (hi - lo) * ph;
   const format = options.format || ((value) => number(value, 2));
   const step = Math.ceil(years.length / 5);
   let svg = `<svg viewBox="0 0 ${w} ${h}" role="group" aria-label="${esc(options.label)} by phone release year">`;
-  svg += `<text class="chart-axis" x="${p.l - 40}" y="12">${esc(options.label)}</text>`;
   ticks.forEach((value) => {
     const y = Y(value).toFixed(1);
     svg += `<line class="chart-gridline" x1="${p.l}" x2="${w - p.r}" y1="${y}" y2="${y}"/><text class="chart-tick" x="${p.l - 8}" y="${y}" dy=".32em" text-anchor="end">${esc(format(value))}</text>`;
@@ -226,9 +227,9 @@ function renderTrendLine(target, rows, years, options) {
   svg += `<line class="chart-baseline" x1="${p.l}" x2="${w - p.r}" y1="${h - p.b}" y2="${h - p.b}"/>`;
   svg += `<polyline class="trend-line" points="${rows.map((row) => `${X(row.year).toFixed(1)},${Y(row.value).toFixed(1)}`).join(' ')}" stroke="${options.color}"/>`;
   rows.forEach((row) => {
-    const x = X(row.year).toFixed(1), y = Y(row.value).toFixed(1), sparse = row.n < 3;
+    const x = X(row.year).toFixed(1), y = Y(row.value).toFixed(1);
     const title = `${row.year} · ${options.label}`, detail = `Median ${format(row.value)}${options.unit || ''} · ${row.n} main camera${row.n === 1 ? '' : 's'}`;
-    svg += `<g class="chart-point" tabindex="0" role="img" data-tooltip-title="${esc(title)}" data-tooltip-detail="${esc(detail)}" aria-label="${esc(title)}: ${esc(detail)}"><circle class="chart-hit" cx="${x}" cy="${y}" r="8"/><circle class="chart-dot" cx="${x}" cy="${y}" r="4" fill="${sparse ? '#fff' : options.color}" stroke="${sparse ? options.color : '#fff'}" stroke-width="${sparse ? 1.5 : 1}"/></g>`;
+    svg += `<g class="chart-point" tabindex="0" role="img" data-tooltip-title="${esc(title)}" data-tooltip-detail="${esc(detail)}" aria-label="${esc(title)}: ${esc(detail)}"><circle class="chart-hit" cx="${x}" cy="${y}" r="8"/><circle class="chart-dot" cx="${x}" cy="${y}" r="4" fill="${options.color}" stroke="#fff" stroke-width="1"/></g>`;
   });
   qs(target).innerHTML = svg + '</svg>';
 }
@@ -241,10 +242,11 @@ function renderTrends(phones) {
   }
   const years = groups.map((group) => group.year);
   qs('#trend-range').textContent = ` (${years[0]}–${years[years.length - 1]})`;
+  qs('#trend-min').textContent = TREND_MIN_MAPPINGS;
   renderShareChart('#share-chart', manufacturerShare(groups));
-  renderTrendLine('#mp-trend-chart', mainCameraMedians(groups, (camera) => camera.resolution_mp), years, { label: 'Resolution (MP)', unit: ' MP', color: TREND_COLORS[0], format: (value) => number(value, 1) });
-  renderTrendLine('#pitch-trend-chart', mainCameraMedians(groups, (camera) => camera.pixel_size_um), years, { label: 'Pixel pitch (µm)', unit: ' µm', color: TREND_COLORS[2] });
-  renderTrendLine('#format-trend-chart', mainCameraMedians(groups, (camera) => parseOpticalFormat(camera.sensor_size)), years, { label: 'Optical format (inch)', color: TREND_COLORS[1], ticks: FORMAT_TICKS, format: formatOptical });
+  renderTrendLine('#mp-trend-chart', mainCameraMedians(groups, (camera) => camera.resolution_mp), years, { label: 'Resolution (MP)', unit: ' MP', domain: [0], color: TREND_COLORS[0], format: (value) => number(value, 1) });
+  renderTrendLine('#pitch-trend-chart', mainCameraMedians(groups, (camera) => camera.pixel_size_um), years, { label: 'Pixel pitch (µm)', unit: ' µm', domain: [0], color: TREND_COLORS[2] });
+  renderTrendLine('#format-trend-chart', mainCameraMedians(groups, (camera) => parseOpticalFormat(camera.sensor_size)), years, { label: 'Optical format (inch)', color: TREND_COLORS[1], ticks: FORMAT_TICKS, domain: [1 / 3, 1], format: formatOptical });
 }
 
 function dxomarkSearchTerm(point, sensors) {
