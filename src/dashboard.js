@@ -54,6 +54,24 @@ function makerTally(points) {
   return [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
 }
 
+const phoneCount = (sensor) => Number(sensor.phone_count) || 0;
+const byUsage = (a, b) => phoneCount(b) - phoneCount(a) || a.canonical_name.localeCompare(b.canonical_name);
+
+function sensorLabel(sensor) {
+  return sensor.canonical_name.toLowerCase().includes(String(sensor.manufacturer).toLowerCase()) ? sensor.canonical_name : `${sensor.manufacturer} ${sensor.canonical_name}`;
+}
+
+function sensorSummary(sensor) {
+  const size = sensor.sensor_size ? (String(sensor.sensor_size).endsWith('"') ? sensor.sensor_size : `${sensor.sensor_size}"`) : '';
+  const count = phoneCount(sensor);
+  return [size, count ? `${count} phone${count === 1 ? '' : 's'}` : 'no phones mapped'].filter(Boolean).join(' · ');
+}
+
+function sensorExtra(sensor) {
+  const years = sensor.first_year && sensor.latest_year ? (sensor.first_year === sensor.latest_year ? String(sensor.first_year) : `${sensor.first_year}–${sensor.latest_year}`) : '';
+  return [years, sensor.pixel_binning, sensor.af, sensor.hdr].filter(Boolean).join(' · ');
+}
+
 function groupedPoints(valid, xKey, yKey, X, Y, options) {
   const groups = new Map();
   valid.forEach((point) => {
@@ -65,12 +83,16 @@ function groupedPoints(valid, xKey, yKey, X, Y, options) {
     const xv = Number(points[0][xKey]), yv = Number(points[0][yKey]);
     const tally = makerTally(points), nearby = valid.filter((point) => near(Number(point[xKey]), xv, 1.1) && near(Number(point[yKey]), yv, 1.25));
     const color = options.makerColor(tally[0][0]);
-    const names = points.map((point) => point.canonical_name).sort();
+    const ranked = points.slice().sort(byUsage);
+    const others = nearby.filter((point) => !points.includes(point) && phoneCount(point) > 0).sort(byUsage).slice(0, 3);
     const title = `${number(yv, 1)} MP · ${number(xv, 2)} µm — ${points.length} sensor${points.length === 1 ? '' : 's'}`;
     const detail = [
-      tally.map(([name, count]) => `${name} ${count}`).join(' · '),
-      names.slice(0, 6).join(', ') + (names.length > 6 ? ` +${names.length - 6} more` : ''),
-      nearby.length > points.length ? `Nearby (±10% pitch, ±25% MP): ${nearby.length} sensors — ` + makerTally(nearby).slice(0, 4).map(([name, count]) => `${name} ${count}`).join(' · ') : ''
+      points.length > 1 ? tally.map(([name, count]) => `${name} ${count}`).join(' · ') : '',
+      ...ranked.slice(0, 6).map((sensor) => `${sensorLabel(sensor)} · ${sensorSummary(sensor)}`),
+      ranked.length > 6 ? `+${ranked.length - 6} more` : '',
+      points.length === 1 ? sensorExtra(points[0]) : '',
+      nearby.length > points.length ? `Nearby (±10% pitch, ±25% MP): ${nearby.length} sensors — ` + makerTally(nearby).slice(0, 4).map(([name, count]) => `${name} ${count}`).join(' · ') : '',
+      others.length ? 'Also nearby: ' + others.map((sensor) => `${sensorLabel(sensor)} (${phoneCount(sensor)})`).join(', ') : ''
     ].filter(Boolean).join('\n');
     const href = points.length === 1 ? options.href(points[0]) : catalogUrl({ min: yv, max: yv });
     const x = X(xv).toFixed(1), y = Y(yv).toFixed(1), r = Math.min(3.5 + Math.sqrt(points.length - 1) * 1.8, 11);
