@@ -150,17 +150,6 @@ function renderScatter(target, data, xKey, yKey, xLabel, yLabel, options = {}) {
   qs(target).innerHTML = svg;
 }
 
-function renderManufacturers(manufacturers) {
-  const sorted = [...manufacturers].sort((a, b) => Number(b.count) - Number(a.count) || a.name.localeCompare(b.name));
-  const max = Math.max(...sorted.map((item) => Number(item.count) || 0), 1);
-  qs('#maker-total').textContent = `${sorted.length} manufacturers`;
-  qs('#maker-chart').innerHTML = '<div class="bar-chart">' + sorted.map((maker) => {
-    const width = 100 * Number(maker.count) / max;
-    const href = catalogUrl({ manufacturer: maker.name });
-    return `<a class="bar-row" href="${esc(href)}" aria-label="Browse ${esc(maker.count)} ${esc(maker.name)} sensors"><span>${esc(maker.name)}</span><span class="bar-track"><i style="width:${width}%"></i></span><b>${number(maker.count, 0)}</b></a>`;
-  }).join('') + '</div>';
-}
-
 const TREND_COLORS = ['#3b5bfd', '#7c5cf0', '#0ea5a4', '#f08a3c', '#e5487a'];
 const OTHER_COLOR = '#94a3b8';
 const MAKER_COLORS = { Sony: '#111111', Samsung: '#1428a0', OmniVision: '#00a3e0', GalaxyCore: '#f28c28', SmartSens: '#e60012' };
@@ -416,7 +405,6 @@ async function init() {
       hitRadius: 8,
       dotRadius: 5
     });
-    renderManufacturers(dashboard.manufacturers || []);
     renderTrends(phones);
     qs('.chart-controls').addEventListener('click', (event) => {
       const button = event.target.closest('[data-dx-filter]');
