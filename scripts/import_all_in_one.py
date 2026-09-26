@@ -12,6 +12,8 @@ EXPORTS=ROOT/'exports'
 VERIFIED_MAPPINGS=EXPORTS/'verified-mapping-additions-2026-09-26.csv'
 ROLE_UPDATES=EXPORTS/'verified-role-updates-2026-09-26.csv'
 UNKNOWN_ROLES=('','unknown','unspecified')
+REVIEW=ROOT/'data/review'
+SENSOR_FIELDS=('Marketing_Name','Internal_Code','Naming_Status','Resolution_MP','Resolution_Px','Sensor_Size','Pixel_Size_um','Pixel_Binning','FWC','AF','HDR','CFA','Two_Layer_Transistor','Transfer_Gate','Source_URL','Source_Type','Notes','First_Listed_Year','Sensor_Confidence','Additional_Source_URL','Aliases')
 PUBLIC.mkdir(parents=True,exist_ok=True); EXPORTS.mkdir(parents=True,exist_ok=True)
 
 def clean(v): return (v or '').strip()
@@ -162,6 +164,111 @@ def derive_roles(rows):
     print(f'Derived {derived} camera roles from existing phone/sensor mappings')
     return rows
 
+def read_review(name):
+    path=REVIEW/name
+    if not path.exists(): return []
+    with path.open(encoding='utf-8-sig',newline='') as f: return list(csv.DictReader(f))
+
+def require_source(u,label):
+    if not clean(u.get('Source_URL')).startswith('https://') or clean(u.get('Confidence')) not in ('High','Medium'):
+        raise ValueError(f'Review row lacks an https source or valid confidence: {label}')
+
+def split_phone_ids(rows):
+    splits={(identity_key(u['OEM']),identity_key(u['Phone'])):(clean(u['Old_ID']),clean(u['New_ID'])) for u in read_review('phone-id-splits-2026-09-26.csv')}
+    moved=0
+    for r in rows:
+        key=(identity_key(r['OEM']),identity_key(r['Phone']))
+        if clean(r['Phone']) and key in splits:
+            old,new=splits[key]
+            if phone_id(r) not in (old,new): raise ValueError(f"Phone split expects {old}: {r['Phone']} is {phone_id(r)}")
+            r['Phone_Canonical_ID']=new; moved+=1
+    print(f'Moved {moved} mapping rows to split phone IDs')
+    return rows
+
+def apply_sensor_decisions(rows):
+    decisions=[u for u in read_review('sensor-decisions-2026-09-26.csv') if clean(u['Action']) in ('merge','set_spec','add_alias')]
+    templates={}
+    for r in rows: templates.setdefault(clean(r['Canonical_ID']),r)
+    sensor_cols=[c for c in rows[0] if c in SENSOR_FIELDS]
+    for u in decisions:
+        action=clean(u['Action']); cid=clean(u['Canonical_ID']); require_source(u,f'{action} {cid}')
+        if cid not in templates: raise ValueError(f'Sensor decision targets unknown sensor: {cid}')
+        if action=='merge':
+            target=clean(u['Target_Canonical_ID'])
+            if target not in templates: raise ValueError(f'Merge target missing: {target}')
+            base=templates[target]
+            rows=[r for r in rows if clean(r['Canonical_ID'])!=cid or clean(r['Phone'])]
+            for r in rows:
+                if clean(r['Canonical_ID'])==cid: r.update({c:base[c] for c in sensor_cols}); r['Canonical_ID']=target
+            for r in rows:
+                if clean(r['Canonical_ID'])==target and cid.split(':',1)[1] not in split_aliases(r['Aliases']):
+                    r['Aliases']='; '.join(split_aliases(r['Aliases'])+[cid.split(':',1)[1]])
+            del templates[cid]
+        elif action=='add_alias':
+            for r in rows:
+                if clean(r['Canonical_ID'])==cid and clean(u['New_Value']) not in split_aliases(r['Aliases']):
+                    r['Aliases']='; '.join(split_aliases(r['Aliases'])+[clean(u['New_Value'])])
+        else:
+            field=clean(u['Field'])
+            if field not in SENSOR_FIELDS: raise ValueError(f'Unsupported sensor field: {field}')
+            note=f"{field} per {clean(u['Source_URL'])}"
+            for r in rows:
+                if clean(r['Canonical_ID'])==cid:
+                    r[field]=clean(u['New_Value'])
+                    if note not in r['Notes']: r['Notes']=(clean(r['Notes'])+' '+note+'.').strip()
+                    if not clean(r['Additional_Source_URL']): r['Additional_Source_URL']=clean(u['Source_URL'])
+    print(f'Applied {len(decisions)} reviewed sensor decisions')
+    return rows
+
+def apply_phone_updates(rows):
+    updates=read_review('phone-updates-2026-09-26.csv'); by_model={}
+    for u in updates:
+        require_source(u,u['Phone'])
+        by_model[identity_key(u['Phone'])]=u
+    filled=0
+    for r in rows:
+        u=by_model.get(identity_key(r['Phone'])) if clean(r['Phone']) else None
+        if not u: continue
+        if clean(u['Release_Year']) and not clean(r['Release_Year']): r['Release_Year']=clean(u['Release_Year']); filled+=1
+        if clean(u.get('SoC')) and not clean(r['SoC']): r['SoC'],r['SoC_Source_URL']=clean(u['SoC']),clean(u['Source_URL'])
+    print(f'Filled release years on {filled} mapping rows from {len(updates)} reviewed phones')
+    return rows
+
+def apply_mapping_review(rows,fieldnames):
+    review=[u for u in read_review('mapping-review-2026-09-26.csv') if clean(u['Action']) in ('remove','add','set_role','keep','wrong')]
+    for u in review:
+        action=clean(u['Action']); pcid=clean(u['Phone_Canonical_ID']); cid=clean(u['Sensor_Canonical_ID']); label=f"{action} {u['Phone']} / {cid}"
+        require_source(u,label)
+        match=[r for r in rows if clean(r['Phone']) and clean(r['Canonical_ID'])==cid and phone_id(r)==pcid]
+        if action=='remove':
+            if not match: raise ValueError(f'Nothing to remove: {label}')
+            rows=[r for r in rows if r not in match]
+        elif action=='add':
+            if match: continue
+            sensor=next((r for r in rows if clean(r['Canonical_ID'])==cid),None); phone=next((r for r in rows if clean(r['Phone']) and phone_id(r)==pcid),None)
+            if not sensor or not phone: raise ValueError(f'Cannot add mapping without existing sensor and phone: {label}')
+            row={c:(sensor[c] if c in SENSOR_FIELDS or c in ('Manufacturer','Sensor','Canonical_ID') else phone[c]) for c in fieldnames}
+            row.update(Camera_Role=clean(u['Camera_Role']) or 'Unknown',Mapping_Source_URL=clean(u['Source_URL']),Mapping_Source_Type='review',Mapping_Confidence=clean(u['Confidence']))
+            rows.append(row)
+        elif clean(u['Camera_Role']):
+            if not match: raise ValueError(f'Role review targets a missing mapping: {label}')
+            for r in match: r.update(Camera_Role=clean(u['Camera_Role']),Mapping_Source_URL=clean(u['Source_URL']),Mapping_Source_Type='review',Mapping_Confidence=clean(u['Confidence']))
+    print(f'Applied {len(review)} reviewed mapping decisions')
+    return rows
+
+def drop_redundant_unknown(rows):
+    known={(clean(r['Canonical_ID']),phone_id(r)) for r in rows if clean(r['Phone']) and clean(r['Camera_Role']).lower() not in UNKNOWN_ROLES}
+    before=len(rows)
+    rows=[r for r in rows if not (clean(r['Phone']) and clean(r['Camera_Role']).lower() in UNKNOWN_ROLES and (clean(r['Canonical_ID']),phone_id(r)) in known)]
+    print(f'Dropped {before-len(rows)} Unknown rows superseded by a known role')
+    return rows
+
+OEM_FIXES={'mate':'Huawei','pura':'Huawei','huawei':'Huawei','mi':'Xiaomi','pixel':'Google','black':'Black Shark','china':'China Mobile','blackview':'Blackview','honor':'HONOR','vivo':'vivo'}
+def normalize_oems(rows):
+    for r in rows:
+        if clean(r['Phone']): r['OEM']=OEM_FIXES.get(clean(r['OEM']).lower(),clean(r['OEM']))
+    return rows
+
 def add_source(cur,url,stype,title=''):
     if not url:return None
     cur.execute('INSERT OR IGNORE INTO sources(url,source_type,title) VALUES(?,?,?)',(url,source_type(stype),title))
@@ -171,7 +278,9 @@ if DB.exists(): DB.unlink()
 con=sqlite3.connect(DB); con.execute('PRAGMA foreign_keys=ON'); con.executescript(SCHEMA.read_text())
 with CSV.open(encoding='utf-8-sig',newline='') as f:
     reader=csv.DictReader(f); fieldnames=reader.fieldnames; rows=list(reader)
-rows=derive_roles(apply_role_updates(merge_verified_mappings(rows,fieldnames)))
+rows=apply_role_updates(merge_verified_mappings(rows,fieldnames))
+rows=normalize_oems(apply_sensor_decisions(split_phone_ids(rows)))
+rows=drop_redundant_unknown(derive_roles(apply_mapping_review(apply_phone_updates(rows),fieldnames)))
 cur=con.cursor(); sensor_ids={}; phone_ids={}
 for r in rows:
     maker=clean(r['Manufacturer']); cur.execute('INSERT OR IGNORE INTO manufacturers(name) VALUES(?)',(maker,)); mid=cur.execute('SELECT id FROM manufacturers WHERE name=?',(maker,)).fetchone()[0]
