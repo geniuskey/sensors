@@ -33,6 +33,16 @@ def source_type(v):
 def identity_key(v): return re.sub(r'[^a-z0-9]+','',((v or '').lower().replace('+',' plus ')))
 def phone_id(r): return clean(r['Phone_Canonical_ID']) or re.sub(r'[^a-z0-9]+','-',clean(r['Phone']).lower().replace('+',' plus ')).strip('-')
 
+PHONE_BRAND_PREFIX=re.compile(r'^(?:Samsung (?=Galaxy\b)|Apple (?=iPhone\b)|Sony (?=Xperia\b))',re.I)
+def strip_phone_brand(name): return PHONE_BRAND_PREFIX.sub('',clean(name))
+def normalize_phone_names(rows):
+    for r in rows:
+        old=clean(r['Phone']); new=strip_phone_brand(old)
+        if new==old: continue
+        if clean(r['Phone_Canonical_ID'])=='PHONE:'+identity_key(old).upper(): r['Phone_Canonical_ID']='PHONE:'+identity_key(new).upper()
+        r['Phone']=new
+    return rows
+
 def merge_verified_mappings(rows,fieldnames):
     if not VERIFIED_MAPPINGS.exists(): return rows
     # Keep the two Realme variants as separate phone entities. They previously
@@ -70,7 +80,7 @@ def merge_verified_mappings(rows,fieldnames):
         if len(matches)!=1:
             raise ValueError(f"Verified mapping sensor must match exactly once: {addition['Manufacturer']} {addition['Sensor']}")
         canonical_id=next(iter(matches))
-        model=clean(addition['Phone']); oem=clean(addition['OEM'])
+        model=strip_phone_brand(addition['Phone']); oem=clean(addition['OEM'])
         model_key=(identity_key(oem),identity_key(model))
         known_ids=phone_ids_by_model.get(model_key,set())
         if len(known_ids)>1:
@@ -281,7 +291,7 @@ def add_source(cur,url,stype,title=''):
 if DB.exists(): DB.unlink()
 con=sqlite3.connect(DB); con.execute('PRAGMA foreign_keys=ON'); con.executescript(SCHEMA.read_text())
 with CSV.open(encoding='utf-8-sig',newline='') as f:
-    reader=csv.DictReader(f); fieldnames=reader.fieldnames; rows=list(reader)
+    reader=csv.DictReader(f); fieldnames=reader.fieldnames; rows=normalize_phone_names(list(reader))
 rows=apply_role_updates(merge_verified_mappings(rows,fieldnames))
 rows=normalize_oems(apply_sensor_decisions(split_phone_ids(rows)))
 rows=drop_redundant_unknown(derive_roles(apply_mapping_review(apply_phone_updates(rows),fieldnames)))
