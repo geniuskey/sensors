@@ -18,6 +18,8 @@ The bootstrap catalog was assembled from multiple source families. Agents must k
 
 The CSV retains source URLs in `Source_URL`, `Additional_Source_URL`, `Mapping_Source_URL`, `SoC_Source_URL`, and `DXOMARK_Source_URL`. Importers register these URLs in the `sources` table.
 
+`exports/verified-role-updates-2026-09-26.csv` sets camera roles (and SoC when the same page states it) on existing phone-sensor mappings. Each row cites a Helpix page that explicitly ties the sensor to a camera module: the sensor page (`/isensor/<sensor>/`, role column) or the phone spec page (camera list naming the sensor). The importer rejects rows whose phone/sensor pair does not already exist, and only fills SoC when it is empty. Region-qualified Helpix entries, name aliases and sensor-variant/family pages are recorded as `Medium` confidence.
+
 ## Source priority
 
 For **sensor specifications**: official manufacturer > OEM technical publication > trusted specialist database > community/listing site.
