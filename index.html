@@ -3,12 +3,73 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Open mobile image sensor catalog: Sony, Samsung ISOCELL, OmniVision, SmartSens, GalaxyCore, SK hynix and more." />
+    <meta name="description" content="Explore mobile image sensor trends, specifications and manufacturer coverage." />
     <title>Mobile Image Sensor Database</title>
     <link rel="stylesheet" href="/src/style.css" />
   </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
+  <body class="overview-page">
+    <a class="skip-link" href="#overview">Skip to overview</a>
+    <main class="overview-shell" id="overview">
+      <header class="page-header overview-header">
+        <a class="brand-lockup brand-home" href="/" aria-label="Mobile Image Sensor Database home">
+          <span class="brand-mark" aria-hidden="true">CIS</span>
+          <span><span class="eyebrow">SENSORS.EUIYUN.COM <span class="live-dot"></span> LIVE CATALOG</span><strong class="brand-title">Mobile Image Sensor Database</strong></span>
+        </a>
+        <nav class="site-nav" aria-label="Main navigation">
+          <a class="is-current" href="/" aria-current="page">Overview</a>
+          <a href="/catalog/">Sensor catalog</a>
+        </nav>
+        <div class="header-actions">
+          <a class="button button-secondary" href="/data/all-in-one.csv">Download CSV</a>
+          <a class="button button-primary" href="https://github.com/geniuskey/sensors" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+        </div>
+      </header>
+
+      <section class="overview-intro" aria-labelledby="overview-title">
+        <div class="section-kicker">DATA OVERVIEW</div>
+        <h1 id="overview-title">A clearer view of mobile image sensors</h1>
+        <p>Explore the catalog by manufacturer, compare sensor specifications, and follow published camera scores back to the sensors in use.</p>
+        <a class="button button-primary" href="/catalog/">Browse the catalog <span aria-hidden="true">→</span></a>
+      </section>
+
+      <section class="stats overview-stats" aria-label="Catalog summary">
+        <a class="stat-card" href="/catalog/"><span class="stat-icon stat-blue" aria-hidden="true">◈</span><span><span id="sensors" class="metric">—</span><span class="label">Image sensors</span></span><span class="stat-arrow" aria-hidden="true">↗</span></a>
+        <a class="stat-card" href="/catalog/?mapped=mapped"><span class="stat-icon stat-violet" aria-hidden="true">▣</span><span><span id="phones" class="metric">—</span><span class="label">Mapped phones</span></span><span class="stat-arrow" aria-hidden="true">↗</span></a>
+        <a class="stat-card" href="/catalog/"><span class="stat-icon stat-teal" aria-hidden="true">◉</span><span><span id="makers" class="metric">—</span><span class="label">Manufacturers</span></span><span class="stat-arrow" aria-hidden="true">↗</span></a>
+        <a class="stat-card" href="/catalog/?mapped=mapped"><span class="stat-icon stat-amber" aria-hidden="true">↔</span><span><span id="mappings" class="metric">—</span><span class="label">Camera mappings</span></span><span class="stat-arrow" aria-hidden="true">↗</span></a>
+      </section>
+
+      <section class="dashboard-panel overview-dashboard" aria-labelledby="landscape-title">
+        <div class="overview-section-head">
+          <div><div class="section-kicker">EXPLORE THE DATA</div><h2 id="landscape-title">Sensor landscape</h2><p class="dashboard-intro">Select a point or manufacturer to open matching sensors in the catalog.</p></div>
+          <a class="text-link" href="/catalog/">Open sensor catalog <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="chart-grid">
+          <article class="chart-card">
+            <h3>Pixel pitch vs resolution</h3>
+            <p>Each point represents a sensor. Resolution uses a logarithmic scale.</p>
+            <div id="pitch-chart" class="chart-area" aria-live="polite"><div class="chart-empty">Loading sensor data…</div></div>
+            <p class="chart-hint">Select a point to open that sensor’s catalog details.</p>
+          </article>
+          <article class="chart-card">
+            <h3>DxOMark score vs mapped sensor pitch</h3>
+            <p>Phone scores are shown against the mean pixel pitch of mapped sensors.</p>
+            <div class="chart-controls" role="group" aria-label="Filter DxOMark protocols">
+              <button class="chart-filter is-active" type="button" data-dx-filter="all" aria-pressed="true">All protocols</button>
+              <button class="chart-filter" type="button" data-dx-filter="V5" aria-pressed="false">V5</button>
+              <button class="chart-filter" type="button" data-dx-filter="V6" aria-pressed="false">V6</button>
+            </div>
+            <div id="dxo-chart" class="chart-area" aria-live="polite"><div class="chart-empty">Loading score data…</div></div>
+            <p class="chart-hint">Select a point to browse sensors mapped to that phone.</p>
+          </article>
+          <article class="chart-card chart-wide">
+            <div class="maker-chart-head"><div><h3>Sensors by manufacturer</h3><p>Bars are ordered by sensor count. Select one to filter the catalog.</p></div><span id="maker-total" class="maker-total"></span></div>
+            <div id="maker-chart" class="chart-area"><div class="chart-empty">Loading manufacturer data…</div></div>
+          </article>
+        </div>
+      </section>
+      <footer class="page-footer"><span>Source-traceable mobile image sensor data</span><a href="https://github.com/geniuskey/sensors" target="_blank" rel="noopener noreferrer">How this catalog is maintained ↗</a></footer>
+    </main>
+    <script type="module" src="/src/dashboard.js"></script>
   </body>
 </html>

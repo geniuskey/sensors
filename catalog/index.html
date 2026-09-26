@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Search, filter and compare mobile image sensors and the phones that use them." />
+    <title>Sensor Catalog · Mobile Image Sensor Database</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body class="catalog-page">
+    <a class="skip-link" href="#catalog">Skip to sensor results</a>
+    <div class="app-shell" id="app-shell">
+      <aside class="filters" id="filters" aria-label="Sensor filters">
+        <div class="filter-head">
+          <div><span class="filter-kicker">REFINE CATALOG</span><h2>Filters</h2></div>
+          <button class="icon-button drawer-close" id="drawer-close" type="button" aria-label="Close filters">×</button>
+        </div>
+        <label class="field-label" for="q">Search</label>
+        <input id="q" class="text-field" type="search" name="search" autocomplete="off" spellcheck="false" placeholder="IMX989, GN3, S5KGN3…">
+
+        <fieldset class="filter-group"><legend>Manufacturer <span id="maker-hint" class="facet-hint">Top 5 selected</span></legend><div class="facet-list" id="manufacturer-facets"></div></fieldset>
+        <fieldset class="filter-group"><legend>Camera role <span class="facet-hint">select any</span></legend><div class="facet-list" id="role-facets"></div></fieldset>
+        <fieldset class="filter-group"><legend>Resolution <span class="unit-label">MP</span></legend>
+          <div class="range-fields"><label>Min<input id="min-mp" name="min-resolution" type="number" min="0" step="0.1" inputmode="decimal" autocomplete="off" aria-label="Minimum resolution in megapixels"></label><label>Max<input id="max-mp" name="max-resolution" type="number" min="0" step="0.1" inputmode="decimal" autocomplete="off" aria-label="Maximum resolution in megapixels"></label></div>
+        </fieldset>
+        <div class="filter-group"><label class="field-label" for="sensor-size">Optical format</label><select id="sensor-size" name="sensor-size" class="select-field"><option value="">Any sensor size</option></select></div>
+        <fieldset class="filter-group"><legend>Phone adoption</legend>
+          <label class="radio-option"><input type="radio" name="mapped" value="any" checked><span>Any sensor</span></label>
+          <label class="radio-option"><input type="radio" name="mapped" value="mapped"><span>Used in a mapped phone</span></label>
+          <label class="radio-option"><input type="radio" name="mapped" value="unmapped"><span>No phone mapping yet</span></label>
+        </fieldset>
+        <div class="filter-footer"><button class="button button-quiet" id="clear-filters" type="button">Clear all filters</button><span id="filter-count" class="filter-count">0 active</span></div>
+      </aside>
+      <button class="drawer-backdrop" id="drawer-backdrop" type="button" aria-label="Close filters" hidden></button>
+
+      <main class="workspace" id="main-content">
+        <header class="page-header">
+          <div class="brand-lockup"><a class="brand-mark" href="/" aria-label="Overview">CIS</a><div><div class="eyebrow">SENSORS.EUIYUN.COM <span class="live-dot"></span> LIVE CATALOG</div><h1>Sensor catalog</h1><p>Search, filter and compare sensors across mapped phones.</p></div></div>
+          <nav class="site-nav" aria-label="Main navigation"><a href="/">Overview</a><a class="is-current" href="/catalog/" aria-current="page">Sensor catalog</a></nav>
+          <div class="header-actions" aria-label="Catalog actions">
+            <button class="button button-filter" id="filter-toggle" type="button" aria-controls="filters" aria-expanded="true"><span aria-hidden="true">☷</span> Filters</button>
+            <a class="button button-secondary" href="/data/all-in-one.csv">Download CSV</a>
+            <a class="button button-primary" href="https://github.com/geniuskey/sensors" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
+          </div>
+        </header>
+
+        <section class="catalog-panel" id="catalog" aria-labelledby="catalog-title">
+          <div class="catalog-heading">
+            <div><div class="section-kicker">SENSOR CATALOG</div><h2 id="catalog-title">Browse & compare</h2><p class="status" id="status" role="status" aria-live="polite">Loading sensors…</p></div>
+            <label class="sort-select-wrap" for="sort-select">Sort by<select id="sort-select" name="sort"><option value="resolution_mp:desc">Resolution: high to low</option><option value="sensor_size:asc">Optical format: A to Z</option><option value="phone_count:desc">Phone adoption: most</option><option value="manufacturer:asc">Manufacturer: A to Z</option><option value="sensor:asc">Sensor name: A to Z</option><option value="latest_year:desc">Latest phone: newest</option></select></label>
+          </div>
+          <div id="active-filters" class="active-filters" aria-label="Active filters"></div>
+          <div class="tablewrap" id="tablewrap">
+            <table id="sensor-table">
+              <thead><tr>
+                <th class="check-col" scope="col"><span class="sr-only">Compare</span></th>
+                <th scope="col" data-sort="manufacturer" aria-sort="none"><button class="sort-button" data-sort="manufacturer" type="button">Maker <span aria-hidden="true">↕</span></button></th>
+                <th scope="col" data-sort="sensor" aria-sort="none"><button class="sort-button" data-sort="sensor" type="button">Sensor <span aria-hidden="true">↕</span></button></th>
+                <th scope="col" data-sort="internal_code" aria-sort="none"><button class="sort-button" data-sort="internal_code" type="button">Part / alias <span aria-hidden="true">↕</span></button></th>
+                <th scope="col" data-sort="resolution_mp" aria-sort="descending"><button class="sort-button" data-sort="resolution_mp" type="button">Resolution <span aria-hidden="true">↓</span></button></th>
+                <th scope="col" data-sort="sensor_size" aria-sort="none"><button class="sort-button" data-sort="sensor_size" type="button">Format <span aria-hidden="true">↕</span></button></th>
+                <th scope="col" data-sort="pixel_size_um" aria-sort="none"><button class="sort-button" data-sort="pixel_size_um" type="button">Pixel <span aria-hidden="true">↕</span></button></th>
+                <th scope="col" data-sort="roles" aria-sort="none"><button class="sort-button" data-sort="roles" type="button">Camera roles <span aria-hidden="true">↕</span></button></th>
+                <th scope="col" data-sort="phone_count" aria-sort="none"><button class="sort-button" data-sort="phone_count" type="button">Phones <span aria-hidden="true">↕</span></button></th>
+                <th scope="col" data-sort="latest_year" aria-sort="none"><button class="sort-button" data-sort="latest_year" type="button">Latest use <span aria-hidden="true">↕</span></button></th>
+                <th scope="col" class="open-col"><span class="sr-only">Details</span></th>
+              </tr></thead>
+              <tbody id="rows"></tbody>
+            </table>
+            <div id="empty-state" class="empty-state" hidden><div class="empty-mark" aria-hidden="true">⌕</div><h3>No sensors match these filters</h3><p>Try removing a filter or broadening your search.</p><button class="button button-secondary" id="empty-clear" type="button">Clear filters</button></div>
+          </div>
+        </section>
+        <section id="detail" class="detail-panel" aria-live="polite"></section>
+        <footer class="page-footer"><span>Source-traceable mobile image sensor data</span><a href="https://github.com/geniuskey/sensors" target="_blank" rel="noopener noreferrer">How this catalog is maintained ↗</a></footer>
+      </main>
+    </div>
+
+    <div id="compare-bar" class="compare-bar" hidden><div class="compare-bar-copy"><span class="compare-bar-icon" aria-hidden="true">⇄</span><div><strong id="compare-count">0 sensors selected</strong><span id="compare-notice" role="status" aria-live="polite">Select up to 4 sensors to compare.</span></div></div><div class="compare-bar-actions"><button class="button button-quiet" id="clear-comparison" type="button">Clear</button><button class="button button-primary" id="open-comparison" type="button" disabled>Compare sensors <span aria-hidden="true">→</span></button></div></div>
+    <dialog id="compare-dialog" class="compare-dialog" aria-labelledby="compare-title"><div class="dialog-head"><div><div class="section-kicker">SIDE-BY-SIDE</div><h2 id="compare-title">Sensor comparison</h2><p id="compare-subtitle"></p></div><button class="icon-button" id="close-comparison" type="button" aria-label="Close comparison">×</button></div><div class="compare-table-wrap" id="comparison-content"></div></dialog>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
