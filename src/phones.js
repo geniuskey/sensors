@@ -314,7 +314,6 @@ function showPhone(id, updateUrl = true) {
     '<div class="detail-grid phone-detail-grid">' + facts.map(([label, value]) => '<div class="detail-item"><span>' + esc(label) + '</span><strong>' + esc(value) + '</strong></div>').join('') + '</div>' +
     dxomarkSource +
     '<div class="phone-camera-detail"><h3>Image sensors by camera</h3>' + (cameras.length ? '<div class="camera-mapping-list">' + cameras.map(detailCamera).join('') + '</div>' : '<p class="phone-none">No image sensor mappings are available for this phone yet.</p>') + '</div>';
-  detail.hidden = false;
   if (updateUrl) {
     const url = new URL(location.href);
     if (url.searchParams.get('phone') !== id) {
@@ -322,7 +321,8 @@ function showPhone(id, updateUrl = true) {
       history.pushState({ phone: id }, '', url);
     }
   }
-  detail.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (!detail.open) detail.showModal();
+  detail.scrollTop = 0;
 }
 function setDrawer(open) {
   if (window.matchMedia('(max-width: 1020px)').matches) {
@@ -401,16 +401,19 @@ qs('#sort-select').addEventListener('change', (event) => {
   render(true);
 });
 qs('#phone-detail').addEventListener('click', (event) => {
-  if (!event.target.closest('[data-detail-close]')) return;
-  qs('#phone-detail').hidden = true;
+  if (event.target === event.currentTarget || event.target.closest('[data-detail-close]')) qs('#phone-detail').close();
+});
+qs('#phone-detail').addEventListener('close', () => {
   const url = new URL(location.href);
-  url.searchParams.delete('phone');
-  history.replaceState({}, '', url);
+  if (url.searchParams.has('phone')) {
+    url.searchParams.delete('phone');
+    history.replaceState({}, '', url);
+  }
 });
 window.addEventListener('popstate', () => {
   const id = new URLSearchParams(location.search).get('phone');
   if (id) showPhone(id, false);
-  else qs('#phone-detail').hidden = true;
+  else qs('#phone-detail').close();
 });
 appShell.addEventListener('keydown', (event) => { if (event.key === 'Escape') setDrawer(false); });
 if (window.matchMedia('(max-width: 1020px)').matches) qs('#filter-toggle').setAttribute('aria-expanded', 'false');

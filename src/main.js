@@ -314,7 +314,6 @@ function showDetail(id, updateUrl = true) {
     }
   }
   const detail = qs('#detail');
-  detail.hidden = false;
   detail.innerHTML = '<div class="detail-head"><div><div class="section-kicker">SENSOR DETAILS</div><h2>' + esc(row.sensor) + '</h2><p>' + esc(row.manufacturer) + ' · ' + esc(row.canonical_id) + ' · <a href="' + sensorPath(row) + '">Permalink</a></p></div><button class="icon-button" type="button" data-detail-close aria-label="Close sensor details">×</button></div>' +
     '<div class="detail-grid">' +
     '<div class="detail-item"><span>Resolution</span><strong>' + (row.resolution_mp == null ? '—' : formatNumber(row.resolution_mp) + ' MP') + '</strong></div>' +
@@ -335,7 +334,8 @@ function showDetail(id, updateUrl = true) {
     '<div class="detail-item"><span>Phone mappings</span><strong>' + Number(row.phone_count || 0).toLocaleString() + '</strong></div>' +
     '<div class="detail-item"><span>Example phones</span><strong>' + esc(row.example_phones || '—') + '</strong></div>' +
     '</div><div class="detail-extra"><h3>Aliases</h3><p>' + esc((row.aliases || []).join(' · ') || '—') + '</p><h3>Mapped phones (' + Number(row.phone_count || 0).toLocaleString() + ')</h3><ul>' + (row.phones || []).map((phone) => '<li>' + esc([phone.model, phone.year, 'Camera role: ' + phoneRole(phone), phone.confidence && ('confidence ' + phone.confidence)].filter(Boolean).join(' · ')) + '</li>').join('') + '</ul><h3>Notes</h3><p>' + esc(row.notes || '—') + '</p></div><div class="detail-source">' + (row.sources||[]).map(s=>'<a href="'+esc(s.url)+'" target="_blank" rel="noopener noreferrer">'+esc(s.type+' · '+s.relationship)+' ↗</a>').join('') + (row.source_url && !(row.sources||[]).length ? '<a href="' + esc(row.source_url) + '" target="_blank" rel="noopener noreferrer">Open source ↗</a>' : '') + '</div>';
-  detail.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (!detail.open) detail.showModal();
+  detail.scrollTop = 0;
 }
 function setDrawer(open) {
   if (window.matchMedia('(max-width: 1020px)').matches) {
@@ -438,19 +438,19 @@ window.addEventListener('storage', (event) => {
   render();
 });
 qs('#detail').addEventListener('click', (event) => {
-  if (event.target.closest('[data-detail-close]')) {
-    qs('#detail').hidden = true;
-    const url = new URL(location.href);
-    if (url.searchParams.has('sensor')) {
-      url.searchParams.delete('sensor');
-      history.replaceState({}, '', url);
-    }
+  if (event.target === event.currentTarget || event.target.closest('[data-detail-close]')) qs('#detail').close();
+});
+qs('#detail').addEventListener('close', () => {
+  const url = new URL(location.href);
+  if (url.searchParams.has('sensor')) {
+    url.searchParams.delete('sensor');
+    history.replaceState({}, '', url);
   }
 });
 window.addEventListener('popstate', () => {
   const id = new URLSearchParams(location.search).get('sensor');
   if (id) showDetail(id, false);
-  else qs('#detail').hidden = true;
+  else qs('#detail').close();
 });
 qs('#app-shell').addEventListener('keydown', (event) => {
   if (event.key === 'Escape') setDrawer(false);
