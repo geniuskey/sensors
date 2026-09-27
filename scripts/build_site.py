@@ -1,7 +1,7 @@
 from pathlib import Path
 from datetime import date
 from html import escape
-from urllib.parse import quote
+from urllib.parse import quote, urlparse
 import csv, json, re, shutil
 ROOT=Path(__file__).resolve().parents[1]; DIST=ROOT/'dist'; SITE='https://sensors.euiyun.com'; OG_IMAGE=SITE+'/images/image-sensor.png'
 if DIST.exists(): shutil.rmtree(DIST)
@@ -36,7 +36,7 @@ catalog=(ROOT/'sensors/index.html').read_text(encoding='utf-8')
 TOPBAR=re.search(r'<header class="topbar">.*?</header>',catalog,re.S).group(0)
 NAV_PLAIN=re.sub(r'<a class="is-current" href="([^"]+)" aria-current="page">',r'<a href="\1">',TOPBAR)
 def topbar(section): return NAV_PLAIN.replace(f'<a href="{section}">',f'<a class="is-current" href="{section}" aria-current="page">',1)
-FOOTER='<footer class="page-footer"><span>Source-traceable mobile image sensor data</span><span class="footer-links"><a href="/data/all-in-one.csv">Download CSV ↓</a><a href="https://github.com/geniuskey/sensors" target="_blank" rel="noopener noreferrer">How this catalog is maintained ↗</a></span></footer>'
+FOOTER='<footer class="page-footer"><span>Source-traceable mobile image sensor data</span><span class="footer-links"><a href="/sources/">Sources</a><a href="/data/all-in-one.csv">Download CSV ↓</a><a href="https://github.com/geniuskey/sensors" target="_blank" rel="noopener noreferrer">How this catalog is maintained ↗</a></span></footer>'
 
 def page(path, title, desc, section, crumbs, body, product):
     url=SITE+path
@@ -138,6 +138,42 @@ for p in phones:
     product={'@context':'https://schema.org','@type':'Product','name':model,'description':desc,'url':SITE+path,'image':OG_IMAGE,'sku':p['canonical_id'],'category':'Smartphone','brand':{'@type':'Brand','name':p.get('oem') or ''},'additionalProperty':[{'@type':'PropertyValue','name':c.get('role') or 'Camera','value':c.get('sensor') or ''} for c in cams]}
     if p.get('release_year'): product['releaseDate']=str(p['release_year'])
     write(path,page(path,title,desc,'/phones/',[('Home','/'),('Phones','/phones/'),(model,path)],body,product))
+
+SOURCE_INFO={
+    'helpix.ru':('Helpix','https://helpix.ru/','Smartphone camera sensor index used for sensor specs and phone-to-sensor mappings.'),
+    'spinformation.info':('SP Information','https://spinformation.info/','Image sensor specification sheets and camera module listings.'),
+    'www.dxomark.com':('DXOMARK','https://www.dxomark.com/smartphones/','Smartphone camera, display and battery test scores.'),
+    'www.gsmarena.com':('GSMArena','https://www.gsmarena.com/','Phone specification pages used to confirm camera sensors.'),
+    'www.smartsenstech.com':('SmartSens','https://www.smartsenstech.com/','Official SmartSens product pages.'),
+    'www.sony-semicon.com':('Sony Semiconductor Solutions','https://www.sony-semicon.com/','Official Sony image sensor product pages.'),
+    'semiconductor.samsung.com':('Samsung Semiconductor','https://semiconductor.samsung.com/image-sensor/','Official Samsung ISOCELL product pages.'),
+    'news.skhynix.com':('SK hynix Newsroom','https://news.skhynix.com/','SK hynix image sensor announcements.'),
+    'www.techinsights.com':('TechInsights','https://www.techinsights.com/','Teardown reports identifying camera sensors.'),
+}
+source_stats={}
+def tally(url, kind):
+    host=urlparse(url).netloc.lower()
+    if host: source_stats.setdefault(host,{'spec':0,'map':0,'score':0})[kind]+=1
+for s in sensors:
+    for x in s.get('sources') or []: tally(x['url'],'spec')
+for p in phones:
+    if p.get('dxomark_source_url'): tally(p['dxomark_source_url'],'score')
+    for c in p.get('cameras') or []:
+        if c.get('source_url'): tally(c['source_url'],'map')
+def cnt(v): return f'{v:,}' if v else '—'
+source_rows=''
+for host,st in sorted(source_stats.items(),key=lambda kv:-sum(kv[1].values())):
+    name,home,note=SOURCE_INFO.get(host,(host.removeprefix('www.'),f'https://{host}/',''))
+    source_rows+=f'<tr id="{slug(name)}"><td><a href="{e(home)}" target="_blank" rel="noopener noreferrer">{e(name)} ↗</a>'+(f'<p class="source-note">{e(note)}</p>' if note else '')+f'</td><td class="num">{cnt(st["spec"])}</td><td class="num">{cnt(st["map"])}</td><td class="num">{cnt(st["score"])}</td></tr>'
+sources_path='/sources/'; urls.append(sources_path)
+sources_desc=f'Sources behind the Mobile Image Sensor Database: {len(source_stats)} websites cited for image sensor specifications, phone camera mappings and DXOMARK scores.'
+sources_body=f'''<section class="detail-panel">
+        <div class="detail-head"><div><div class="section-kicker">REFERENCES</div><h1>Data sources</h1><p>Every sensor spec, camera mapping and score in this catalog links back to the page it came from. Counts show how many records cite each source.</p></div></div>
+        <div class="tablewrap"><table class="source-table"><thead><tr><th>Source</th><th class="num">Sensor specs</th><th class="num">Camera mappings</th><th class="num">DXOMARK scores</th></tr></thead><tbody>{source_rows}</tbody></table></div>
+        <p class="source-footnote">Product names and trademarks belong to their owners. Per-record source links are listed on each <a href="/sensors/">sensor</a> and <a href="/phones/">phone</a> page. Found an error? <a href="https://github.com/geniuskey/sensors/issues" target="_blank" rel="noopener noreferrer">Open an issue ↗</a></p>
+      </section>'''
+sources_ld={'@context':'https://schema.org','@type':'WebPage','name':'Data sources','description':sources_desc,'url':SITE+sources_path,'citation':[v[1] for v in SOURCE_INFO.values()]}
+write(sources_path,page(sources_path,'Data sources | Mobile Image Sensor Database',sources_desc,sources_path,[('Home','/'),('Sources',sources_path)],sources_body,sources_ld))
 
 redirects=[]
 for s in sensors:
