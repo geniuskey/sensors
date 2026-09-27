@@ -19,11 +19,13 @@ shutil.copytree(ROOT/'public/images',DIST/'images')
 shutil.copy2(ROOT/'public/favicon.svg',DIST/'favicon.svg')
 
 def slug(text): return re.sub(r'[^a-z0-9]+','-',str(text).lower().replace('+',' plus ')).strip('-')
-def sensor_slug(s): return slug(s['canonical_id'])
+def sensor_path(s):
+    maker, product_id = s['canonical_id'].split(':', 1)
+    return f'/sensors/{slug(maker)}/{slug(product_id)}/'
 def phone_path(p):
     maker=(p.get('oem') or '').strip() or 'Unknown'; model=p.get('model') or p['canonical_id'].removeprefix('PHONE:')
     if model.lower().startswith(maker.lower()+' '): model=model[len(maker)+1:]
-    return f'/phone/{slug(maker)}/{slug(model)}/'
+    return f'/phones/{slug(maker)}/{slug(model)}/'
 def e(v): return escape('' if v is None else str(v))
 def num(v, d=1): return '' if v in (None,'') else f'{float(v):.{d}f}'.rstrip('0').rstrip('.')
 def fmt_size(v): return f'{v}"' if v and not str(v).endswith('"') else (v or '')
@@ -84,7 +86,7 @@ def write(path, html):
 
 sensors=json.loads((ROOT/'public/data/sensors.json').read_text(encoding='utf-8'))
 phones=json.loads((ROOT/'public/data/phones.json').read_text(encoding='utf-8'))
-for kind,rows,fn in (('sensor',sensors,sensor_slug),('phone',phones,phone_path)):
+for kind,rows,fn in (('sensor',sensors,sensor_path),('phone',phones,phone_path)):
     seen={}
     for r in rows:
         s=fn(r)
@@ -97,7 +99,7 @@ for s in sensors:
     name=s.get('sensor') or s.get('marketing_name') or s['canonical_name']; maker=s.get('manufacturer') or ''; full=f'{maker} {name}'.strip()
     mp=num(s.get('resolution_mp')); size=fmt_size(s.get('sensor_size')); pitch=num(s.get('pixel_size_um'),2)
     headline=' '.join(x for x in (mp and mp+'MP', size) if x)
-    ps=s.get('phones') or []; path=f'/sensors/{sensor_slug(s)}/'; urls.append(path)
+    ps=s.get('phones') or []; path=sensor_path(s); urls.append(path)
     title=f'{full} — {headline+" " if headline else ""}mobile image sensor | Sensor Database'
     spec=', '.join(x for x in (mp and mp+' MP', size and size+' optical format', pitch and pitch+' µm pixels', s.get('af') and 'AF: '+s['af'], s.get('hdr') and 'HDR: '+s['hdr']) if x)
     desc=f'{full} image sensor specifications{": "+spec if spec else ""}. '+(f'Used in {len(ps)} phone{"s" if len(ps)!=1 else ""}, including {", ".join(p["model"] for p in ps[:3])}.' if ps else 'Camera roles, phone mappings and sources.')
@@ -125,7 +127,7 @@ for p in phones:
     def cam(c):
         sen=sensor_by_id.get(c.get('sensor_id')); nm=e(c.get('sensor') or c.get('sensor_id'))
         info=' · '.join(x for x in (c.get('sensor_manufacturer'), num(c.get('resolution_mp')) and num(c.get('resolution_mp'))+' MP', fmt_size(c.get('sensor_size')), num(c.get('pixel_size_um'),2) and num(c.get('pixel_size_um'),2)+' µm pixels') if x)
-        return f'<article class="camera-mapping-card"><div class="camera-mapping-head"><span class="role-tag">{e(c.get("role") or "Unspecified")}</span>{badge(c.get("confidence"))}</div><h3>'+(f'<a href="/sensors/{sensor_slug(sen)}/">{nm}</a>' if sen else nm)+f'</h3><p>{e(info or "Sensor specifications are not listed.")}</p>'+(f'<a class="mapping-source" href="{e(c["source_url"])}" target="_blank" rel="noopener noreferrer">Mapping source ↗</a>' if c.get('source_url') else '')+'</article>'
+        return f'<article class="camera-mapping-card"><div class="camera-mapping-head"><span class="role-tag">{e(c.get("role") or "Unspecified")}</span>{badge(c.get("confidence"))}</div><h3>'+(f'<a href="{sensor_path(sen)}">{nm}</a>' if sen else nm)+f'</h3><p>{e(info or "Sensor specifications are not listed.")}</p>'+(f'<a class="mapping-source" href="{e(c["source_url"])}" target="_blank" rel="noopener noreferrer">Mapping source ↗</a>' if c.get('source_url') else '')+'</article>'
     body=f'''<section class="detail-panel">
         <div class="detail-head"><div><div class="section-kicker">{e(p.get("oem") or "PHONE")} SMARTPHONE</div><h1>{e(model)}</h1><p>{e(p["canonical_id"])}</p></div></div>
         <div class="detail-grid phone-detail-grid">{items(facts)}</div>
@@ -136,7 +138,10 @@ for p in phones:
     write(path,page(path,title,desc,'/phones/',[('Home','/'),('Phones','/phones/'),(model,path)],body,product))
 
 redirects=[]
+for s in sensors:
+    redirects.append(f'/sensors/{slug(s["canonical_id"])}/ {sensor_path(s)} 301')
 for p in phones:
+    redirects.append(f'{phone_path(p).replace("/phones/", "/phone/", 1)} {phone_path(p)} 301')
     old_names=[p['model']]
     if p.get('oem') and not p['model'].lower().startswith(p['oem'].lower()+' '): old_names.append(f"{p['oem']} {p['model']}")
     redirects+=[f'/phone/{slug(n)}/ {phone_path(p)} 301' for n in old_names]

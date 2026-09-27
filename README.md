@@ -6,7 +6,7 @@ Open mobile image-sensor catalog and smartphone adoption database for `sensors.e
 
 - **GitHub**: provenance, migrations, reviewed source changes, exports.
 - **Cloudflare Pages**: static UI.
-- **Pages**: `/` is the interactive data overview; `/sensors/` is the searchable and comparable sensor catalog; `/phones/` is the searchable phone catalog with per-camera sensor mappings. They are separate static pages with regular links between them.
+- **Pages**: `/` is the interactive data overview; `/sensors/` is the searchable and comparable sensor catalog; `/phones/` is the searchable phone catalog with per-camera sensor mappings. Detail pages live at `/sensors/<maker>/<product-id>/` and `/phones/<oem>/<model>/`. They are separate static pages with regular links between them.
 - **Pages Functions**: read-only API.
 - **Cloudflare D1**: production serving database.
 - **Mac Studio / agents**: collectors, normalization, validation, PR creation.

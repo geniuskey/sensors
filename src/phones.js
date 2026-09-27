@@ -39,7 +39,7 @@ function phonePath(phone) {
   const maker = phoneMaker(phone);
   let model = phone.model || String(phone.canonical_id).replace(/^PHONE:/, '');
   if (model.toLowerCase().startsWith(maker.toLowerCase() + ' ')) model = model.slice(maker.length + 1);
-  return '/phone/' + slug(maker) + '/' + slug(model) + '/';
+  return '/phones/' + slug(maker) + '/' + slug(model) + '/';
 }
 function makerKey(value) {
   return String(value || '').trim().toLocaleLowerCase();
