@@ -686,6 +686,14 @@ th[aria-sort="ascending"] .sort-button span, th[aria-sort="descending"] .sort-bu
 .sc-options { top: calc(100% + 6px); right: auto; left: 0; width: 100%; }
 .sc-options .site-search-option { cursor: pointer; }
 .sc-mode { margin: 0; }
+.sc-calibration { margin-top: -8px; color: var(--muted); }
+.sc-calibration summary { width: fit-content; font-size: 12px; font-weight: 600; cursor: pointer; }
+.sc-calibration-fields { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 12px 16px; margin-top: 8px; padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--tint); }
+.sc-calibration-fields > label { display: grid; gap: 6px; color: var(--muted); font-size: 12px; font-weight: 600; }
+.sc-calibration-input, .sc-resolution-inputs { display: flex; align-items: center; gap: 7px; }
+.sc-calibration-input input { width: 104px; }
+.sc-resolution-inputs input { width: 104px; }
+.sc-calibration-fields > p { flex-basis: 100%; margin: 0; color: var(--subtle); font-size: 12px; font-weight: 400; }
 .sc-chips { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
 .sc-empty { grid-column: 1 / -1; padding: 12px 14px; border: 1px dashed var(--line-strong); border-radius: 12px; color: var(--muted); font-size: 13px; }
 .sc-empty a { margin-left: 4px; color: var(--accent); font-weight: 650; text-decoration: none; }
@@ -701,6 +709,8 @@ th[aria-sort="ascending"] .sort-button span, th[aria-sort="descending"] .sort-bu
 .sc-stage { display: grid; place-items: center; min-height: 160px; padding: 16px; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); background-image: linear-gradient(var(--line-soft) 1px, transparent 1px), linear-gradient(90deg, var(--line-soft) 1px, transparent 1px); background-size: 24px 24px; }
 .sc-stage.has-sensors.is-overlay { height: 360px; min-height: 0; }
 .sc-overlay { display: block; width: auto; height: 100%; max-width: 100%; }
+.sc-stage.is-life-size { height: auto; min-height: 160px; overflow: visible; }
+.sc-stage.is-life-size .sc-overlay { width: auto; height: auto; max-width: none; }
 .sc-rect { fill-opacity: .1; stroke-width: 2; transition: opacity .15s, fill-opacity .15s; }
 .sc-rect.is-duplicate { stroke-dasharray: 8 6; }
 .sc-axis { stroke: var(--baseline); stroke-dasharray: 3 4; }
@@ -715,12 +725,12 @@ th[aria-sort="ascending"] .sort-button span, th[aria-sort="descending"] .sort-bu
 .sc-side-item strong { color: var(--ink); font-size: 13px; }
 .compare-sizes-short { display: none; }
 .sc-note { margin: -6px 0 0; color: var(--subtle); font-size: 12px; }
-.sc-table-wrap { max-height: min(72vh, 760px); overflow: auto; border: 1px solid var(--line); border-radius: 12px; }
+.sc-table-wrap { overflow-x: auto; overflow-y: visible; border: 1px solid var(--line); border-radius: 12px; }
 .sc-table { width: 100%; min-width: 0; }
 .sc-table th, .sc-table td { padding: 10px 12px; }
-.sc-table thead th { position: sticky; top: 0; z-index: 3; height: auto; background: var(--tint); text-align: left; vertical-align: bottom; }
-.sc-table thead th:first-child { left: 0; z-index: 5; min-width: 180px; }
-.sc-table tbody th { position: sticky; left: 0; z-index: 2; min-width: 180px; background: var(--tint); text-align: left; vertical-align: top; }
+.sc-table thead th { height: auto; background: var(--tint); text-align: left; vertical-align: bottom; }
+.sc-table thead th:first-child { min-width: 180px; }
+.sc-table tbody th { min-width: 180px; background: var(--tint); text-align: left; vertical-align: top; }
 .sc-table td { min-width: 180px; max-width: 280px; overflow-wrap: anywhere; vertical-align: top; line-height: 1.45; }
 .sc-table .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .sc-table-name { display: flex; align-items: center; gap: 10px; }
@@ -739,6 +749,8 @@ th[aria-sort="ascending"] .sort-button span, th[aria-sort="descending"] .sort-bu
   .sc-stage { padding: 12px; }
   .sc-stage.has-sensors.is-overlay { height: 180px; }
   .sc-stage.is-side { gap: 16px; }
+  .sc-calibration-fields { align-items: stretch; }
+  .sc-calibration-fields > .button { align-self: flex-start; }
 }
 
 /* Generated compare pages */
