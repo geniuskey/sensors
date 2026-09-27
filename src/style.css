@@ -700,6 +700,8 @@ th[aria-sort="ascending"] .sort-button span, th[aria-sort="descending"] .sort-bu
 .sc-empty a { margin-left: 4px; color: var(--accent); font-weight: 650; text-decoration: none; }
 .sc-empty a:hover { text-decoration: underline; }
 .sc-chip { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 8px 6px 8px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--tint); }
+.sc-chip[draggable="true"] { cursor: grab; }
+.sc-chip.is-dragging { opacity: .4; }
 .sc-swatch { flex: none; width: 12px; height: 12px; border-radius: 3px; }
 .sc-chip-copy { display: grid; flex: 1; min-width: 0; }
 .sc-chip-copy a { overflow: hidden; color: var(--ink); font-size: 13px; font-weight: 650; text-decoration: none; text-overflow: ellipsis; white-space: nowrap; }

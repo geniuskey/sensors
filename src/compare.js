@@ -149,7 +149,7 @@ function init(sensors) {
     root.querySelector('#sc-calibration-status').textContent = metrics
       ? `Estimated ${number(metrics.ppi, 1)} PPI · ${number(metrics.pixelsPerMm, 2)} CSS px/mm at browser scale ${number(metrics.dpr, 2)}. Actual size may vary with display scaling.`
       : 'Enter the monitor diagonal and native resolution. Browser scale is detected automatically.';
-    root.querySelector('.sc-chips').innerHTML = current.length ? current.map((row) => `<li class="sc-chip" data-id="${esc(row.id)}"><i class="sc-swatch" style="background:var(${row.color})" aria-hidden="true"></i><span class="sc-chip-copy"><a href="${esc(row.url)}">${esc(label(row))}</a><span>${esc(format(row))} · ${esc(dims(row))} · ${esc(ratioText(row, reference))}</span></span><button class="sc-remove" type="button" data-remove="${esc(row.id)}" aria-label="Remove ${esc(label(row))}">×</button></li>`).join('') : '<li class="sc-empty">Your list is empty. <a href="/sensors/">Browse sensors to add items.</a></li>';
+    root.querySelector('.sc-chips').innerHTML = current.length ? current.map((row) => `<li class="sc-chip" draggable="true" data-id="${esc(row.id)}"><i class="sc-swatch" style="background:var(${row.color})" aria-hidden="true"></i><span class="sc-chip-copy"><a href="${esc(row.url)}" draggable="false">${esc(label(row))}</a><span>${esc(format(row))} · ${esc(dims(row))} · ${esc(ratioText(row, reference))}</span></span><button class="sc-remove" type="button" data-remove="${esc(row.id)}" aria-label="Remove ${esc(label(row))}">×</button></li>`).join('') : '<li class="sc-empty">Your list is empty. <a href="/sensors/">Browse sensors to add items.</a></li>';
     const specs = [
       { name: 'Manufacturer', value: (row) => row.maker },
       { name: 'Marketing name', value: (row) => row.marketing_name },
@@ -279,6 +279,35 @@ function init(sensors) {
       mode = modeButton.dataset.mode;
       render();
     }
+  });
+  const chips = root.querySelector('.sc-chips');
+  let dragged = null;
+  chips.addEventListener('dragstart', (event) => {
+    dragged = event.target.closest('.sc-chip');
+    if (!dragged) return;
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.setData('text/plain', dragged.dataset.id);
+    requestAnimationFrame(() => dragged?.classList.add('is-dragging'));
+  });
+  chips.addEventListener('dragover', (event) => {
+    if (!dragged) return;
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+    const target = event.target.closest('.sc-chip');
+    if (!target || target === dragged) return;
+    const items = [...chips.children];
+    chips.insertBefore(dragged, items.indexOf(dragged) < items.indexOf(target) ? target.nextSibling : target);
+  });
+  chips.addEventListener('drop', (event) => { if (dragged) event.preventDefault(); });
+  chips.addEventListener('dragend', () => {
+    if (!dragged) return;
+    dragged.classList.remove('is-dragging');
+    dragged = null;
+    const order = [...chips.querySelectorAll('.sc-chip')].map((chip) => chip.dataset.id);
+    if (order.join() === ids.join()) return;
+    ids = order;
+    saveStoredIds(ids);
+    render();
   });
   const highlight = (id) => {
     stage.classList.toggle('has-focus', Boolean(id));
