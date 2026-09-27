@@ -6,7 +6,19 @@ const appShell = qs('#app-shell');
 stickyTableHead(qs('#tablewrap'));
 let staticRows = [];
 let sortState = { key: 'resolution_mp', direction: 'desc' };
-const compareIds = new Set();
+const COMPARE_STORAGE_KEY = 'sensor-db:compare-list';
+const MAX_COMPARE = 6;
+function readCompareIds() {
+  try {
+    const value = JSON.parse(localStorage.getItem(COMPARE_STORAGE_KEY) || '[]');
+    return Array.isArray(value) ? [...new Set(value.filter((id) => typeof id === 'string'))].slice(0, MAX_COMPARE) : [];
+  } catch (_) { return []; }
+}
+function persistCompareIds() {
+  try { localStorage.setItem(COMPARE_STORAGE_KEY, JSON.stringify(Array.from(compareIds))); } catch (_) {}
+}
+const compareIds = new Set(readCompareIds());
+let compareContextOrigin = null;
 let currentChips = [];
 let exactPhoneFilter = '';
 let visibleCount = window.matchMedia('(max-width: 720px)').matches ? 24 : 60;
@@ -205,10 +217,41 @@ function updateSortIndicators() {
 function updateComparisonBar() {
   const count = compareIds.size;
   qs('#compare-bar').hidden = count === 0;
-  qs('#compare-count').textContent = count + (count === 1 ? ' sensor selected' : ' sensors selected');
-  qs('#compare-notice').textContent = count < 4 ? 'Select up to 4 sensors to compare.' : 'Comparison limit reached.';
-  qs('#open-comparison').disabled = count < 2;
+  qs('#compare-count').textContent = count + (count === 1 ? ' sensor in compare list' : ' sensors in compare list');
+  qs('#compare-notice').textContent = count < MAX_COMPARE ? `Add up to ${MAX_COMPARE} sensors to compare.` : 'Compare list is full.';
   qs('#compare-sizes').href = '/compare/?ids=' + Array.from(compareIds, (id) => encodeURIComponent(id).replace(/%3A/gi, ':')).join(',');
+}
+function setCompareMembership(id, included) {
+  if (included && !compareIds.has(id) && compareIds.size >= MAX_COMPARE) {
+    qs('#compare-notice').textContent = `The compare list holds up to ${MAX_COMPARE} sensors. Remove one to add another.`;
+    return false;
+  }
+  if (included) compareIds.add(id);
+  else compareIds.delete(id);
+  persistCompareIds();
+  render();
+  return true;
+}
+function closeCompareContextMenu(restoreFocus = false) {
+  const menu = qs('#compare-context-menu');
+  menu.hidden = true;
+  menu.removeAttribute('data-sensor-id');
+  if (restoreFocus && compareContextOrigin?.isConnected) compareContextOrigin.focus({ preventScroll: true });
+  compareContextOrigin = null;
+}
+function openCompareContextMenu(id, x, y, origin) {
+  const menu = qs('#compare-context-menu');
+  const action = qs('#compare-context-action');
+  const selected = compareIds.has(id);
+  compareContextOrigin = origin;
+  menu.dataset.sensorId = id;
+  action.textContent = selected ? 'Remove from compare list' : 'Add to compare list';
+  action.disabled = !selected && compareIds.size >= MAX_COMPARE;
+  menu.hidden = false;
+  const bounds = menu.getBoundingClientRect();
+  menu.style.left = Math.max(8, Math.min(x, window.innerWidth - bounds.width - 8)) + 'px';
+  menu.style.top = Math.max(8, Math.min(y, window.innerHeight - bounds.height - 8)) + 'px';
+  action.focus({ preventScroll: true });
 }
 function render(resetList = false) {
   if (resetList) visibleCount = window.matchMedia('(max-width: 720px)').matches ? 24 : 60;
@@ -219,7 +262,7 @@ function render(resetList = false) {
   const shown = filtered.slice(0, visibleCount);
   qs('#rows').innerHTML = shown.map((row) => {
     const selected = compareIds.has(row.canonical_id);
-    return '<tr class="' + (selected ? 'is-selected' : '') + '"><td class="check-col"><input class="compare-check" type="checkbox" data-compare="' + esc(row.canonical_id) + '" aria-label="Select ' + esc(row.sensor) + ' for comparison"' + (selected ? ' checked' : '') + '></td>' +
+    return '<tr data-sensor-id="' + esc(row.canonical_id) + '" class="' + (selected ? 'is-selected' : '') + '"><td class="check-col"><input class="compare-check" type="checkbox" data-compare="' + esc(row.canonical_id) + '" aria-label="' + (selected ? 'Remove ' + esc(row.sensor) + ' from' : 'Add ' + esc(row.sensor) + ' to') + ' comparison list"' + (selected ? ' checked' : '') + '></td>' +
       '<td><span class="maker-label">' + esc(row.manufacturer) + '</span></td>' +
       '<td class="sensor-cell"><button class="sensor-link" type="button" data-open="' + esc(row.canonical_id) + '">' + esc(row.sensor) + '</button></td>' +
       '<td class="muted code-cell" data-label="Part / alias">' + esc(row.internal_code || '—') + '</td>' +
@@ -294,25 +337,6 @@ function showDetail(id, updateUrl = true) {
     '</div><div class="detail-extra"><h3>Aliases</h3><p>' + esc((row.aliases || []).join(' · ') || '—') + '</p><h3>Mapped phones (' + Number(row.phone_count || 0).toLocaleString() + ')</h3><ul>' + (row.phones || []).map((phone) => '<li>' + esc([phone.model, phone.year, 'Camera role: ' + phoneRole(phone), phone.confidence && ('confidence ' + phone.confidence)].filter(Boolean).join(' · ')) + '</li>').join('') + '</ul><h3>Notes</h3><p>' + esc(row.notes || '—') + '</p></div><div class="detail-source">' + (row.sources||[]).map(s=>'<a href="'+esc(s.url)+'" target="_blank" rel="noopener noreferrer">'+esc(s.type+' · '+s.relationship)+' ↗</a>').join('') + (row.source_url && !(row.sources||[]).length ? '<a href="' + esc(row.source_url) + '" target="_blank" rel="noopener noreferrer">Open source ↗</a>' : '') + '</div>';
   detail.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
-function comparisonTable() {
-  const rows = Array.from(compareIds).map((id) => staticRows.find((row) => row.canonical_id === id)).filter(Boolean);
-  qs('#compare-subtitle').textContent = rows.length + ' sensors · key specifications at a glance';
-  const fields = [
-    ['Manufacturer', (row) => row.manufacturer],
-    ['Resolution', (row) => row.resolution_mp == null ? '—' : formatNumber(row.resolution_mp) + ' MP'],
-    ['Optical format', (row) => row.sensor_size || '—'],
-    ['Pixel pitch', (row) => row.pixel_size_um ? formatNumber(row.pixel_size_um, 2) + ' µm' : '—'],
-    ['Camera roles', (row) => rolesFor(row).join(', ') || 'No phone mapping'],
-    ['Mapped phones', (row) => Number(row.phone_count || 0).toLocaleString()],
-    ['Latest phone year', (row) => row.latest_year || '—'],
-    ['Internal code', (row) => row.internal_code || '—'],
-    ['Autofocus', (row) => row.af || '—'],
-    ['HDR', (row) => row.hdr || '—'],
-    ['CFA', (row) => row.cfa || '—'],
-    ['Examples', (row) => row.example_phones || '—']
-  ];
-  qs('#comparison-content').innerHTML = '<table class="comparison-table"><thead><tr><th scope="col">Specification</th>' + rows.map((row) => '<th scope="col"><span class="compare-maker">' + esc(row.manufacturer) + '</span><strong>' + esc(row.sensor) + '</strong><button class="remove-compare" type="button" data-remove-compare="' + esc(row.canonical_id) + '" aria-label="Remove ' + esc(row.sensor) + ' from comparison">Remove</button></th>').join('') + '</tr></thead><tbody>' + fields.map((field) => '<tr><th scope="row">' + esc(field[0]) + '</th>' + rows.map((row) => '<td>' + esc(field[1](row)) + '</td>').join('') + '</tr>').join('') + '</tbody></table>';
-}
 function setDrawer(open) {
   if (window.matchMedia('(max-width: 1020px)').matches) {
     appShell.classList.toggle('filters-open', open);
@@ -371,38 +395,47 @@ qs('#sensor-table').addEventListener('click', (event) => {
 qs('#sensor-table').addEventListener('change', (event) => {
   const input = event.target.closest('[data-compare]');
   if (!input) return;
-  const id = input.dataset.compare;
-  if (input.checked) {
-    if (compareIds.size >= 4) {
-      qs('#compare-notice').textContent = 'You can compare up to 4 sensors. Remove one to add another.';
-      input.checked = false;
-      return;
-    }
-    compareIds.add(id);
-  } else compareIds.delete(id);
-  render();
+  if (!setCompareMembership(input.dataset.compare, input.checked)) input.checked = false;
 });
+qs('#sensor-table').addEventListener('contextmenu', (event) => {
+  const row = event.target.closest('tr[data-sensor-id]');
+  if (!row) return;
+  event.preventDefault();
+  openCompareContextMenu(row.dataset.sensorId, event.clientX, event.clientY, event.target);
+});
+qs('#sensor-table').addEventListener('keydown', (event) => {
+  if (!(event.key === 'ContextMenu' || (event.shiftKey && event.key === 'F10'))) return;
+  const row = event.target.closest('tr[data-sensor-id]');
+  if (!row) return;
+  event.preventDefault();
+  const bounds = row.getBoundingClientRect();
+  openCompareContextMenu(row.dataset.sensorId, bounds.left + 24, bounds.top + 24, event.target);
+});
+qs('#compare-context-action').addEventListener('click', () => {
+  const menu = qs('#compare-context-menu');
+  const id = menu.dataset.sensorId;
+  if (!id) return;
+  const included = !compareIds.has(id);
+  closeCompareContextMenu();
+  if (setCompareMembership(id, included)) qsa('[data-compare]').find((input) => input.dataset.compare === id)?.focus({ preventScroll: true });
+});
+document.addEventListener('click', (event) => {
+  if (!event.target.closest('#compare-context-menu')) closeCompareContextMenu();
+});
+document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeCompareContextMenu(true); });
+window.addEventListener('scroll', () => closeCompareContextMenu(), true);
 qs('#sort-select').addEventListener('change', (event) => {
   const parts = event.target.value.split(':');
   sortState = { key: parts[0], direction: parts[1] };
   render(true);
 });
-qs('#clear-comparison').addEventListener('click', () => { compareIds.clear(); render(); });
-qs('#open-comparison').addEventListener('click', () => {
-  if (compareIds.size < 2) return;
-  comparisonTable();
-  qs('#compare-dialog').showModal();
-});
-qs('#close-comparison').addEventListener('click', () => qs('#compare-dialog').close());
-qs('#compare-dialog').addEventListener('click', (event) => {
-  if (event.target === qs('#compare-dialog')) qs('#compare-dialog').close();
-  const remove = event.target.closest('[data-remove-compare]');
-  if (remove) {
-    compareIds.delete(remove.dataset.removeCompare);
-    render();
-    if (compareIds.size < 2) qs('#compare-dialog').close();
-    else comparisonTable();
-  }
+qs('#clear-comparison').addEventListener('click', () => { compareIds.clear(); persistCompareIds(); render(); });
+window.addEventListener('storage', (event) => {
+  if (event.key !== COMPARE_STORAGE_KEY && event.key !== null) return;
+  const valid = new Set(staticRows.map((row) => row.canonical_id));
+  compareIds.clear();
+  readCompareIds().filter((id) => valid.has(id)).forEach((id) => compareIds.add(id));
+  render();
 });
 qs('#detail').addEventListener('click', (event) => {
   if (event.target.closest('[data-detail-close]')) {
@@ -435,6 +468,9 @@ window.addEventListener('resize', () => {
   try {
     const data = await getData();
     staticRows = Array.isArray(data.items) ? data.items : [];
+    const valid = new Set(staticRows.map((row) => row.canonical_id));
+    for (const id of compareIds) if (!valid.has(id)) compareIds.delete(id);
+    persistCompareIds();
     makeFacets();
     const sensorToOpen = applyUrlFilters();
     render();

@@ -24,9 +24,9 @@
     <a class="skip-link" href="#catalog">Skip to sensor results</a>
     <header class="topbar">
       <div class="topbar-inner">
-        <a class="brand" href="/" aria-label="Mobile Image Sensor Database home">
+        <a class="brand" href="/" aria-label="Sensor DB home">
           <span class="brand-mark" aria-hidden="true"><img src="/images/image-sensor-logo.webp" alt="" width="96" height="72" /></span>
-          <span class="brand-text"><strong>Sensor Database</strong><span>sensors.euiyun.com</span></span>
+          <span class="brand-text"><strong>Sensor DB</strong><span>mobile image sensors</span></span>
         </a>
         <nav class="site-nav" aria-label="Main navigation"><a href="/">Overview</a><a class="is-current" href="/sensors/" aria-current="page">Sensors</a><a href="/phones/">Phones</a><a href="/compare/">Compare</a></nav>
         <form class="site-search" role="search" action="/sensors/">
@@ -73,14 +73,14 @@
         <section id="detail" class="detail-panel" aria-live="polite"></section>
         <section class="catalog-panel" id="catalog" aria-labelledby="catalog-title">
           <div class="catalog-heading">
-            <div class="catalog-title"><h1 id="catalog-title">Sensor catalog</h1><p class="status" id="status" role="status" aria-live="polite">Loading sensors…</p></div>
+            <div class="catalog-title"><h1 id="catalog-title">Sensor catalog</h1><p class="status" id="status" role="status" aria-live="polite">Loading sensors…</p><p class="compare-hint">Right-click a sensor, or use its checkbox, to add it to your compare list.</p></div>
             <div class="catalog-tools"><button class="button button-secondary button-filter" id="filter-toggle" type="button" aria-controls="filters" aria-expanded="true"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4"/></svg> Filters</button><label class="sort-select-wrap" for="sort-select">Sort by<select id="sort-select" name="sort"><option value="resolution_mp:desc">Resolution: high to low</option><option value="sensor_size:asc">Optical format: A to Z</option><option value="phone_count:desc">Phone adoption: most</option><option value="manufacturer:asc">Manufacturer: A to Z</option><option value="sensor:asc">Sensor name: A to Z</option><option value="latest_year:desc">Latest phone: newest</option></select></label></div>
           </div>
           <div id="active-filters" class="active-filters" aria-label="Active filters"></div>
           <div class="tablewrap" id="tablewrap">
             <table id="sensor-table">
               <thead><tr>
-                <th class="check-col" scope="col"><span class="sr-only">Compare</span></th>
+                <th class="check-col" scope="col"><span class="sr-only">Compare list</span></th>
                 <th scope="col" data-sort="manufacturer" aria-sort="none"><button class="sort-button" data-sort="manufacturer" type="button">Sensor maker <span aria-hidden="true">↕</span></button></th>
                 <th scope="col" data-sort="sensor" aria-sort="none"><button class="sort-button" data-sort="sensor" type="button">Sensor <span aria-hidden="true">↕</span></button></th>
                 <th scope="col" data-sort="internal_code" aria-sort="none"><button class="sort-button" data-sort="internal_code" type="button">Part / alias <span aria-hidden="true">↕</span></button></th>
@@ -102,8 +102,8 @@
       </main>
     </div>
 
-    <div id="compare-bar" class="compare-bar" hidden><div class="compare-bar-copy"><span class="compare-bar-icon" aria-hidden="true">⇄</span><div><strong id="compare-count">0 sensors selected</strong><span id="compare-notice" role="status" aria-live="polite">Select up to 4 sensors to compare.</span></div></div><div class="compare-bar-actions"><button class="button button-quiet" id="clear-comparison" type="button">Clear</button><a class="button button-quiet" id="compare-sizes" href="/compare/"><span class="compare-sizes-long">Compare sizes</span><span class="compare-sizes-short">Sizes</span></a><button class="button button-primary" id="open-comparison" type="button" disabled>Compare sensors <span aria-hidden="true">→</span></button></div></div>
-    <dialog id="compare-dialog" class="compare-dialog" aria-labelledby="compare-title"><div class="dialog-head"><div><div class="section-kicker">SIDE-BY-SIDE</div><h2 id="compare-title">Sensor comparison</h2><p id="compare-subtitle"></p></div><button class="icon-button" id="close-comparison" type="button" aria-label="Close comparison">×</button></div><div class="compare-table-wrap" id="comparison-content"></div></dialog>
+    <div id="compare-bar" class="compare-bar" hidden><div class="compare-bar-copy"><span class="compare-bar-icon" aria-hidden="true">⇄</span><div><strong id="compare-count">0 sensors in compare list</strong><span id="compare-notice" role="status" aria-live="polite">Add up to 6 sensors to compare.</span></div></div><div class="compare-bar-actions"><button class="button button-quiet" id="clear-comparison" type="button">Clear</button><a class="button button-primary" id="compare-sizes" href="/compare/">View compare list <span aria-hidden="true">→</span></a></div></div>
+    <div id="compare-context-menu" class="compare-context-menu" role="menu" aria-label="Sensor comparison actions" hidden><button id="compare-context-action" type="button" role="menuitem">Add to compare list</button></div>
     <script type="module" src="/src/main.js"></script>
     <script type="module" src="/src/search.js"></script>
   </body>

@@ -259,10 +259,8 @@ def verdict(a,b):
 def phone_list(s):
     links=''.join(f'<li><a href="{phone_path(phone_by_id[p["canonical_id"]])}">{e(p["model"])}</a> <span>{e(p.get("role") or "")}</span></li>' if p.get('canonical_id') in phone_by_id else f'<li>{e(p["model"])}</li>' for p in s['phones'][:12])
     return f'<div><h3><a href="{sensor_path(s)}">{e(short_name(s))}</a></h3><ul class="compare-phones">{links or "<li>No mapped phones yet.</li>"}</ul></div>'
-hub_links=[]
 for ida,idb in pairs:
     a,b=sensor_by_id[ida],sensor_by_id[idb]; path=pair_path(a,b); urls.append(path); na,nb=short_name(a),short_name(b)
-    hub_links.append(f'<li><a href="{path}">{e(na)} <span>vs</span> {e(nb)}</a><span>{e(spec_line(a))} / {e(spec_line(b))}</span></li>')
     title=f'{na} vs {nb} — sensor size, resolution and pixel comparison'; v=verdict(a,b)
     desc=f'{na} vs {nb}: {v} Specs side by side, drawn-to-scale sensor sizes and the phones that use each.'
     body=f'''<section class="detail-panel">
@@ -275,14 +273,13 @@ for ida,idb in pairs:
     og=write_og(f'/og/compare/{path.strip("/").split("/")[1]}.png','Sensor comparison',[sensor_name(a),f'vs {sensor_name(b)}'],[(v.split('. ')[0].rstrip('.').replace(na,sensor_name(a)).replace(nb,sensor_name(b)).replace(' light-gathering','')+'.',True),(f'{sensor_name(a)}: {spec_line(a)}',False),(f'{sensor_name(b)}: {spec_line(b)}',False)],[(sensor_name(a),*sensor_dims[ida]),(sensor_name(b),*sensor_dims[idb])])
     page_ld={'@context':'https://schema.org','@type':'WebPage','name':title,'description':desc,'url':SITE+path,'image':og,'about':[{'@type':'Product','name':x,'url':SITE+sensor_path(s)} for x,s in ((na,a),(nb,b))]}
     write(path,page(path,title,desc,'/compare/',[('Home','/'),('Compare','/compare/'),(f'{na} vs {nb}',path)],body,page_ld,og))
-compare_desc=f'Compare mobile image sensor sizes drawn to scale. Pick any of {len(sensors)} sensors or browse {len(pairs)} popular head-to-head comparisons.'
+compare_desc=f'Build a list of up to six mobile image sensors and compare their physical sizes drawn to scale.'
 compare_body=f'''<section class="detail-panel">
-        <div class="detail-head"><div><div class="section-kicker">SIZE COMPARISON</div><h1>Compare sensor sizes</h1><p>Overlay up to six image sensors at true relative scale. Dimensions come from pixel pitch × resolution, or from the optical format when pitch is unknown.</p></div></div>
-        <div id="size-compare" class="size-compare"><noscript><p>The interactive comparison needs JavaScript. Browse the popular comparisons below.</p></noscript></div>
+        <div class="detail-head"><div><div class="section-kicker">YOUR COMPARE LIST</div><h1>Compare sensor sizes</h1><p>Add sensors from the catalog to your compare list, then view up to six at true relative scale. Dimensions come from pixel pitch × resolution, or from the optical format when pitch is unknown.</p></div></div>
+        <div id="size-compare" class="size-compare"><noscript><p>Open the Sensors catalog and choose sensors to build your comparison list.</p></noscript></div>
       </section>
-      <section class="detail-panel"><div class="section-kicker">HEAD TO HEAD</div><h2 class="detail-section-title">Popular comparisons</h2><ul class="compare-hub-list">{"".join(hub_links)}</ul></section>
       <script type="module" src="/src/compare.js"></script>'''
-compare_og=write_og('/og/compare.png','Size comparison','Compare sensor sizes',[('Drawn to scale, side by side',True),(f'{len(sensors)} mobile image sensors',False),(f'{len(pairs)} head-to-head comparisons',False)],[(sensor_name(sensor_by_id[i]),*sensor_dims[i]) for i in ('SONY:IMX989','SONY:IMX766','SONY:IMX882') if i in sensor_by_id and sensor_dims[i]])
+compare_og=write_og('/og/compare.png','Size comparison','Compare sensor sizes',[('Add up to six sensors from the catalog',True),('Build your own comparison list',False),('View sizes at true relative scale',False)],[(sensor_name(sensor_by_id[i]),*sensor_dims[i]) for i in ('SONY:IMX989','SONY:IMX766','SONY:IMX882') if i in sensor_by_id and sensor_dims[i]])
 write('/compare/',page('/compare/','Compare mobile image sensor sizes | Sensor Database',compare_desc,'/compare/',[('Home','/'),('Compare','/compare/')],compare_body,{'@context':'https://schema.org','@type':'WebPage','name':'Compare sensor sizes','description':compare_desc,'url':SITE+'/compare/'},compare_og))
 
 def fsize(name): return f'{(DIST/"data"/name).stat().st_size/1024:,.0f} KB'
