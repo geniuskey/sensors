@@ -17,6 +17,7 @@ const dims = (sensor) => `${number(sensor.w, 2)} × ${number(sensor.h, 2)} mm`;
 const format = (sensor) => sensor.size ? (/^\d+(\.\d+)?$/.test(sensor.size) ? `${sensor.size}"` : sensor.size) : '—';
 const label = (sensor) => norm(sensor.name).startsWith(norm(sensor.maker)) ? sensor.name : `${sensor.maker} ${sensor.name}`;
 const encodeId = (id) => encodeURIComponent(id).replace(/%3A/gi, ':');
+const display = (value) => Array.isArray(value) ? (value.filter(Boolean).join(', ') || '—') : (value == null || value === '' ? '—' : String(value));
 
 function ratioText(sensor, reference) {
   if (sensor === reference) return 'Reference';
@@ -47,7 +48,7 @@ function overlaySvg(rows, reference) {
 
 function sideItems(rows, reference, width) {
   const maxW = Math.max(...rows.map((row) => row.w)), sumW = rows.reduce((sum, row) => sum + row.w, 0);
-  const gap = 24, s = Math.min(240 / maxW, Math.max((width - gap * (rows.length - 1)) / sumW, (width - gap) / (2 * maxW)));
+  const gap = 24, s = .6 * Math.min(240 / maxW, Math.max((width - gap * (rows.length - 1)) / sumW, (width - gap) / (2 * maxW)));
   return rows.map((row) => {
     const w = row.w * s, h = row.h * s, color = `var(${row.color})`;
     return `<figure class="sc-side-item" data-id="${esc(row.id)}"><svg width="${w.toFixed(0)}" height="${h.toFixed(0)}" viewBox="-1 -1 ${(w + 2).toFixed(1)} ${(h + 2).toFixed(1)}" role="img" aria-label="${esc(`${label(row)}, ${dims(row)}`)}"><rect class="sc-rect" x="0" y="0" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="3" style="fill:${color};stroke:${color}"/></svg><figcaption><strong>${esc(label(row))}</strong><span>${esc(dims(row))}</span><span>${esc(ratioText(row, reference))}</span></figcaption></figure>`;
@@ -63,7 +64,7 @@ function init(sensors) {
   let mode = params.get('view') === 'side' ? 'side' : 'overlay';
   let options = [], active = -1;
 
-  root.innerHTML = `<div class="sc-list-heading"><div><div class="section-kicker">COMPARE LIST</div><p id="sc-list-status" role="status" aria-live="polite"></p></div><button class="button button-quiet" type="button" data-clear-list>Clear list</button></div>
+  root.innerHTML = `<div class="sc-list-heading"><div><div class="section-kicker">YOUR COMPARE LIST</div><p id="sc-list-status" role="status" aria-live="polite"></p></div><button class="button button-quiet" type="button" data-clear-list>Clear list</button></div>
     <div class="sc-toolbar">
       <div class="sc-picker"><label class="field-label" for="sc-input">Add a sensor <span class="facet-hint" id="sc-count"></span></label>
         <div class="sc-picker-field"><input id="sc-input" class="text-field" type="search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="sc-options" autocomplete="off" spellcheck="false" placeholder="e.g. IMX989, HP2, LYT-900"><div id="sc-options" class="site-search-results sc-options" role="listbox" aria-label="Matching sensors" hidden></div></div>
@@ -72,8 +73,8 @@ function init(sensors) {
     </div>
     <ul class="sc-chips" aria-label="Selected sensors"></ul>
     <div class="sc-stage" aria-live="polite"></div>
-    <p class="sc-note">Rectangles use each sensor’s physical active-area width and height. Area ratios compare against the first sensor in the list.</p>
-    <div class="sc-table-wrap"><table class="sc-table"><thead><tr><th scope="col">Sensor</th><th scope="col" class="num">Resolution</th><th scope="col">Format</th><th scope="col" class="num">Pixel</th><th scope="col" class="num">Size</th><th scope="col" class="num">Area</th><th scope="col" class="num">vs first</th><th scope="col" class="num">Phones</th></tr></thead><tbody></tbody></table></div>`;
+    <p class="sc-note">Sensor outlines are drawn at the same scale. The comparison table below lists each specification by sensor.</p>
+    <div class="sc-table-wrap"><table class="sc-table"><caption class="sr-only">Sensor specification comparison</caption><thead></thead><tbody></tbody></table></div>`;
   const input = root.querySelector('#sc-input'), list = root.querySelector('#sc-options'), stage = root.querySelector('.sc-stage');
 
   const rows = () => ids.map((id, index) => ({ ...byId.get(id), color: COLORS[index % COLORS.length] }));
@@ -87,7 +88,9 @@ function init(sensors) {
   };
   const renderStage = () => {
     const current = rows();
-    if (!current.length) { stage.classList.remove('is-side', 'has-focus'); stage.innerHTML = '<div class="chart-empty"><strong>Your compare list is empty.</strong><span>Add sensors from the catalog, or search for one above.</span><a class="button button-secondary" href="/sensors/">Browse sensor catalog</a></div>'; return; }
+    if (!current.length) { stage.classList.remove('is-side', 'is-overlay', 'has-sensors', 'has-focus'); stage.innerHTML = '<div class="chart-empty"><strong>Your compare list is empty.</strong><span>Add sensors from the catalog, or search for one above.</span><a class="button button-secondary" href="/sensors/">Browse sensor catalog</a></div>'; return; }
+    stage.classList.add('has-sensors');
+    stage.classList.toggle('is-overlay', mode === 'overlay');
     stage.classList.toggle('is-side', mode === 'side');
     stage.innerHTML = mode === 'side' ? sideItems(current, current[0], stage.clientWidth - 32 || 600) : overlaySvg(current, current[0]);
   };
@@ -103,7 +106,38 @@ function init(sensors) {
       button.setAttribute('aria-pressed', String(button.dataset.mode === mode));
     });
     root.querySelector('.sc-chips').innerHTML = current.length ? current.map((row) => `<li class="sc-chip" data-id="${esc(row.id)}"><i class="sc-swatch" style="background:var(${row.color})" aria-hidden="true"></i><span class="sc-chip-copy"><a href="${esc(row.url)}">${esc(label(row))}</a><span>${esc(format(row))} · ${esc(dims(row))} · ${esc(ratioText(row, reference))}</span></span><button class="sc-remove" type="button" data-remove="${esc(row.id)}" aria-label="Remove ${esc(label(row))}">×</button></li>`).join('') : '<li class="sc-empty">Your list is empty. <a href="/sensors/">Browse sensors to add items.</a></li>';
-    root.querySelector('.sc-table tbody').innerHTML = current.map((row) => `<tr data-id="${esc(row.id)}"><td><span class="sc-table-name"><i class="sc-swatch" style="background:var(${row.color})" aria-hidden="true"></i><span><span class="compare-maker">${esc(row.maker)}</span><a href="${esc(row.url)}">${esc(row.name)}</a></span></span></td><td class="num">${row.mp == null ? '—' : number(row.mp) + ' MP'}</td><td>${esc(format(row))}</td><td class="num">${row.pitch ? number(row.pitch, 2) + ' µm' : '—'}</td><td class="num">${esc(dims(row))}</td><td class="num">${number(area(row), 1)} mm²</td><td class="num">${esc(ratioText(row, reference))}</td><td class="num">${number(row.phones || 0, 0)}</td></tr>`).join('');
+    const specs = [
+      { name: 'Manufacturer', value: (row) => row.maker },
+      { name: 'Marketing name', value: (row) => row.marketing_name },
+      { name: 'Resolution', value: (row) => row.mp == null ? '—' : `${number(row.mp)} MP`, numeric: true },
+      { name: 'Resolution pixels', value: (row) => row.resolution_px },
+      { name: 'Optical format', value: (row) => format(row) },
+      { name: 'Active dimensions', value: (row) => dims(row), numeric: true },
+      { name: 'Active area', value: (row) => `${number(row.area ?? area(row), 1)} mm²`, numeric: true },
+      { name: 'Area vs first sensor', value: (row) => ratioText(row, reference), numeric: true },
+      { name: 'Pixel pitch', value: (row) => row.pitch == null || row.pitch === '' ? '—' : `${number(row.pitch, 2)} µm`, numeric: true },
+      { name: 'Pixel binning', value: (row) => row.pixel_binning },
+      { name: 'Camera roles', value: (row) => row.roles },
+      { name: 'Mapped phones', value: (row) => `${number(row.phones || 0, 0)} phones`, numeric: true },
+      { name: 'First phone year', value: (row) => row.first_year, numeric: true },
+      { name: 'Latest phone year', value: (row) => row.latest_year, numeric: true },
+      { name: 'Internal code', value: (row) => row.internal_code },
+      { name: 'Autofocus', value: (row) => row.af },
+      { name: 'HDR', value: (row) => row.hdr },
+      { name: 'Color filter array', value: (row) => row.cfa },
+      { name: 'Full-well capacity', value: (row) => row.fwc },
+      { name: 'Two-layer transistor', value: (row) => row.two_layer_transistor },
+      { name: 'Transfer gate', value: (row) => row.transfer_gate },
+      { name: 'First listed', value: (row) => row.first_listed_year, numeric: true },
+      { name: 'Data confidence', value: (row) => row.confidence },
+      { name: 'Aliases', value: (row) => row.aliases },
+      { name: 'Example phones', value: (row) => row.example_phones },
+      { name: 'Notes', value: (row) => row.notes }
+    ];
+    const table = root.querySelector('.sc-table');
+    table.style.minWidth = `${180 + current.length * 180}px`;
+    table.querySelector('thead').innerHTML = `<tr><th scope="col">Specification</th>${current.map((row) => `<th scope="col"><span class="sc-table-name"><i class="sc-swatch" style="background:var(${row.color})" aria-hidden="true"></i><span><span class="compare-maker">${esc(row.maker)}</span><a href="${esc(row.url)}">${esc(label(row))}</a></span></span></th>`).join('')}</tr>`;
+    table.querySelector('tbody').innerHTML = specs.map((spec) => `<tr><th scope="row">${esc(spec.name)}</th>${current.map((row) => `<td${spec.numeric ? ' class="num"' : ''}>${esc(display(spec.value(row)))}</td>`).join('')}</tr>`).join('');
     root.querySelector('.sc-table-wrap').hidden = !current.length;
     renderStage();
     syncUrl();

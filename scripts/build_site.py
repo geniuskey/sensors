@@ -274,8 +274,8 @@ for ida,idb in pairs:
     page_ld={'@context':'https://schema.org','@type':'WebPage','name':title,'description':desc,'url':SITE+path,'image':og,'about':[{'@type':'Product','name':x,'url':SITE+sensor_path(s)} for x,s in ((na,a),(nb,b))]}
     write(path,page(path,title,desc,'/compare/',[('Home','/'),('Compare','/compare/'),(f'{na} vs {nb}',path)],body,page_ld,og))
 compare_desc=f'Build a list of up to six mobile image sensors and compare their physical sizes drawn to scale.'
-compare_body=f'''<section class="detail-panel">
-        <div class="detail-head"><div><div class="section-kicker">YOUR COMPARE LIST</div><h1>Compare sensor sizes</h1><p>Add sensors from the catalog to your compare list, then view up to six at true relative scale. Dimensions come from pixel pitch × resolution, or from the optical format when pitch is unknown.</p></div></div>
+compare_body=f'''<section class="detail-panel compare-page-panel" aria-label="Compare mobile image sensors">
+        <h1 class="compare-page-title">Compare sensor sizes</h1>
         <div id="size-compare" class="size-compare"><noscript><p>Open the Sensors catalog and choose sensors to build your comparison list.</p></noscript></div>
       </section>
       <script type="module" src="/src/compare.js"></script>'''
@@ -293,7 +293,7 @@ open_body=f'''<section class="detail-panel">
           <tr><td><a href="/data/all-in-one.csv">all-in-one.csv</a></td><td>One row per phone camera mapping with sensor specs</td><td class="num">{fsize("all-in-one.csv")}</td></tr>
           <tr><td><a href="/data/sensors.json">sensors.json</a></td><td>{len(sensors)} sensors with aliases, sources and phones</td><td class="num">{fsize("sensors.json")}</td></tr>
           <tr><td><a href="/data/phones.json">phones.json</a></td><td>{len(phones)} phones with per-camera sensors and DXOMARK scores</td><td class="num">{fsize("phones.json")}</td></tr>
-          <tr><td><a href="/data/sensor-dims.json">sensor-dims.json</a></td><td>Physical sensor dimensions in mm</td><td class="num">{{DIMS_SIZE}}</td></tr>
+          <tr><td><a href="/data/sensor-dims.json">sensor-dims.json</a></td><td>Sensor dimensions, specifications and phone counts</td><td class="num">{{DIMS_SIZE}}</td></tr>
         </tbody></table></div>
         <h2 class="detail-section-title">JSON API</h2>
         <p>Base URL <code>{SITE}</code>. Responses are JSON, cached for 5 minutes, and allow cross-origin requests.</p>
@@ -308,7 +308,7 @@ open_body=f'''<section class="detail-panel">
 search_index=[{'type':'sensor','name':sensor_name(s),'maker':s.get('manufacturer') or '','detail':' · '.join(x for x in (spec_line(s),f'{len(s["phones"])} phones' if s['phones'] else '') if x),'url':sensor_path(s),'keywords':' '.join(x for x in [s.get('internal_code') or '',*(s.get('aliases') or [])] if x)} for s in sensors]
 search_index+=[{'type':'phone','name':p['model'],'maker':p.get('oem') or '','detail':' · '.join(str(x) for x in (p.get('release_year'),next((c.get('sensor') for c in p.get('cameras') or [] if 'Main' in (c.get('role') or '')),None)) if x),'url':phone_path(p),'keywords':' '.join(c.get('sensor') or '' for c in p.get('cameras') or [])} for p in phones]
 (DIST/'data/search-index.json').write_text(json.dumps(search_index,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
-(DIST/'data/sensor-dims.json').write_text(json.dumps([{'id':s['canonical_id'],'name':sensor_name(s),'maker':s.get('manufacturer') or '','url':sensor_path(s),'mp':s.get('resolution_mp'),'size':s.get('sensor_size') or '','pitch':s.get('pixel_size_um'),'w':sensor_dims[s['canonical_id']][0],'h':sensor_dims[s['canonical_id']][1],'phones':len(s['phones'])} for s in sensors if sensor_dims[s['canonical_id']]],ensure_ascii=False,separators=(',',':')),encoding='utf-8')
+(DIST/'data/sensor-dims.json').write_text(json.dumps([{'id':s['canonical_id'],'name':sensor_name(s),'maker':s.get('manufacturer') or '','url':sensor_path(s),'mp':s.get('resolution_mp'),'resolution_px':s.get('resolution_px'),'marketing_name':s.get('marketing_name'),'internal_code':s.get('internal_code'),'size':s.get('sensor_size') or '','pitch':s.get('pixel_size_um'),'pixel_binning':s.get('pixel_binning'),'w':sensor_dims[s['canonical_id']][0],'h':sensor_dims[s['canonical_id']][1],'area':sensor_dims[s['canonical_id']][0]*sensor_dims[s['canonical_id']][1],'phones':len(s['phones']),'roles':s.get('roles'),'first_year':s.get('first_year'),'latest_year':s.get('latest_year'),'af':s.get('af'),'hdr':s.get('hdr'),'cfa':s.get('cfa'),'fwc':s.get('fwc'),'two_layer_transistor':s.get('two_layer_transistor'),'transfer_gate':s.get('transfer_gate'),'first_listed_year':s.get('first_listed_year'),'confidence':s.get('confidence'),'aliases':s.get('aliases'),'example_phones':s.get('example_phones'),'notes':s.get('notes')} for s in sensors if sensor_dims[s['canonical_id']]],ensure_ascii=False,separators=(',',':')),encoding='utf-8')
 open_og=write_og('/og/open-data.png','Open data','CSV, JSON & free API',[('CC BY 4.0 · no key required',True),(f'{len(sensors)} sensors · {len(phones)} phones',False)],[])
 write('/open-data/',page('/open-data/','Open data & API | Mobile Image Sensor Database',open_desc,'/open-data/',[('Home','/'),('Open data','/open-data/')],open_body.replace('{DIMS_SIZE}',fsize('sensor-dims.json')),dataset_ld,open_og))
 
