@@ -53,9 +53,9 @@ function overlaySvg(rows, reference) {
   return svg + '</svg>';
 }
 
-function sideItems(rows, reference, width, pixelsPerMm = null) {
-  const maxW = Math.max(...rows.map((row) => row.w)), sumW = rows.reduce((sum, row) => sum + row.w, 0);
-  const gap = 24, s = pixelsPerMm || .6 * Math.min(240 / maxW, Math.max((width - gap * (rows.length - 1)) / sumW, (width - gap) / (2 * maxW)));
+function sideItems(rows, reference, columnWidth, pixelsPerMm = null) {
+  const maxW = Math.max(...rows.map((row) => row.w)), maxH = Math.max(...rows.map((row) => row.h));
+  const s = pixelsPerMm || Math.min((columnWidth - 48) / maxW, 160 / maxH);
   return rows.map((row) => {
     const w = row.w * s, h = row.h * s, color = `var(${row.color})`;
     const rect = pixelsPerMm
@@ -85,12 +85,13 @@ function init(sensors) {
   if (mode === 'life' && !displayMetrics()) mode = 'side';
   let options = [], active = -1;
 
-  root.innerHTML = `<div class="sc-list-heading"><div><div class="section-kicker">YOUR COMPARE LIST</div><p id="sc-list-status" role="status" aria-live="polite"></p></div><button class="button button-quiet" type="button" data-clear-list>Clear list</button></div>
-    <div class="sc-toolbar">
+  root.innerHTML = `<div class="sc-toolbar">
       <div class="sc-picker"><label class="field-label" for="sc-input">Add a sensor <span class="facet-hint" id="sc-count"></span></label>
         <div class="sc-picker-field"><input id="sc-input" class="text-field" type="search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="sc-options" autocomplete="off" spellcheck="false" placeholder="e.g. IMX989, HP2, LYT-900"><div id="sc-options" class="site-search-results sc-options" role="listbox" aria-label="Matching sensors" hidden></div></div>
       </div>
       <div class="chart-controls sc-mode" role="group" aria-label="Layout"><button class="chart-filter" type="button" data-mode="side">Side by side</button><button class="chart-filter" type="button" data-mode="overlay">Overlay</button><button class="chart-filter" type="button" data-mode="life" title="Enter display dimensions to estimate physical size">Life size</button></div>
+      <button class="button button-quiet sc-clear" type="button" data-clear-list>Clear list</button>
+      <p id="sc-list-status" class="sr-only" role="status" aria-live="polite"></p>
     </div>
     <details class="sc-calibration" id="sc-calibration"><summary>Display settings for life-size view</summary><div class="sc-calibration-fields">
       <label>Monitor diagonal <span class="sc-calibration-input"><input id="sc-display-diagonal" class="text-field" type="number" min="1" max="100" step="0.1" inputmode="decimal" placeholder="27"><span>in</span></span></label>
@@ -101,7 +102,7 @@ function init(sensors) {
     <div class="sc-stage" aria-live="polite"></div>
     <p class="sc-note">Sensor outlines are drawn at the same scale. The comparison table below lists each specification by sensor.</p>
     <div class="sc-table-wrap"><table class="sc-table"><caption class="sr-only">Sensor specification comparison</caption><thead></thead><tbody></tbody></table></div>`;
-  const input = root.querySelector('#sc-input'), list = root.querySelector('#sc-options'), stage = root.querySelector('.sc-stage');
+  const input = root.querySelector('#sc-input'), list = root.querySelector('#sc-options'), stage = root.querySelector('.sc-stage'), tableWrap = root.querySelector('.sc-table-wrap');
   const diagonalInput = root.querySelector('#sc-display-diagonal'), widthInput = root.querySelector('#sc-display-width'), heightInput = root.querySelector('#sc-display-height');
   if (calibration) {
     diagonalInput.value = calibration.diagonal ?? '';
@@ -125,7 +126,10 @@ function init(sensors) {
     stage.classList.toggle('is-overlay', mode === 'overlay');
     stage.classList.toggle('is-side', mode !== 'overlay');
     stage.classList.toggle('is-life-size', mode === 'life');
-    stage.innerHTML = mode === 'overlay' ? overlaySvg(current, current[0]) : sideItems(current, current[0], stage.clientWidth - 32 || 600, mode === 'life' ? displayMetrics()?.pixelsPerMm : null);
+    if (mode === 'overlay') { stage.innerHTML = overlaySvg(current, current[0]); return; }
+    const table = root.querySelector('.sc-table'), widths = [...table.querySelectorAll('thead th')].map((th) => th.getBoundingClientRect().width);
+    stage.innerHTML = `<div class="sc-side-track" style="width:${table.getBoundingClientRect().width}px;grid-template-columns:${widths.map((width) => `${width}px`).join(' ')}"><span aria-hidden="true"></span>${sideItems(current, current[0], Math.min(...widths.slice(1)), mode === 'life' ? displayMetrics()?.pixelsPerMm : null)}</div>`;
+    stage.scrollLeft = tableWrap.scrollLeft;
   };
   const render = () => {
     const current = rows(), reference = current[0];
@@ -290,10 +294,11 @@ function init(sensors) {
   });
   let lastWidth = 0;
   new ResizeObserver(() => {
-    if (mode !== 'side' || Math.abs(stage.clientWidth - lastWidth) < 8) return;
-    lastWidth = stage.clientWidth;
+    if (mode === 'overlay' || Math.abs(tableWrap.clientWidth - lastWidth) < 1) return;
+    lastWidth = tableWrap.clientWidth;
     renderStage();
-  }).observe(stage);
+  }).observe(tableWrap);
+  tableWrap.addEventListener('scroll', () => { stage.scrollLeft = tableWrap.scrollLeft; });
   window.addEventListener('resize', () => { if (mode === 'life') render(); });
   render();
 }

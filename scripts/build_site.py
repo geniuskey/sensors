@@ -40,7 +40,7 @@ def issue_link(record, path, name):
     q=urlencode({'template':'data-correction.yml','title':f'[Correction] {name}','record':record,'page':SITE+path})
     return f'<a class="correction-link" href="{REPO}/issues/new?{q}" target="_blank" rel="noopener noreferrer">Report a data error ↗</a>'
 
-def page(path, title, desc, section, crumbs, body, product, og=OG_IMAGE, noindex=False):
+def page(path, title, desc, section, crumbs, body, product, og=OG_IMAGE, noindex=False, breadcrumb=True):
     url=SITE+path; robots='\n    <meta name="robots" content="noindex, follow" />' if noindex else ''
     crumb_ld={'@context':'https://schema.org','@type':'BreadcrumbList','itemListElement':[{'@type':'ListItem','position':i+1,'name':n,'item':SITE+h} for i,(n,h) in enumerate(crumbs)]}
     nav=' <span aria-hidden="true">/</span> '.join(f'<a href="{e(h)}">{e(n)}</a>' if i<len(crumbs)-1 else f'<span aria-current="page">{e(n)}</span>' for i,(n,h) in enumerate(crumbs))
@@ -78,7 +78,7 @@ def page(path, title, desc, section, crumbs, body, product, og=OG_IMAGE, noindex
     <a class="skip-link" href="#main-content">Skip to content</a>
     {topbar(section)}
     <main class="detail-page" id="main-content">
-      <nav class="breadcrumb" aria-label="Breadcrumb">{nav}</nav>
+      {f'<nav class="breadcrumb" aria-label="Breadcrumb">{nav}</nav>' if breadcrumb else ''}
       {body}
       {FOOTER}
     </main>
@@ -280,7 +280,7 @@ compare_body=f'''<section class="detail-panel compare-page-panel" aria-label="Co
       </section>
       <script type="module" src="/src/compare.js"></script>'''
 compare_og=write_og('/og/compare.png','Size comparison','Compare sensor sizes',[('Add up to six sensors from the catalog',True),('Build your own comparison list',False),('View sizes at true relative scale',False)],[(sensor_name(sensor_by_id[i]),*sensor_dims[i]) for i in ('SONY:IMX989','SONY:IMX766','SONY:IMX882') if i in sensor_by_id and sensor_dims[i]])
-write('/compare/',page('/compare/','Compare mobile image sensor sizes | Sensor Database',compare_desc,'/compare/',[('Home','/'),('Compare','/compare/')],compare_body,{'@context':'https://schema.org','@type':'WebPage','name':'Compare sensor sizes','description':compare_desc,'url':SITE+'/compare/'},compare_og))
+write('/compare/',page('/compare/','Compare mobile image sensor sizes | Sensor Database',compare_desc,'/compare/',[('Home','/'),('Compare','/compare/')],compare_body,{'@context':'https://schema.org','@type':'WebPage','name':'Compare sensor sizes','description':compare_desc,'url':SITE+'/compare/'},compare_og,breadcrumb=False))
 
 def fsize(name): return f'{(DIST/"data"/name).stat().st_size/1024:,.0f} KB'
 dataset_ld={'@context':'https://schema.org','@type':'Dataset','name':'Mobile Image Sensor Database','alternateName':'sensors.euiyun.com','description':f'Source-traceable catalog of {len(sensors)} mobile image sensors (Sony, Samsung, OmniVision and more) with specifications and {sum(len(p.get("cameras") or []) for p in phones)} phone camera mappings across {len(phones)} smartphones.','url':SITE+'/','sameAs':REPO,'license':'https://creativecommons.org/licenses/by/4.0/','isAccessibleForFree':True,'creator':{'@type':'Person','name':'geniuskey','url':'https://github.com/geniuskey'},'dateModified':date.today().isoformat(),'keywords':['image sensor','CMOS','smartphone camera','Sony IMX','Samsung ISOCELL','OmniVision','pixel pitch','optical format'],'variableMeasured':['resolution_mp','sensor_size','pixel_size_um','pixel_binning','camera_role','release_year'],'distribution':[{'@type':'DataDownload','encodingFormat':t,'contentUrl':SITE+'/data/'+n} for n,t in (('all-in-one.csv','text/csv'),('sensors.json','application/json'),('phones.json','application/json'))]}
