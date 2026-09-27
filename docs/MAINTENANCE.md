@@ -6,7 +6,8 @@
 2. Check SP information and Helpix for new aliases/adoption mappings.
 3. Check DXOMARK for newly tested phones already present in `phones`.
 4. Run collectors into a dated raw snapshot folder; never write scraped output directly to production.
-5. Normalize, validate and open a PR. A human or review agent inspects unusual diffs before merge.
+5. When a DXOMARK ranking HTML snapshot is available at `data/raw/dxomark smartphones.html`, run `python scripts/import_dxomark.py` before rebuilding data so each matched result keeps its device-page source URL and camera protocol.
+6. Normalize, validate and open a PR. A human or review agent inspects unusual diffs before merge.
 
 ## Monthly
 

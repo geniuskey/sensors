@@ -23,6 +23,8 @@ npm run build
 
 This imports `data/raw/bootstrap_2026-09.csv` and merges the verified Helpix phone mappings in `exports/verified-mapping-additions-2026-09-26.csv`. It produces `database/local.sqlite3`, `database/seed.sql`, `public/data/sensors.json`, `public/data/phones.json`, and refreshed CSV exports.
 
+To refresh DXOMARK scores from a saved `data/raw/dxomark smartphones.html` snapshot, first run `python scripts/import_dxomark.py`, then run `npm run data:build`. The generated phone-level score records retain a direct DXOMARK device-page URL and camera protocol.
+
 ## Cloudflare setup
 
 ```bash

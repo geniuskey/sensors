@@ -284,9 +284,12 @@ th[aria-sort="ascending"] .sort-button span, th[aria-sort="descending"] .sort-bu
 .detail-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
 .phone-detail-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
 .detail-item { display: grid; align-content: start; gap: 3px; min-width: 0; padding: 12px 14px; border: 1px solid var(--line); border-radius: 10px; background: var(--tint); }
-.detail-item span { color: var(--muted); font-size: 12px; }
-.detail-item strong { overflow-wrap: anywhere; color: var(--ink); font-size: 14px; font-weight: 600; }
-.detail-extra { margin-top: 20px; }
+  .detail-item span { color: var(--muted); font-size: 12px; }
+  .detail-item strong { overflow-wrap: anywhere; color: var(--ink); font-size: 14px; font-weight: 600; }
+  .phone-score-source { margin: 12px 0 0; color: var(--muted); font-size: 13px; }
+  .phone-score-source a { color: var(--accent); font-weight: 600; text-decoration: none; }
+  .phone-score-source a:hover { text-decoration: underline; }
+  .detail-extra { margin-top: 20px; }
 .detail-extra h3, .phone-camera-detail > h3 { margin: 16px 0 6px; color: var(--muted); font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
 .detail-extra p, .detail-extra ul { margin: 0; color: var(--ink-2); font-size: 13px; line-height: 1.7; }
 .detail-extra ul { max-height: 220px; padding-left: 18px; overflow: auto; }

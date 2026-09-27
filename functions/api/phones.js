@@ -35,7 +35,9 @@ export async function onRequestGet({ request, env }) {
     )
     SELECT
       p.id, p.canonical_id, p.oem, p.model, p.release_year, p.soc,
-      d.camera_score, d.photo_score, d.video_score, d.camera_protocol,
+      d.camera_score, d.photo_score, d.video_score, d.selfie_score,
+      d.display_score, d.battery_score, d.camera_protocol,
+      dxos.url AS dxomark_source_url,
       pc.id AS camera_id, pc.camera_role AS role, pc.mapping_confidence AS confidence,
       s.canonical_id AS sensor_id, s.canonical_name AS sensor,
       sm.name AS sensor_manufacturer, s.resolution_mp, s.sensor_size, s.pixel_size_um,
@@ -45,6 +47,7 @@ export async function onRequestGet({ request, env }) {
     FROM selected_phones chosen
     JOIN phones p ON p.id = chosen.id
     LEFT JOIN dxomark_results d ON d.phone_id = p.id
+    LEFT JOIN sources dxos ON dxos.id = d.source_id
     LEFT JOIN phone_cameras pc ON pc.phone_id = p.id
     LEFT JOIN sensors s ON s.id = pc.sensor_id
     LEFT JOIN manufacturers sm ON sm.id = s.manufacturer_id
@@ -65,7 +68,11 @@ export async function onRequestGet({ request, env }) {
         camera_score: row.camera_score,
         photo_score: row.photo_score,
         video_score: row.video_score,
+        selfie_score: row.selfie_score,
+        display_score: row.display_score,
+        battery_score: row.battery_score,
         camera_protocol: row.camera_protocol,
+        dxomark_source_url: row.dxomark_source_url,
         cameras: [],
       };
       byId.set(row.id, phone);

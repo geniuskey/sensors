@@ -123,7 +123,8 @@ for p in phones:
     main=next((c for c in cams if 'Main' in (c.get('role') or '')),cams[0] if cams else None)
     title=f'{model} camera sensors{" — "+main["sensor"]+" main" if main else ""} | Sensor Database'
     desc=f'{model}{" ("+str(p["release_year"])+")" if p.get("release_year") else ""} image sensors by camera: '+('; '.join(f'{c.get("role") or "Camera"}: {c.get("sensor_manufacturer") or ""} {c.get("sensor")}'.replace('  ',' ') for c in cams) if cams else 'no sensor mappings yet')+'.'
-    facts=[('Brand',p.get('oem')),('Release year',p.get('release_year')),('System on chip',p.get('soc')),('Camera mappings',len(cams)),('DXOMARK camera score',p.get('camera_score')),('DXOMARK protocol',p.get('camera_protocol'))]
+    facts=[('Brand',p.get('oem')),('Release year',p.get('release_year')),('System on chip',p.get('soc')),('Camera mappings',len(cams)),('DXOMARK camera score',p.get('camera_score')),('DXOMARK photo score',p.get('photo_score')),('DXOMARK video score',p.get('video_score')),('DXOMARK selfie score',p.get('selfie_score')),('DXOMARK display score',p.get('display_score')),('DXOMARK battery score',p.get('battery_score')),('DXOMARK protocol',p.get('camera_protocol'))]
+    dxomark_source_html=f'<p class="phone-score-source">DXOMARK score source: <a href="{e(p["dxomark_source_url"])}" target="_blank" rel="noopener noreferrer">DXOMARK smartphone test ↗</a></p>' if p.get('dxomark_source_url') else ''
     def cam(c):
         sen=sensor_by_id.get(c.get('sensor_id')); nm=e(c.get('sensor') or c.get('sensor_id'))
         info=' · '.join(x for x in (c.get('sensor_manufacturer'), num(c.get('resolution_mp')) and num(c.get('resolution_mp'))+' MP', fmt_size(c.get('sensor_size')), num(c.get('pixel_size_um'),2) and num(c.get('pixel_size_um'),2)+' µm pixels') if x)
@@ -131,6 +132,7 @@ for p in phones:
     body=f'''<section class="detail-panel">
         <div class="detail-head"><div><div class="section-kicker">{e(p.get("oem") or "PHONE")} SMARTPHONE</div><h1>{e(model)}</h1><p>{e(p["canonical_id"])}</p></div></div>
         <div class="detail-grid phone-detail-grid">{items(facts)}</div>
+        {dxomark_source_html}
       </section>
       <section class="detail-panel"><div class="section-kicker">IMAGE SENSORS BY CAMERA</div><h2 class="detail-section-title">{len(cams)} camera{"s" if len(cams)!=1 else ""}</h2>{f'<div class="camera-mapping-list">{"".join(cam(c) for c in cams)}</div>' if cams else '<p class="phone-none">No image sensor mappings are available for this phone yet.</p>'}<p class="detail-cta"><a class="button button-secondary" href="/phones/?phone={e(quote(p["canonical_id"]))}">Open in phone catalog →</a></p></section>'''
     product={'@context':'https://schema.org','@type':'Product','name':model,'description':desc,'url':SITE+path,'image':OG_IMAGE,'sku':p['canonical_id'],'category':'Smartphone','brand':{'@type':'Brand','name':p.get('oem') or ''},'additionalProperty':[{'@type':'PropertyValue','name':c.get('role') or 'Camera','value':c.get('sensor') or ''} for c in cams]}

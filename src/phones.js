@@ -300,10 +300,19 @@ function showPhone(id, updateUrl = true) {
     ['System on chip', phone.soc || '—'],
     ['Camera mappings', cameras.length],
     ['DXOMARK camera score', phone.camera_score == null ? '—' : formatNumber(phone.camera_score)],
+    ['DXOMARK photo score', phone.photo_score == null ? '—' : formatNumber(phone.photo_score)],
+    ['DXOMARK video score', phone.video_score == null ? '—' : formatNumber(phone.video_score)],
+    ['DXOMARK selfie score', phone.selfie_score == null ? '—' : formatNumber(phone.selfie_score)],
+    ['DXOMARK display score', phone.display_score == null ? '—' : formatNumber(phone.display_score)],
+    ['DXOMARK battery score', phone.battery_score == null ? '—' : formatNumber(phone.battery_score)],
     ['DXOMARK protocol', phone.camera_protocol || '—'],
   ];
+  const dxomarkSource = phone.dxomark_source_url
+    ? '<p class="phone-score-source">DXOMARK score source: <a href="' + esc(phone.dxomark_source_url) + '" target="_blank" rel="noopener noreferrer">DXOMARK smartphone test ↗</a></p>'
+    : '';
   detail.innerHTML = '<div class="detail-head"><div><div class="section-kicker">PHONE DETAILS</div><h2>' + esc(phone.model) + '</h2><p>' + esc(phoneMakerLabel(phone)) + ' · ' + esc(phone.canonical_id) + ' · <a href="' + phonePath(phone) + '">Permalink</a></p></div><button class="icon-button" type="button" data-detail-close aria-label="Close phone details">×</button></div>' +
     '<div class="detail-grid phone-detail-grid">' + facts.map(([label, value]) => '<div class="detail-item"><span>' + esc(label) + '</span><strong>' + esc(value) + '</strong></div>').join('') + '</div>' +
+    dxomarkSource +
     '<div class="phone-camera-detail"><h3>Image sensors by camera</h3>' + (cameras.length ? '<div class="camera-mapping-list">' + cameras.map(detailCamera).join('') + '</div>' : '<p class="phone-none">No image sensor mappings are available for this phone yet.</p>') + '</div>';
   detail.hidden = false;
   if (updateUrl) {

@@ -13,6 +13,7 @@ VERIFIED_MAPPINGS=EXPORTS/'verified-mapping-additions-2026-09-26.csv'
 ROLE_UPDATES=EXPORTS/'verified-role-updates-2026-09-26.csv'
 UNKNOWN_ROLES=('','unknown','unspecified')
 REVIEW=ROOT/'data/review'
+DXOMARK_SNAPSHOT=ROOT/'data/raw/dxomark_smartphones.csv'
 NAMING_FIELDS=('Sensor','Marketing_Name','Internal_Code','Naming_Status','Aliases')
 SENSOR_FIELDS=('Sensor','Marketing_Name','Internal_Code','Naming_Status','Resolution_MP','Resolution_Px','Sensor_Size','Pixel_Size_um','Pixel_Binning','FWC','AF','HDR','CFA','Two_Layer_Transistor','Transfer_Gate','Source_URL','Source_Type','Notes','First_Listed_Year','Sensor_Confidence','Additional_Source_URL','Aliases')
 PUBLIC.mkdir(parents=True,exist_ok=True); EXPORTS.mkdir(parents=True,exist_ok=True)
@@ -33,6 +34,60 @@ def source_type(v):
 
 def identity_key(v): return re.sub(r'[^a-z0-9]+','',((v or '').lower().replace('+',' plus ')))
 def phone_id(r): return clean(r['Phone_Canonical_ID']) or re.sub(r'[^a-z0-9]+','-',clean(r['Phone']).lower().replace('+',' plus ')).strip('-')
+
+def phone_model_key(oem,model):
+    name=clean(model); brand=clean(oem)
+    if brand and name.lower().startswith(brand.lower()) and (len(name)==len(brand) or name[len(brand)].isspace() or name[len(brand)] in '-_'):
+        name=name[len(brand):].strip(' -_')
+    return identity_key(brand),identity_key(name)
+
+DXOMARK_VARIANT_SUFFIX=re.compile(r'\s*\((?P<variant>Exynos|Snapdragon(?:\s+[\w.+-]+)?|MediaTek|Dimensity(?:\s+[\w.+-]+)?|Qualcomm(?:\s+[\w.+-]+)?)\)\s*$',re.I)
+DXOMARK_DATA_FIELDS=('DXOMARK_Device','DXOMARK_Camera_Score','DXOMARK_Photo_Score','DXOMARK_Video_Score','DXOMARK_Main_Score','DXOMARK_UltraWide_Score','DXOMARK_Tele_Score','DXOMARK_Selfie_Score','DXOMARK_Display_Score','DXOMARK_Battery_Score','DXOMARK_Launch_Price_USD','DXOMARK_Launch_Date','DXOMARK_Camera_Protocol','DXOMARK_Source_URL','DXOMARK_Source_Type','DXOMARK_Checked_Date')
+
+def apply_dxomark(rows):
+    if not DXOMARK_SNAPSHOT.exists():
+        return rows
+    with DXOMARK_SNAPSHOT.open(encoding='utf-8-sig',newline='') as f:
+        records=list(csv.DictReader(f))
+    exact={}; variants={}
+    for record in records:
+        key=phone_model_key(record.get('DXOMARK_Brand'),record.get('DXOMARK_Model'))
+        exact.setdefault(key,[]).append(record)
+        model=clean(record.get('DXOMARK_Model')); variant=DXOMARK_VARIANT_SUFFIX.search(model)
+        if variant:
+            variants.setdefault(phone_model_key(record.get('DXOMARK_Brand'),model[:variant.start()].strip()),[]).append(record)
+    phones={}
+    for row in rows:
+        if clean(row.get('Phone')):
+            phones.setdefault(phone_id(row),(row,phone_model_key(row.get('OEM'),row.get('Phone'))))
+    by_id={}; ambiguous=0
+    for pcid,(row,key) in phones.items():
+        candidates=exact.get(key,[]); status='Exact normalized model match'
+        if len(candidates)>1:
+            ambiguous+=1; continue
+        if not candidates:
+            candidates=variants.get(key,[])
+            if len(candidates)>1:
+                ambiguous+=1; continue
+            if len(candidates)==1:
+                match=DXOMARK_VARIANT_SUFFIX.search(clean(candidates[0].get('DXOMARK_Model')))
+                status=f'Tested variant: {match.group("variant")}'
+        if len(candidates)==1:
+            record=candidates[0]
+            if any(clean(record.get(field)) for field in ('DXOMARK_Camera_Score','DXOMARK_Selfie_Score','DXOMARK_Display_Score','DXOMARK_Battery_Score')):
+                by_id[pcid]=(record,status,key)
+    updated=0
+    for row in rows:
+        pcid=phone_id(row) if clean(row.get('Phone')) else ''
+        if pcid not in by_id: continue
+        record,status,key=by_id[pcid]
+        if phone_model_key(row.get('OEM'),row.get('Phone'))!=key: continue
+        for field in DXOMARK_DATA_FIELDS:
+            value=clean(record.get(field))
+            if value: row[field]=value
+        row['DXOMARK_Match_Status']=status; updated+=1
+    print(f'Applied DXOMARK snapshot to {updated} phone mapping rows ({len(by_id)} phones, {ambiguous} ambiguous matches left unchanged)')
+    return rows
 
 PHONE_BRAND_PREFIX=re.compile(r'^(?:Samsung (?=Galaxy\b)|Apple (?=iPhone\b)|Sony (?=Xperia\b))',re.I)
 def strip_phone_brand(name): return PHONE_BRAND_PREFIX.sub('',clean(name))
@@ -130,6 +185,10 @@ def merge_verified_mappings(rows,fieldnames):
             'Mapping_Confidence':clean(addition['Mapping_Confidence']),
             'Phone_Canonical_ID':pcid,
         })
+        # DXOMARK results belong to the phone, never to the sensor template.
+        for column in fieldnames:
+            if column.startswith('DXOMARK_'):
+                row[column]=''
         rows.append(row)
         existing_links.setdefault(pair,[]).append(row)
     print(f'Integrated {len(additions)} verified phone-sensor mappings from {VERIFIED_MAPPINGS.name}')
@@ -304,11 +363,13 @@ def add_source(cur,url,stype,title=''):
 
 if DB.exists(): DB.unlink()
 con=sqlite3.connect(DB); con.execute('PRAGMA foreign_keys=ON'); con.executescript(SCHEMA.read_text())
+con.execute('ALTER TABLE dxomark_results ADD COLUMN source_id INTEGER REFERENCES sources(id)')
 with CSV.open(encoding='utf-8-sig',newline='') as f:
     reader=csv.DictReader(f); fieldnames=reader.fieldnames; rows=merge_phone_ids(normalize_phone_names(list(reader)))
 rows=apply_role_updates(merge_verified_mappings(rows,fieldnames))
 rows=normalize_oems(apply_sensor_decisions(split_phone_ids(rows)))
 rows=drop_redundant_unknown(derive_roles(apply_mapping_review(apply_phone_updates(rows),fieldnames)))
+rows=apply_dxomark(rows)
 cur=con.cursor(); sensor_ids={}; phone_ids={}
 for r in rows:
     maker=clean(r['Manufacturer']); cur.execute('INSERT OR IGNORE INTO manufacturers(name) VALUES(?)',(maker,)); mid=cur.execute('SELECT id FROM manufacturers WHERE name=?',(maker,)).fetchone()[0]
@@ -330,14 +391,14 @@ for r in rows:
             cur.execute('INSERT OR IGNORE INTO phones(canonical_id,oem,model,release_year,soc) VALUES(?,?,?,?,?)',(pcid,clean(r['OEM']),phone,integer(r['Release_Year']),clean(r['SoC'])))
             pid=cur.execute('SELECT id FROM phones WHERE canonical_id=?',(pcid,)).fetchone()[0];phone_ids[pcid]=pid
             if clean(r['DXOMARK_Device']) or clean(r['DXOMARK_Camera_Score']):
-                cur.execute('''INSERT OR REPLACE INTO dxomark_results(phone_id,device_name,match_status,camera_score,photo_score,video_score,main_score,ultrawide_score,tele_score,selfie_score,display_score,battery_score,launch_price_usd,launch_date,camera_protocol,checked_date) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)''',(pid,clean(r['DXOMARK_Device']),clean(r['DXOMARK_Match_Status']),num(r['DXOMARK_Camera_Score']),num(r['DXOMARK_Photo_Score']),num(r['DXOMARK_Video_Score']),num(r['DXOMARK_Main_Score']),num(r['DXOMARK_UltraWide_Score']),num(r['DXOMARK_Tele_Score']),num(r['DXOMARK_Selfie_Score']),num(r['DXOMARK_Display_Score']),num(r['DXOMARK_Battery_Score']),num(r['DXOMARK_Launch_Price_USD']),clean(r['DXOMARK_Launch_Date']),clean(r['DXOMARK_Camera_Protocol']),clean(r['DXOMARK_Checked_Date'])))
+                dxomark_source=add_source(cur,clean(r['DXOMARK_Source_URL']),clean(r['DXOMARK_Source_Type']),'DXOMARK phone benchmark')
+                cur.execute('''INSERT OR REPLACE INTO dxomark_results(phone_id,device_name,match_status,camera_score,photo_score,video_score,main_score,ultrawide_score,tele_score,selfie_score,display_score,battery_score,launch_price_usd,launch_date,camera_protocol,checked_date,source_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)''',(pid,clean(r['DXOMARK_Device']),clean(r['DXOMARK_Match_Status']),num(r['DXOMARK_Camera_Score']),num(r['DXOMARK_Photo_Score']),num(r['DXOMARK_Video_Score']),num(r['DXOMARK_Main_Score']),num(r['DXOMARK_UltraWide_Score']),num(r['DXOMARK_Tele_Score']),num(r['DXOMARK_Selfie_Score']),num(r['DXOMARK_Display_Score']),num(r['DXOMARK_Battery_Score']),num(r['DXOMARK_Launch_Price_USD']),clean(r['DXOMARK_Launch_Date']),clean(r['DXOMARK_Camera_Protocol']),clean(r['DXOMARK_Checked_Date']),dxomark_source))
         pid=phone_ids[pcid];role=clean(r['Camera_Role']) or 'Unknown'
         cur.execute('INSERT OR IGNORE INTO phone_cameras(phone_id,sensor_id,camera_role,mapping_confidence) VALUES(?,?,?,?)',(pid,sid,role,clean(r['Mapping_Confidence'])))
         camid=cur.execute('SELECT id FROM phone_cameras WHERE phone_id=? AND sensor_id=? AND camera_role=?',(pid,sid,role)).fetchone()[0]
         src=add_source(cur,clean(r['Mapping_Source_URL']),clean(r['Mapping_Source_Type']),'phone mapping')
         if src:cur.execute('INSERT OR IGNORE INTO camera_sources(camera_id,source_id) VALUES(?,?)',(camid,src))
         add_source(cur,clean(r['SoC_Source_URL']),'official','phone SoC')
-        add_source(cur,clean(r['DXOMARK_Source_URL']),clean(r['DXOMARK_Source_Type']),'DXOMARK')
 con.commit()
 
 # Static fallback JSON used before D1 is configured.
@@ -349,7 +410,7 @@ for item in items:
     item['sources']=[dict(url=r[0],type=r[1],relationship=r[2]) for r in con.execute('SELECT src.url,src.source_type,ss.relationship FROM sensor_sources ss JOIN sources src ON src.id=ss.source_id WHERE ss.sensor_id=? ORDER BY src.source_type,src.url',(sid,))]
     item['phones']=[dict(canonical_id=r[0],model=r[1],oem=r[2],year=r[3],role=r[4],confidence=r[5]) for r in con.execute('SELECT p.canonical_id,p.model,p.oem,p.release_year,pc.camera_role,pc.mapping_confidence FROM phone_cameras pc JOIN phones p ON p.id=pc.phone_id WHERE pc.sensor_id=? ORDER BY p.release_year DESC,p.model',(sid,))]
 (PUBLIC/'sensors.json').write_text(json.dumps(items,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
-phone_query='''SELECT p.*,d.camera_score,d.photo_score,d.video_score,d.camera_protocol FROM phones p LEFT JOIN dxomark_results d ON d.phone_id=p.id ORDER BY p.release_year DESC,p.model'''
+phone_query='''SELECT p.*,d.camera_score,d.photo_score,d.video_score,d.selfie_score,d.display_score,d.battery_score,d.camera_protocol,dxsrc.url dxomark_source_url FROM phones p LEFT JOIN dxomark_results d ON d.phone_id=p.id LEFT JOIN sources dxsrc ON dxsrc.id=d.source_id ORDER BY p.release_year DESC,p.model'''
 phone_cols=[d[0] for d in con.execute(phone_query).description]
 phone_items=[dict(zip(phone_cols,row)) for row in con.execute(phone_query)]
 for phone in phone_items:
@@ -387,7 +448,7 @@ def sql(v):
     return "'"+str(v).replace("'","''")+"'"
 with SEED.open('w',encoding='utf-8') as out:
     out.write('PRAGMA defer_foreign_keys=on;\n')
-    tables=['manufacturers','sensors','sensor_aliases','phones','phone_cameras','dxomark_results','sources','sensor_sources','camera_sources']
+    tables=['manufacturers','sensors','sensor_aliases','phones','phone_cameras','sources','dxomark_results','sensor_sources','camera_sources']
     for t in reversed(tables):out.write(f'DELETE FROM {t};\n')
     for t in tables:
         info=con.execute(f'PRAGMA table_info({t})').fetchall(); columns=[r[1] for r in info]
