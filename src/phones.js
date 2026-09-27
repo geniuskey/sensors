@@ -163,7 +163,7 @@ function render(resetList = false) {
     const selected = compareIds.has(phone.canonical_id);
     return '<tr class="' + (selected ? 'is-selected' : '') + '"><td class="check-col"><input class="compare-check" type="checkbox" data-compare="' + esc(phone.canonical_id) + '" aria-label="Select ' + esc(phone.model) + ' for comparison"' + (selected ? ' checked' : '') + '></td>' +
       '<td class="phone-maker-cell" data-label="Phone manufacturer"><span class="maker-label">' + esc(phoneMakerLabel(phone)) + '</span></td>' +
-      '<td class="phone-model-cell"><button class="phone-model-link" type="button" data-open-phone="' + esc(phone.canonical_id) + '">' + esc(phone.model) + '</button><span class="phone-canonical-id">' + esc(phone.canonical_id || '') + '</span></td>' +
+      '<td class="phone-model-cell"><a class="phone-model-link" href="' + phonePath(phone) + '" data-open-phone="' + esc(phone.canonical_id) + '">' + esc(phone.model) + '</a><span class="phone-canonical-id">' + esc(phone.canonical_id || '') + '</span></td>' +
       '<td class="number-cell" data-label="Year">' + esc(phone.release_year || '—') + '</td>' +
       '<td class="phone-soc-cell" data-label="SoC">' + esc(phone.soc || '—') + '</td>' +
       '<td class="number-cell" data-label="Sensors"><strong>' + uniqueSensors + '</strong></td>' +
@@ -367,7 +367,10 @@ qs('#phone-table').addEventListener('click', (event) => {
     return;
   }
   const button = event.target.closest('[data-open-phone]');
-  if (button) showPhone(button.dataset.openPhone);
+  if (button && !(event.metaKey || event.ctrlKey || event.shiftKey || event.button)) {
+    event.preventDefault();
+    showPhone(button.dataset.openPhone);
+  }
 });
 qs('#phone-table').addEventListener('change', (event) => {
   const input = event.target.closest('[data-compare]');

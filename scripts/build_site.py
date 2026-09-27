@@ -35,7 +35,8 @@ catalog=(ROOT/'sensors/index.html').read_text(encoding='utf-8')
 TOPBAR=re.search(r'<header class="topbar">.*?</header>',catalog,re.S).group(0)
 NAV_PLAIN=re.sub(r'<a class="is-current" href="([^"]+)" aria-current="page">',r'<a href="\1">',TOPBAR)
 def topbar(section): return NAV_PLAIN.replace(f'<a href="{section}">',f'<a class="is-current" href="{section}" aria-current="page">',1)
-FOOTER=f'<footer class="page-footer"><span>Source-traceable mobile image sensor data · <a href="/open-data/">CC BY 4.0</a></span><span class="footer-links"><a href="/sources/">Sources</a><a href="/open-data/">Open data &amp; API</a><a href="/data/all-in-one.csv">Download CSV ↓</a><a href="{REPO}" target="_blank" rel="noopener noreferrer">How this catalog is maintained ↗</a></span></footer>'
+YEARS='2026' if date.today().year==2026 else f'2026–{date.today().year}'
+FOOTER=f'<footer class="page-footer"><span>© {YEARS} <a href="https://github.com/geniuskey" target="_blank" rel="noopener noreferrer">geniuskey</a> · Data licensed <a href="/open-data/">CC BY 4.0</a> · Product names are trademarks of their owners</span><span class="footer-links"><a href="/sources/">Sources</a><a href="/open-data/">Open data &amp; API</a><a href="/data/all-in-one.csv">Download CSV ↓</a><a href="{REPO}" target="_blank" rel="noopener noreferrer">How this catalog is maintained ↗</a></span></footer>'
 def issue_link(record, path, name):
     q=urlencode({'template':'data-correction.yml','title':f'[Correction] {name}','record':record,'page':SITE+path})
     return f'<a class="correction-link" href="{REPO}/issues/new?{q}" target="_blank" rel="noopener noreferrer">Report a data error ↗</a>'
@@ -53,6 +54,8 @@ def page(path, title, desc, section, crumbs, body, product, og=OG_IMAGE, noindex
     <meta name="description" content="{e(desc)}" />
     <link rel="canonical" href="{e(url)}" />{robots}
     <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f7f8fa" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0a0e16" media="(prefers-color-scheme: dark)" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Mobile Image Sensor Database" />
     <meta property="og:title" content="{e(title)}" />
@@ -313,10 +316,18 @@ open_og=write_og('/og/open-data.png','Open data','CSV, JSON & free API',[('CC BY
 write('/open-data/',page('/open-data/','Open data & API | Mobile Image Sensor Database',open_desc,'/open-data/',[('Home','/'),('Open data','/open-data/')],open_body.replace('{DIMS_SIZE}',fsize('sensor-dims.json')),dataset_ld,open_og))
 
 site_og=write_og('/og/site.png','Open image sensor database','Mobile Image Sensor Database',[(f'{len(sensors)} sensors · {len(phones)} phones',True),('Specs, adoption trends and size comparisons',False),('Every record linked to its source',False)],[(sensor_name(sensor_by_id[i]),*sensor_dims[i]) for i in ('SONY:IMX989','OMNIVISION:OV50H','SONY:IMX882') if i in sensor_by_id and sensor_dims[i]])
-site_ld={'@context':'https://schema.org','@type':'WebSite','name':'Mobile Image Sensor Database','url':SITE+'/','potentialAction':{'@type':'SearchAction','target':{'@type':'EntryPoint','urlTemplate':SITE+'/sensors/?q={search_term_string}'},'query-input':'required name=search_term_string'}}
+site_ld={'@context':'https://schema.org','@type':'WebSite','name':'Mobile Image Sensor Database','url':SITE+'/','inLanguage':'en','copyrightYear':2026,'copyrightHolder':{'@type':'Person','name':'geniuskey','url':'https://github.com/geniuskey'},'potentialAction':{'@type':'SearchAction','target':{'@type':'EntryPoint','urlTemplate':SITE+'/sensors/?q={search_term_string}'},'query-input':'required name=search_term_string'}}
 for f,extra in (('index.html',ld(site_ld)+ld(dataset_ld)),('sensors/index.html',''),('phones/index.html','')):
-    h=(DIST/f).read_text(encoding='utf-8').replace(SITE+'/images/image-sensor.png',site_og).replace('<meta name="twitter:card" content="summary" />','<meta name="twitter:card" content="summary_large_image" />\n    <meta property="og:image:width" content="1200" />\n    <meta property="og:image:height" content="630" />')
+    h=re.sub(r'<footer class="page-footer">.*?</footer>',lambda _:FOOTER,(DIST/f).read_text(encoding='utf-8'),count=1,flags=re.S).replace(SITE+'/images/image-sensor.png',site_og).replace('<meta name="twitter:card" content="summary" />','<meta name="twitter:card" content="summary_large_image" />\n    <meta property="og:image:width" content="1200" />\n    <meta property="og:image:height" content="630" />')
     (DIST/f).write_text(h.replace('</head>',f'    {extra}\n  </head>',1) if extra else h,encoding='utf-8')
+
+nf_body='''<section class="detail-panel not-found">
+        <div class="section-kicker">404</div><h1>Page not found</h1>
+        <p>The sensor or phone you were looking for may have been renamed or merged. Try searching the catalog.</p>
+        <p class="detail-cta"><a class="button button-primary" href="/sensors/">Browse sensors</a><a class="button button-secondary" href="/phones/">Browse phones</a><a href="/">Back to overview</a></p>
+      </section>'''
+nf=page('/404/','Page not found | Mobile Image Sensor Database','This page does not exist in the Mobile Image Sensor Database.','',[('Home','/')],nf_body,{'@context':'https://schema.org','@type':'WebPage','name':'Page not found'},noindex=True,breadcrumb=False)
+(DIST/'404.html').write_text(re.sub(r'\n    <(link rel="canonical"|meta property="og:url")[^\n]*','',nf),encoding='utf-8')
 
 redirects=[f'/compare/{pair_slug(sensor_by_id[b])}-vs-{pair_slug(sensor_by_id[a])}/ {pair_path(sensor_by_id[a],sensor_by_id[b])} 301' for a,b in pairs]
 for s in sensors:
@@ -338,6 +349,6 @@ redirects+=['/catalog/ /sensors/ 301','/catalog /sensors/ 301']
 
 today=date.today().isoformat()
 (DIST/'sitemap.xml').write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'+''.join(f'  <url><loc>{e(SITE+u)}</loc><lastmod>{today}</lastmod></url>\n' for u in urls)+'</urlset>\n',encoding='utf-8')
-(DIST/'_headers').write_text('/images/*\n  Cache-Control: public, max-age=604800\n/og/*\n  Cache-Control: public, max-age=86400\n/data/*\n  Cache-Control: public, max-age=3600\n  Access-Control-Allow-Origin: *\n',encoding='utf-8')
+(DIST/'_headers').write_text('/*\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  X-Frame-Options: SAMEORIGIN\n/images/*\n  Cache-Control: public, max-age=604800\n/og/*\n  Cache-Control: public, max-age=86400\n/data/*\n  Cache-Control: public, max-age=3600\n  Access-Control-Allow-Origin: *\n',encoding='utf-8')
 (DIST/'robots.txt').write_text(f'User-agent: *\nAllow: /\n\nSitemap: {SITE}/sitemap.xml\n',encoding='utf-8')
 print('Built',DIST,f'({len(sensors)} sensor pages, {len(phones)} phone pages, {len(urls)} sitemap URLs, {len(redirects)} redirects)')

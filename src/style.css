@@ -291,6 +291,10 @@ svg { flex: 0 0 auto; }
 .footer-links { display: flex; flex-wrap: wrap; gap: 10px 22px; }
 .page-footer a { color: var(--muted); text-decoration: none; }
 .page-footer a:hover { color: var(--accent); }
+.not-found { padding: 48px 24px; text-align: center; }
+.not-found h1 { margin: 6px 0 10px; font-size: 32px; font-weight: 800; letter-spacing: -.03em; }
+.not-found p { color: var(--muted); }
+.not-found .detail-cta { justify-content: center; }
 
 /* Catalog layout */
 .app-shell { display: grid; grid-template-columns: 272px minmax(0, 1fr); align-items: start; gap: 28px; max-width: 1680px; margin: 0 auto; padding: 28px 28px 80px; }
@@ -362,7 +366,7 @@ th[aria-sort="ascending"] .sort-button span, th[aria-sort="descending"] .sort-bu
 .open-col { width: 48px; text-align: center; }
 .maker-label { color: var(--muted); font-weight: 500; white-space: nowrap; }
 .sensor-cell { min-width: 130px; }
-.sensor-link { max-width: 220px; padding: 0; overflow: hidden; border: 0; color: var(--ink); background: transparent; font-size: 14px; font-weight: 650; text-align: left; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+.sensor-link { display: inline-block; max-width: 220px; padding: 0; text-decoration: none; vertical-align: bottom; overflow: hidden; border: 0; color: var(--ink); background: transparent; font-size: 14px; font-weight: 650; text-align: left; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
 .sensor-link:hover { color: var(--accent); }
 .code-cell { max-width: 120px; color: var(--subtle); font-size: 12px; }
 .number-cell { white-space: nowrap; }
@@ -392,7 +396,7 @@ th[aria-sort="ascending"] .sort-button span, th[aria-sort="descending"] .sort-bu
 #phone-table th:nth-child(3) { min-width: 200px; }
 #phone-table th:nth-child(7) { min-width: 320px; }
 .phone-maker-cell .maker-label { color: var(--muted); font-weight: 600; }
-.phone-model-link { display: block; max-width: 320px; padding: 0; border: 0; color: var(--ink); background: transparent; font-size: 14px; font-weight: 650; text-align: left; cursor: pointer; }
+.phone-model-link { display: block; max-width: 320px; padding: 0; text-decoration: none; border: 0; color: var(--ink); background: transparent; font-size: 14px; font-weight: 650; text-align: left; cursor: pointer; }
 .phone-model-link:hover { color: var(--accent); }
 .phone-canonical-id { display: none; }
 .phone-camera-preview li { gap: 2px 8px; }

@@ -264,7 +264,7 @@ function render(resetList = false) {
     const selected = compareIds.has(row.canonical_id);
     return '<tr data-sensor-id="' + esc(row.canonical_id) + '" class="' + (selected ? 'is-selected' : '') + '"><td class="check-col"><input class="compare-check" type="checkbox" data-compare="' + esc(row.canonical_id) + '" aria-label="' + (selected ? 'Remove ' + esc(row.sensor) + ' from' : 'Add ' + esc(row.sensor) + ' to') + ' comparison list"' + (selected ? ' checked' : '') + '></td>' +
       '<td><span class="maker-label">' + esc(row.manufacturer) + '</span></td>' +
-      '<td class="sensor-cell"><button class="sensor-link" type="button" data-open="' + esc(row.canonical_id) + '">' + esc(row.sensor) + '</button></td>' +
+      '<td class="sensor-cell"><a class="sensor-link" href="' + sensorPath(row) + '" data-open="' + esc(row.canonical_id) + '">' + esc(row.sensor) + '</a></td>' +
       '<td class="muted code-cell" data-label="Part / alias">' + esc(row.internal_code || '—') + '</td>' +
       '<td class="number-cell emphasis" data-label="Resolution">' + (row.resolution_mp == null ? '—' : formatNumber(row.resolution_mp) + ' MP') + '</td>' +
       '<td class="number-cell" data-label="Format">' + esc(row.sensor_size || '—') + '</td>' +
@@ -383,7 +383,10 @@ qs('#sensor-table').addEventListener('click', (event) => {
     return;
   }
   const detailButton = event.target.closest('[data-open]');
-  if (detailButton) showDetail(detailButton.dataset.open);
+  if (detailButton && !(event.metaKey || event.ctrlKey || event.shiftKey || event.button)) {
+    event.preventDefault();
+    showDetail(detailButton.dataset.open);
+  }
   const phoneButton = event.target.closest('[data-phone-search]');
   if (phoneButton) {
     qs('#q').value = phoneButton.dataset.phoneSearch;
