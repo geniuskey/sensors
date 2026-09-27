@@ -519,18 +519,31 @@ async function init() {
     const pitchMakers = makerTally(sensors).slice(0, 5).map(([name]) => name);
     const pitchMakerColors = new Map(pitchMakers.map((name, index) => [name, MAKER_COLORS[name] || TREND_COLORS[index]]));
     const pitchSensors = sensors.filter((row) => Number(row.pixel_size_um) > 0 && Number(row.resolution_mp) > 0);
-    const makerGroup = (name) => pitchMakerColors.has(name) ? name : 'Other';
-    const pitchSelection = new Set();
-    const selected = (name) => !pitchSelection.size || pitchSelection.has(makerGroup(name));
     const phonesByModel = new Map(phones.map((phone) => [phone.model, phone]));
-    const dxoPoints = (dashboard.dxomark || []).map((point) => ({ ...point, maker: mainSensorMaker(phonesByModel.get(point.device)) }));
+    const dxoPoints = (dashboard.dxomark || []).map((point) => {
+      const phone = phonesByModel.get(point.device);
+      return { ...point, maker: mainSensorMaker(phone), oem: phone?.oem || null };
+    });
+    const oemWeight = new Map();
+    [...phones, ...dxoPoints].forEach((row) => row.oem && oemWeight.set(row.oem, (oemWeight.get(row.oem) || 0) + 1));
+    const topOems = [...oemWeight].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 6).map(([name]) => name);
+    const filters = {
+      sensor: { label: 'Sensor', names: pitchMakers, selection: new Set(), color: (name) => pitchMakerColors.get(name) || OTHER_COLOR },
+      oem: { label: 'Phone', names: topOems, selection: new Set() }
+    };
+    const matches = (kind, names) => {
+      const { names: listed, selection } = filters[kind];
+      return !selection.size || [...names].some((name) => selection.has(listed.includes(name) ? name : 'Other'));
+    };
+    const sensorOems = new Map();
+    phones.forEach((phone) => phone.cameras.forEach((camera) => sensorOems.set(camera.sensor_id, (sensorOems.get(camera.sensor_id) || new Set()).add(phone.oem))));
     let dxoProtocol = 'all';
     const renderDxo = () => {
-      renderScatter('#dxo-chart', dxoPoints.filter((row) => selected(row.maker) && (dxoProtocol === 'all' || row.protocol === dxoProtocol)), 'pitch', 'score', 'Mean sensor pitch (µm)', 'Camera score', {
+      renderScatter('#dxo-chart', dxoPoints.filter((row) => matches('sensor', [row.maker]) && matches('oem', [row.oem]) && (dxoProtocol === 'all' || row.protocol === dxoProtocol)), 'pitch', 'score', 'Mean sensor pitch (µm)', 'Camera score', {
         yStep: 10,
         scaleData: dxoPoints,
         legend: [{ label: 'V5', color: OTHER_COLOR }, { label: 'V6', color: OTHER_COLOR, shape: 'diamond' }],
-        pointColor: (row) => pitchMakerColors.get(row.maker) || OTHER_COLOR,
+        pointColor: (row) => filters.sensor.color(row.maker),
         shape: (row) => row.protocol === 'V6' ? 'diamond' : 'circle',
         label: (row) => `${row.device} · ${row.protocol}`,
         detail: (row) => [row.maker ? `Main sensor: ${row.maker}` : 'Main sensor not mapped', row.sensors].filter(Boolean).join('\n'),
@@ -541,32 +554,35 @@ async function init() {
     };
     const renderPitch = () => {
       hideTooltip();
-      qsa('[data-maker]').forEach((button) => button.setAttribute('aria-pressed', String(pitchSelection.has(button.dataset.maker))));
-      qsa('.maker-filters').forEach((legend) => legend.classList.toggle('has-selection', pitchSelection.size > 0));
+      Object.entries(filters).forEach(([kind, { selection }]) => {
+        qsa(`.maker-filters[data-kind="${kind}"]`).forEach((row) => row.classList.toggle('has-selection', selection.size > 0));
+        qsa(`[data-kind="${kind}"] [data-value]`).forEach((button) => button.setAttribute('aria-pressed', String(selection.has(button.dataset.value))));
+      });
       renderDxo();
-      renderScatter('#pitch-chart', pitchSensors.filter((row) => selected(row.manufacturer)), 'pixel_size_um', 'resolution_mp', 'Pixel pitch (µm)', 'Resolution (MP)', {
+      renderScatter('#pitch-chart', pitchSensors.filter((row) => matches('sensor', [row.manufacturer]) && matches('oem', sensorOems.get(row.canonical_id) || [])), 'pixel_size_um', 'resolution_mp', 'Pixel pitch (µm)', 'Resolution (MP)', {
         logX: true,
         logY: true,
         xTicks: [0.5, 0.7, 1, 1.4, 2, 3, 5, 10],
         yTicks: [0.1, 0.3, 1, 3, 10, 30, 100, 200],
         scaleData: pitchSensors,
         group: true,
-        makerColor: (name) => pitchMakerColors.get(name) || OTHER_COLOR,
+        makerColor: filters.sensor.color,
         label: (row) => row.canonical_name,
         href: (row) => catalogUrl({ sensor: row.canonical_id }),
         hitRadius: 8,
         dotRadius: 3.5
       });
     };
-    const makerButtons = [...pitchMakers.map((name) => [name, pitchMakerColors.get(name)]), ['Other', OTHER_COLOR]].map(([name, color]) => `<button class="maker-filter" type="button" data-maker="${esc(name)}" aria-pressed="false"><i style="background:${color}"></i>${esc(name)}</button>`).join('') + '<button class="maker-filter-clear" type="button" data-maker-clear>Show all</button>';
-    qsa('.maker-filters').forEach((legend) => {
-      legend.innerHTML = makerButtons;
-      legend.addEventListener('click', (event) => {
-        const button = event.target.closest('[data-maker], [data-maker-clear]');
+    const filterRows = Object.entries(filters).map(([kind, { label, names, color }]) => `<div class="maker-filters" data-kind="${kind}" role="group" aria-label="Filter by ${kind === 'oem' ? 'phone' : 'sensor'} manufacturer"><span class="maker-filters-label">${label}</span>` + [...names, 'Other'].map((name) => `<button class="maker-filter" type="button" data-value="${esc(name)}" aria-pressed="false">${color ? `<i style="background:${color(name)}"></i>` : ''}${esc(name)}</button>`).join('') + `<button class="maker-filter-clear" type="button" data-clear aria-label="Show all ${kind === 'oem' ? 'phone' : 'sensor'} makers" title="Show all">×</button></div>`).join('');
+    qsa('.landscape-filters').forEach((panel) => {
+      panel.innerHTML = filterRows;
+      panel.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-value], [data-clear]');
         if (!button) return;
-        if (button.dataset.maker == null) pitchSelection.clear();
-        else if (!pitchSelection.delete(button.dataset.maker)) pitchSelection.add(button.dataset.maker);
-        if (pitchSelection.size === pitchMakerColors.size + 1) pitchSelection.clear();
+        const { names, selection } = filters[button.closest('[data-kind]').dataset.kind];
+        if (button.dataset.value == null) selection.clear();
+        else if (!selection.delete(button.dataset.value)) selection.add(button.dataset.value);
+        if (selection.size === names.length + 1) selection.clear();
         renderPitch();
       });
     });

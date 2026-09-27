@@ -63,14 +63,14 @@
           <article class="chart-card">
             <h3>Pixel pitch vs resolution</h3>
             <p>Points group sensors with identical specs; size shows how many. Select manufacturers to compare them; hover to see which sit there and nearby. Both axes are logarithmic.</p>
-            <div id="pitch-legend" class="maker-filters" role="group" aria-label="Filter by sensor manufacturer"></div>
+            <div class="landscape-filters"></div>
             <div id="pitch-chart" class="chart-area" aria-live="polite"><div class="chart-empty">Loading sensor data…</div></div>
             <p class="chart-hint">Select a point to open that sensor’s catalog details.</p>
           </article>
           <article class="chart-card">
             <h3>DxOMark score vs mapped sensor pitch</h3>
-            <p>Phone scores are shown against the mean pixel pitch of mapped sensors. Color shows the main camera’s sensor manufacturer; the manufacturer filter is shared with the pixel pitch chart.</p>
-            <div id="dxo-legend" class="maker-filters" role="group" aria-label="Filter by main camera sensor manufacturer"></div>
+            <p>Phone scores against the mean pixel pitch of mapped sensors. Color shows the main camera’s sensor maker; filters are shared with the pixel pitch chart.</p>
+            <div class="landscape-filters"></div>
             <div id="dxo-controls" class="chart-controls" role="group" aria-label="Filter DxOMark protocols">
               <button class="chart-filter is-active" type="button" data-dx-filter="all" aria-pressed="true">All protocols</button>
               <button class="chart-filter" type="button" data-dx-filter="V5" aria-pressed="false">V5</button>
