@@ -70,7 +70,7 @@
           <article class="chart-card">
             <h3>DxOMark score vs mapped sensor pitch</h3>
             <p>Phone scores are shown against the mean pixel pitch of mapped sensors.</p>
-            <div class="chart-controls" role="group" aria-label="Filter DxOMark protocols">
+            <div id="dxo-controls" class="chart-controls" role="group" aria-label="Filter DxOMark protocols">
               <button class="chart-filter is-active" type="button" data-dx-filter="all" aria-pressed="true">All protocols</button>
               <button class="chart-filter" type="button" data-dx-filter="V5" aria-pressed="false">V5</button>
               <button class="chart-filter" type="button" data-dx-filter="V6" aria-pressed="false">V6</button>
@@ -109,6 +109,44 @@
             <h3>Main camera optical format</h3>
             <p>Distribution of rear main sensor sizes. Higher means larger.</p>
             <div id="format-trend-chart" class="chart-area"><div class="chart-empty">Loading phone data…</div></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="dashboard-panel supply-dashboard" aria-labelledby="supply-title">
+        <div class="overview-section-head">
+          <div><div class="section-kicker">SUPPLY CHAIN</div><h2 id="supply-title">Who uses what</h2><p class="dashboard-intro">How phone makers source sensors, which sensors dominate, and how each camera role differs.</p></div>
+          <a class="text-link" href="/sensors/">Browse sensors <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="chart-grid">
+          <article class="chart-card chart-wide">
+            <h3>Phone maker × sensor maker</h3>
+            <p>Share of each phone maker’s camera mappings by sensor manufacturer. Select a cell to open matching phones.</p>
+            <div id="matrix-chart" class="chart-area"><div class="chart-empty">Loading phone data…</div></div>
+          </article>
+          <article class="chart-card chart-wide">
+            <h3>Most-used sensors over time</h3>
+            <p id="usage-summary">Phones per release year for the most-mapped sensors.</p>
+            <div id="usage-legend" class="trend-legend" aria-hidden="true"></div>
+            <div id="usage-chart" class="chart-area"><div class="chart-empty">Loading sensor data…</div></div>
+            <p class="chart-hint">Bubble size is phones per year; the bar is total phones and the right column the cumulative share of all mappings.</p>
+          </article>
+        </div>
+        <div class="trend-trio">
+          <article class="chart-card">
+            <h3>Resolution by camera role</h3>
+            <p>Megapixels across main, ultra-wide, telephoto and front cameras.</p>
+            <div id="role-mp-chart" class="chart-area"><div class="chart-empty">Loading phone data…</div></div>
+          </article>
+          <article class="chart-card">
+            <h3>Pixel pitch by camera role</h3>
+            <p>Pixel size per role. Box shows the middle 50%, line the median.</p>
+            <div id="role-pitch-chart" class="chart-area"><div class="chart-empty">Loading phone data…</div></div>
+          </article>
+          <article class="chart-card">
+            <h3>Optical format by camera role</h3>
+            <p>Sensor size per role. Higher means larger.</p>
+            <div id="role-format-chart" class="chart-area"><div class="chart-empty">Loading phone data…</div></div>
           </article>
         </div>
       </section>

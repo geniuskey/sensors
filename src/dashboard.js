@@ -206,22 +206,22 @@ function quantile(sorted, q) {
   return sorted[low] + (sorted[Math.min(low + 1, sorted.length - 1)] - sorted[low]) * (index - low);
 }
 
-function mainCameraDistribution(groups, value) {
-  return groups.map(({ year, cameras }) => {
+function cameraDistribution(groups, value) {
+  return groups.map(({ key, cameras }) => {
     const bins = new Map();
     const values = [];
-    cameras.filter(isMainCamera).forEach((camera) => {
+    cameras.forEach((camera) => {
       const raw = Number(value(camera));
       if (!(raw > 0)) return;
-      const key = Number(raw.toFixed(4));
-      values.push(key);
-      const bin = bins.get(key) || { value: key, count: 0, sensors: new Map() };
+      const binKey = Number(raw.toFixed(4));
+      values.push(binKey);
+      const bin = bins.get(binKey) || { value: binKey, count: 0, sensors: new Map() };
       bin.count += 1;
       if (camera.sensor) bin.sensors.set(camera.sensor, (bin.sensors.get(camera.sensor) || 0) + 1);
-      bins.set(key, bin);
+      bins.set(binKey, bin);
     });
     const sorted = values.sort((a, b) => a - b);
-    return { year, n: sorted.length, bins: [...bins.values()], q1: sorted.length ? quantile(sorted, 0.25) : null, median: sorted.length ? quantile(sorted, 0.5) : null, q3: sorted.length ? quantile(sorted, 0.75) : null };
+    return { key, n: sorted.length, bins: [...bins.values()], q1: sorted.length ? quantile(sorted, 0.25) : null, median: sorted.length ? quantile(sorted, 0.5) : null, q3: sorted.length ? quantile(sorted, 0.75) : null };
   }).filter((row) => row.n >= TREND_MIN_MAIN);
 }
 
@@ -253,52 +253,69 @@ function renderShareChart(target, share) {
   qs('#share-legend').innerHTML = share.series.map((item) => `<span><i style="background:${item.color}"></i>${esc(item.name)}</span>`).join('');
 }
 
-function renderTrendDistribution(target, rows, years, options) {
+function renderDistribution(target, rows, categories, options) {
   if (!rows.length) {
-    qs(target).innerHTML = '<div class="chart-empty">No main camera data for these years.</div>';
+    qs(target).innerHTML = '<div class="chart-empty">No camera data for this view.</div>';
     return;
   }
   const w = 400, h = 260, p = { l: 52, r: 16, t: 16, b: 30 };
-  const pw = w - p.l - p.r, ph = h - p.t - p.b, first = years[0], last = years[years.length - 1];
+  const pw = w - p.l - p.r, ph = h - p.t - p.b;
   const t = options.log ? Math.log10 : (value) => value;
   const values = rows.flatMap((row) => row.bins.map((bin) => bin.value));
   let lo = t(Math.min(...values)), hi = t(Math.max(...values));
   if (hi === lo) { lo -= 0.5; hi += 0.5; }
   const pad = (hi - lo) * 0.1; lo -= pad; hi += pad;
   const ticks = options.ticks.filter((value) => t(value) >= lo && t(value) <= hi);
-  const band = pw / Math.max(years.length, 1);
-  const X = (year) => p.l + (last === first ? pw / 2 : band / 2 + (year - first) / (last - first) * (pw - band));
+  const band = pw / categories.length;
+  const X = (key) => p.l + band * (categories.indexOf(key) + 0.5);
   const Y = (value) => h - p.b - (t(value) - lo) / (hi - lo) * ph;
   const format = options.format || ((value) => number(value, 2));
+  const unit = options.unit || '';
+  const keyLabel = options.keyLabel || String;
   const maxCount = Math.max(...rows.flatMap((row) => row.bins.map((bin) => bin.count)));
-  const rMax = Math.min(band * 0.48, 13);
+  const rMax = Math.min(band * 0.45, options.rMax || 13);
   const radius = (count) => Math.max(2.5, rMax * Math.sqrt(count / maxCount));
-  const step = Math.ceil(years.length / 5);
-  let svg = `<svg viewBox="0 0 ${w} ${h}" role="group" aria-label="${esc(options.label)} distribution by phone release year">`;
+  const step = Math.ceil(categories.length / 5);
+  let svg = `<svg viewBox="0 0 ${w} ${h}" role="group" aria-label="${esc(options.label)} distribution">`;
   ticks.forEach((value) => {
     const y = Y(value).toFixed(1);
     svg += `<line class="chart-gridline" x1="${p.l}" x2="${w - p.r}" y1="${y}" y2="${y}"/><text class="chart-tick" x="${p.l - 8}" y="${y}" dy=".32em" text-anchor="end">${esc(format(value))}</text>`;
   });
-  years.filter((year, index) => (years.length - 1 - index) % step === 0).forEach((year) => {
-    svg += `<text class="chart-tick" x="${X(year).toFixed(1)}" y="${h - p.b + 18}" text-anchor="middle">${year}</text>`;
+  categories.filter((key, index) => (categories.length - 1 - index) % step === 0).forEach((key) => {
+    svg += `<text class="chart-tick" x="${X(key).toFixed(1)}" y="${h - p.b + 18}" text-anchor="middle">${esc(keyLabel(key))}</text>`;
   });
   svg += `<line class="chart-baseline" x1="${p.l}" x2="${w - p.r}" y1="${h - p.b}" y2="${h - p.b}"/>`;
-  const upper = rows.map((row) => `${X(row.year).toFixed(1)},${Y(row.q3).toFixed(1)}`);
-  const lower = rows.slice().reverse().map((row) => `${X(row.year).toFixed(1)},${Y(row.q1).toFixed(1)}`);
-  svg += `<polygon class="trend-band" points="${[...upper, ...lower].join(' ')}" fill="${options.color}"/>`;
+  const half = band * 0.32;
+  if (options.connect) {
+    const upper = rows.map((row) => `${X(row.key).toFixed(1)},${Y(row.q3).toFixed(1)}`);
+    const lower = rows.slice().reverse().map((row) => `${X(row.key).toFixed(1)},${Y(row.q1).toFixed(1)}`);
+    svg += `<polygon class="trend-band" points="${[...upper, ...lower].join(' ')}" fill="${options.color}"/>`;
+  } else rows.forEach((row) => {
+    svg += `<rect class="trend-band" x="${(X(row.key) - half).toFixed(1)}" y="${Y(row.q3).toFixed(1)}" width="${(half * 2).toFixed(1)}" height="${Math.max(Y(row.q1) - Y(row.q3), 1).toFixed(1)}" rx="3" fill="${options.color}"/>`;
+  });
   rows.forEach((row) => {
-    const x = X(row.year).toFixed(1);
+    const x = X(row.key).toFixed(1);
     row.bins.slice().sort((a, b) => b.count - a.count).forEach((bin) => {
       const y = Y(bin.value).toFixed(1), r = radius(bin.count), share = bin.count / row.n;
       const top = [...bin.sensors].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([name, count]) => `${name} (${count})`).join(', ');
-      const title = `${row.year} · ${format(bin.value)}${options.unit || ''}`;
-      const detail = [`${bin.count} of ${row.n} main cameras (${number(share * 100, 0)}%)`, top, `Year median ${format(row.median)}${options.unit || ''} · IQR ${format(row.q1)}–${format(row.q3)}`].filter(Boolean).join('\n');
+      const title = `${keyLabel(row.key)} · ${format(bin.value)}${unit}`;
+      const detail = [`${bin.count} of ${row.n} ${options.noun} (${number(share * 100, 0)}%)`, top, `Median ${format(row.median)}${unit} · IQR ${format(row.q1)}–${format(row.q3)}`].filter(Boolean).join('\n');
       svg += `<g class="chart-point" tabindex="0" role="img" data-tooltip-title="${esc(title)}" data-tooltip-detail="${esc(detail)}" aria-label="${esc(title)}: ${esc(detail.replaceAll('\n', '. '))}"><circle class="chart-hit" cx="${x}" cy="${y}" r="${Math.max(r + 2, 6).toFixed(1)}"/><circle class="chart-dot" cx="${x}" cy="${y}" r="${r.toFixed(1)}" fill="${options.color}" fill-opacity="${(0.18 + 0.72 * Math.sqrt(share)).toFixed(2)}" stroke="#fff" stroke-width=".5" stroke-opacity=".6"/></g>`;
     });
   });
-  svg += `<polyline class="trend-line" points="${rows.map((row) => `${X(row.year).toFixed(1)},${Y(row.median).toFixed(1)}`).join(' ')}" stroke="${options.color}"/>`;
+  if (options.connect) svg += `<polyline class="trend-line" points="${rows.map((row) => `${X(row.key).toFixed(1)},${Y(row.median).toFixed(1)}`).join(' ')}" stroke="${options.color}"/>`;
+  else rows.forEach((row) => {
+    const y = Y(row.median).toFixed(1);
+    svg += `<line class="trend-line" x1="${(X(row.key) - half).toFixed(1)}" x2="${(X(row.key) + half).toFixed(1)}" y1="${y}" y2="${y}" stroke="${options.color}"/>`;
+  });
   qs(target).innerHTML = svg + '</svg>';
 }
+
+const METRICS = [
+  { id: 'mp', label: 'Resolution (MP)', unit: ' MP', log: true, ticks: [2, 5, 12, 25, 50, 100, 200], color: TREND_COLORS[0], value: (camera) => camera.resolution_mp, format: (value) => number(value, 1) },
+  { id: 'pitch', label: 'Pixel pitch (µm)', unit: ' µm', log: true, ticks: [0.6, 0.8, 1, 1.2, 1.6, 2, 2.4], color: TREND_COLORS[2], value: (camera) => camera.pixel_size_um },
+  { id: 'format', label: 'Optical format (inch)', log: true, ticks: FORMAT_TICKS, color: TREND_COLORS[1], value: (camera) => parseOpticalFormat(camera.sensor_size), format: formatOptical }
+];
 
 function renderTrends(phones) {
   const groups = yearGroups(phones);
@@ -310,9 +327,122 @@ function renderTrends(phones) {
   qs('#trend-range').textContent = ` (${years[0]}–${years[years.length - 1]})`;
   qs('#trend-min').textContent = TREND_MIN_MAPPINGS;
   renderShareChart('#share-chart', manufacturerShare(groups));
-  renderTrendDistribution('#mp-trend-chart', mainCameraDistribution(groups, (camera) => camera.resolution_mp), years, { label: 'Resolution (MP)', unit: ' MP', log: true, ticks: [2, 5, 12, 25, 50, 100, 200], color: TREND_COLORS[0], format: (value) => number(value, 1) });
-  renderTrendDistribution('#pitch-trend-chart', mainCameraDistribution(groups, (camera) => camera.pixel_size_um), years, { label: 'Pixel pitch (µm)', unit: ' µm', log: true, ticks: [0.6, 0.8, 1, 1.2, 1.6, 2, 2.4], color: TREND_COLORS[2] });
-  renderTrendDistribution('#format-trend-chart', mainCameraDistribution(groups, (camera) => parseOpticalFormat(camera.sensor_size)), years, { label: 'Optical format (inch)', log: true, ticks: FORMAT_TICKS, color: TREND_COLORS[1], format: formatOptical });
+  const mainGroups = groups.map(({ year, cameras }) => ({ key: year, cameras: cameras.filter(isMainCamera) }));
+  METRICS.forEach((metric) => renderDistribution(`#${metric.id}-trend-chart`, cameraDistribution(mainGroups, metric.value), years, { ...metric, connect: true, noun: 'main cameras' }));
+}
+
+const ROLES = [['Rear Main', 'Main'], ['Rear Ultra-wide', 'Ultra-wide'], ['Rear Telephoto', 'Telephoto'], ['Front Main', 'Front']];
+
+function renderRoleComparison(phones) {
+  const cameras = phones.flatMap((phone) => phone.cameras || []);
+  const groups = ROLES.map(([role]) => ({ key: role, cameras: cameras.filter((camera) => String(camera.role || '').split(/\s*\+\s*/).includes(role)) }));
+  const labels = new Map(ROLES);
+  METRICS.forEach((metric) => renderDistribution(`#role-${metric.id}-chart`, cameraDistribution(groups, metric.value), ROLES.map(([role]) => role), { ...metric, keyLabel: (role) => labels.get(role), noun: 'cameras', rMax: 16 }));
+}
+
+function renderMakerMatrix(target, phones) {
+  const counts = new Map(), makerTotals = new Map();
+  phones.forEach((phone) => (phone.cameras || []).forEach((camera) => {
+    if (!camera.sensor_manufacturer || !phone.oem) return;
+    const row = counts.get(phone.oem) || new Map();
+    row.set(camera.sensor_manufacturer, (row.get(camera.sensor_manufacturer) || 0) + 1);
+    counts.set(phone.oem, row);
+    makerTotals.set(camera.sensor_manufacturer, (makerTotals.get(camera.sensor_manufacturer) || 0) + 1);
+  }));
+  const total = (row) => [...row.values()].reduce((sum, count) => sum + count, 0);
+  const oems = [...counts].sort((a, b) => total(b[1]) - total(a[1]) || a[0].localeCompare(b[0])).slice(0, 12);
+  const makers = [...makerTotals].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 6).map(([name]) => name);
+  const columns = [...makers, 'Other'];
+  const w = 1100, rowH = 30, p = { l: 120, r: 70, t: 30, b: 8 };
+  const cellW = (w - p.l - p.r) / columns.length, h = p.t + oems.length * rowH + p.b;
+  let svg = `<svg viewBox="0 0 ${w} ${h}" role="group" aria-label="Sensor manufacturer share by phone manufacturer">`;
+  columns.forEach((name, index) => {
+    svg += `<text class="chart-axis" x="${(p.l + cellW * (index + 0.5)).toFixed(1)}" y="${p.t - 12}" text-anchor="middle">${esc(name)}</text>`;
+  });
+  svg += `<text class="chart-tick" x="${w - p.r + 12}" y="${p.t - 12}">Cameras</text>`;
+  oems.forEach(([oem, row], rowIndex) => {
+    const sum = total(row), y = p.t + rowIndex * rowH;
+    const other = [...row].filter(([name]) => !makers.includes(name)).sort((a, b) => b[1] - a[1]);
+    svg += `<text class="chart-axis" x="${p.l - 12}" y="${y + rowH / 2}" dy=".32em" text-anchor="end">${esc(oem)}</text><text class="chart-tick" x="${w - p.r + 12}" y="${y + rowH / 2}" dy=".32em">${sum}</text>`;
+    columns.forEach((name, index) => {
+      const count = name === 'Other' ? other.reduce((acc, [, value]) => acc + value, 0) : row.get(name) || 0;
+      const share = count / sum, x = p.l + cellW * index;
+      const rect = `<rect class="chart-dot matrix-cell" x="${(x + 1).toFixed(1)}" y="${y + 1}" width="${(cellW - 2).toFixed(1)}" height="${rowH - 2}" rx="4" fill="${count ? TREND_COLORS[0] : '#f1f4f8'}" fill-opacity="${count ? (0.08 + 0.87 * share).toFixed(2) : 1}"/>`;
+      if (!count) { svg += rect; return; }
+      const label = `<text class="matrix-label${share > 0.45 ? ' is-strong' : ''}" x="${(x + cellW / 2).toFixed(1)}" y="${y + rowH / 2}" dy=".32em" text-anchor="middle">${number(share * 100, 0)}%</text>`;
+      const title = `${oem} · ${name}`;
+      const detail = [`${count} of ${sum} camera mappings (${number(share * 100, 1)}%)`, name === 'Other' ? other.map(([maker, value]) => `${maker} ${value}`).join(' · ') : ''].filter(Boolean).join('\n');
+      const href = '/phones/?' + new URLSearchParams(name === 'Other' ? { manufacturer: oem } : { manufacturer: oem, q: name }).toString();
+      svg += `<a class="chart-point" href="${esc(href)}" data-tooltip-title="${esc(title)}" data-tooltip-detail="${esc(detail)}" aria-label="${esc(title)}: ${esc(detail.replaceAll('\n', '. '))}. Open matching phones.">${rect}${label}</a>`;
+    });
+  });
+  qs(target).innerHTML = svg + '</svg>';
+}
+
+const slug = (text) => String(text ?? '').toLowerCase().replace(/\+/g, ' plus ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+function sensorPath(sensor) {
+  const index = sensor.canonical_id.indexOf(':');
+  return '/sensors/' + slug(sensor.canonical_id.slice(0, index)) + '/' + slug(sensor.canonical_id.slice(index + 1)) + '/';
+}
+
+const clip = (text, max) => text.length > max ? text.slice(0, max - 1) + '…' : text;
+
+function renderSensorUsage(target, sensors, limit = 20) {
+  const used = sensors.filter((sensor) => phoneCount(sensor) > 0).sort(byUsage);
+  if (!used.length) {
+    qs(target).innerHTML = '<div class="chart-empty">No sensors are mapped to phones yet.</div>';
+    return;
+  }
+  const totalMappings = used.reduce((sum, sensor) => sum + phoneCount(sensor), 0);
+  const top = used.slice(0, limit);
+  const perYear = top.map((sensor) => {
+    const years = new Map();
+    (sensor.phones || []).forEach((phone) => {
+      const year = Number(phone.year);
+      if (!year) return;
+      const entry = years.get(year) || { count: 0, roles: new Map() };
+      entry.count += 1;
+      entry.roles.set(phone.role || 'Unspecified', (entry.roles.get(phone.role || 'Unspecified') || 0) + 1);
+      years.set(year, entry);
+    });
+    return years;
+  });
+  const allYears = perYear.flatMap((years) => [...years.keys()]);
+  const first = Math.min(...allYears), last = Math.max(...allYears);
+  const years = Array.from({ length: last - first + 1 }, (_, index) => first + index);
+  const w = 1100, rowH = 26, p = { l: 190, r: 250, t: 26, b: 8 };
+  const band = (w - p.l - p.r) / years.length, h = p.t + top.length * rowH + p.b;
+  const X = (year) => (p.l + band * (year - first + 0.5)).toFixed(1);
+  const maxYear = Math.max(...perYear.flatMap((map) => [...map.values()].map((entry) => entry.count)));
+  const rMax = Math.min(band * 0.45, rowH * 0.48);
+  const barX = w - p.r + 24, barW = p.r - 110, maxCount = phoneCount(top[0]);
+  let cumulative = 0;
+  let svg = `<svg viewBox="0 0 ${w} ${h}" role="group" aria-label="Most-used sensors by phone release year">`;
+  years.forEach((year) => {
+    svg += `<line class="chart-gridline chart-gridline-v" x1="${X(year)}" x2="${X(year)}" y1="${p.t - 6}" y2="${h - p.b}"/><text class="chart-tick" x="${X(year)}" y="${p.t - 12}" text-anchor="middle">${year}</text>`;
+  });
+  svg += `<text class="chart-tick" x="${barX}" y="${p.t - 12}">Phones</text><text class="chart-tick" x="${w - 8}" y="${p.t - 12}" text-anchor="end">Cumulative</text>`;
+  top.forEach((sensor, index) => {
+    const y = p.t + index * rowH + rowH / 2, color = MAKER_COLORS[sensor.manufacturer] || OTHER_COLOR, map = perYear[index], href = sensorPath(sensor);
+    const active = [...map.keys()];
+    cumulative += phoneCount(sensor);
+    if (active.length) svg += `<line class="usage-span" x1="${X(Math.min(...active))}" x2="${X(Math.max(...active))}" y1="${y}" y2="${y}" stroke="${color}"/>`;
+    svg += `<a class="usage-label" href="${esc(href)}"><text class="chart-axis" x="${p.l - 12}" y="${y}" dy=".32em" text-anchor="end">${esc(clip(sensorLabel(sensor), 26))}</text><title>${esc(sensorLabel(sensor))}</title></a>`;
+    [...map].sort((a, b) => b[1].count - a[1].count).forEach(([year, entry]) => {
+      const r = Math.max(2.5, rMax * Math.sqrt(entry.count / maxYear));
+      const title = `${sensorLabel(sensor)} · ${year}`;
+      const detail = `${entry.count} phone${entry.count === 1 ? '' : 's'}\n` + [...entry.roles].sort((a, b) => b[1] - a[1]).map(([role, count]) => `${role} ${count}`).join(' · ');
+      svg += `<a class="chart-point" href="${esc(href)}" data-tooltip-title="${esc(title)}" data-tooltip-detail="${esc(detail)}" aria-label="${esc(title)}: ${esc(detail.replaceAll('\n', '. '))}. Open sensor details."><circle class="chart-hit" cx="${X(year)}" cy="${y}" r="${Math.max(r + 2, 7).toFixed(1)}"/><circle class="chart-dot" cx="${X(year)}" cy="${y}" r="${r.toFixed(1)}" fill="${color}" fill-opacity=".8" stroke="#fff" stroke-width=".75"/></a>`;
+    });
+    const length = Math.max(2, barW * phoneCount(sensor) / maxCount);
+    svg += `<rect class="usage-bar" x="${barX}" y="${y - 6}" width="${length.toFixed(1)}" height="12" rx="3" fill="${color}"/><text class="chart-tick" x="${(barX + length + 6).toFixed(1)}" y="${y}" dy=".32em">${phoneCount(sensor)}</text><text class="chart-tick trend-count" x="${w - 8}" y="${y}" dy=".32em" text-anchor="end">${number(cumulative / totalMappings * 100, 0)}%</text>`;
+  });
+  qs(target).innerHTML = svg + '</svg>';
+  const share = (count) => number(used.slice(0, count).reduce((sum, sensor) => sum + phoneCount(sensor), 0) / totalMappings * 100, 0);
+  const single = used.filter((sensor) => phoneCount(sensor) === 1).length;
+  qs('#usage-summary').textContent = `The top 3 sensors account for ${share(3)}% and the top ${top.length} for ${share(top.length)}% of ${number(totalMappings, 0)} phone mappings; ${single} of ${used.length} mapped sensors appear in a single phone.`;
+  const makers = [...new Set(top.map((sensor) => MAKER_COLORS[sensor.manufacturer] ? sensor.manufacturer : 'Other'))];
+  qs('#usage-legend').innerHTML = makers.map((name) => `<span><i style="background:${MAKER_COLORS[name] || OTHER_COLOR}"></i>${esc(name)}</span>`).join('');
 }
 
 function dxomarkSearchTerm(point, sensors) {
@@ -428,7 +558,10 @@ async function init() {
       dotRadius: 5
     });
     renderTrends(phones);
-    qs('.chart-controls').addEventListener('click', (event) => {
+    renderMakerMatrix('#matrix-chart', phones);
+    renderSensorUsage('#usage-chart', sensors);
+    renderRoleComparison(phones);
+    qs('#dxo-controls').addEventListener('click', (event) => {
       const button = event.target.closest('[data-dx-filter]');
       if (button) setProtocolFilter(button.dataset.dxFilter);
     });
