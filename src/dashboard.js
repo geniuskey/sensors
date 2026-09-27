@@ -14,8 +14,13 @@ function catalogUrl(filters) {
   return '/sensors/?' + params.toString();
 }
 
-const PROTOCOL_COLORS = { V5: '#f08a3c', V6: '#7c5cf0' };
 const DOT_COLOR = '#3b6cf6';
+
+function markShape(shape, cx, cy, r, attrs) {
+  if (shape !== 'diamond') return `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${r}" ${attrs}/>`;
+  const d = r * 1.3;
+  return `<path d="M${cx.toFixed(1)} ${(cy - d).toFixed(1)}L${(cx + d).toFixed(1)} ${cy.toFixed(1)}L${cx.toFixed(1)} ${(cy + d).toFixed(1)}L${(cx - d).toFixed(1)} ${cy.toFixed(1)}Z" ${attrs}/>`;
+}
 
 function niceStep(raw) {
   const pow = Math.pow(10, Math.floor(Math.log10(raw)));
@@ -132,18 +137,19 @@ function renderScatter(target, data, xKey, yKey, xLabel, yLabel, options = {}) {
     const label = options.label(point);
     const href = options.href(point);
     const protocol = point.protocol || '';
-    const color = protocol.includes('V5') ? PROTOCOL_COLORS.V5 : protocol.includes('V6') ? PROTOCOL_COLORS.V6 : DOT_COLOR;
-    const x = X(Number(point[xKey])).toFixed(1), y = Y(Number(point[yKey])).toFixed(1);
+    const color = options.pointColor ? options.pointColor(point) : DOT_COLOR;
+    const cx = X(Number(point[xKey])), cy = Y(Number(point[yKey]));
+    const x = cx.toFixed(1), y = cy.toFixed(1);
     const r = options.hitRadius || 7;
-    const metadata = `${number(point[xKey], 2)} ${xLabel} · ${number(point[yKey], 1)} ${yLabel}`;
-    svg += `<a class="chart-point${protocol ? ` chart-point-${esc(protocol.toLowerCase())}` : ''}" href="${esc(href)}" data-tooltip-title="${esc(label)}" data-tooltip-detail="${esc(metadata)}"${protocol ? ` data-protocol="${esc(protocol)}"` : ''} aria-label="${esc(label)}. ${esc(metadata)}. Open matching catalog results."><circle class="chart-hit" cx="${x}" cy="${y}" r="${r}"/><circle class="chart-dot" cx="${x}" cy="${y}" r="${options.dotRadius || 4}" fill="${color}" fill-opacity=".72" stroke="#fff" stroke-width="1"/></a>`;
+    const metadata = [`${number(point[xKey], 2)} ${xLabel} · ${number(point[yKey], 1)} ${yLabel}`, options.detail?.(point)].filter(Boolean).join('\n');
+    svg += `<a class="chart-point${protocol ? ` chart-point-${esc(protocol.toLowerCase())}` : ''}" href="${esc(href)}" data-tooltip-title="${esc(label)}" data-tooltip-detail="${esc(metadata)}"${protocol ? ` data-protocol="${esc(protocol)}"` : ''} aria-label="${esc(label)}. ${esc(metadata.replaceAll('\n', '. '))}. Open matching catalog results."><circle class="chart-hit" cx="${x}" cy="${y}" r="${r}"/>${markShape(options.shape?.(point), cx, cy, options.dotRadius || 4, `class="chart-dot" fill="${color}" fill-opacity=".72" stroke="#fff" stroke-width="1"`)}</a>`;
   });
 
   if (options.legend) {
     const lx = w - p.r - 10;
     options.legend.slice().reverse().forEach((item, index) => {
       const x = lx - index * 56;
-      svg += `<g aria-hidden="true"><circle cx="${x - 30}" cy="${p.t + 12}" r="5" fill="${item.color}" fill-opacity=".72" stroke="#fff" stroke-width="1"/><text class="chart-legend" x="${x - 21}" y="${p.t + 12}" dy=".32em">${esc(item.label)}</text></g>`;
+      svg += `<g aria-hidden="true">${markShape(item.shape, x - 30, p.t + 12, 5, `fill="${item.color}" fill-opacity=".72" stroke="#fff" stroke-width="1"`)}<text class="chart-legend" x="${x - 21}" y="${p.t + 12}" dy=".32em">${esc(item.label)}</text></g>`;
     });
   }
 
@@ -456,16 +462,10 @@ function dxomarkSearchTerm(point, sensors) {
   return String(point.sensors).split(/[,/;]/)[0].trim() || point.device;
 }
 
-function setProtocolFilter(protocol) {
-  hideTooltip();
-  qsa('[data-dx-filter]').forEach((button) => {
-    const active = button.dataset.dxFilter === protocol;
-    button.classList.toggle('is-active', active);
-    button.setAttribute('aria-pressed', String(active));
-  });
-  qsa('#dxo-chart [data-protocol]').forEach((point) => {
-    point.toggleAttribute('hidden', protocol !== 'all' && point.dataset.protocol !== protocol);
-  });
+function mainSensorMaker(phone) {
+  const cameras = phone?.cameras || [];
+  const main = cameras.find((camera) => camera.role.split(' + ').includes('Rear Main')) || cameras.find((camera) => camera.role.startsWith('Rear') || camera.role === 'Unknown');
+  return main?.sensor_manufacturer || null;
 }
 
 const chartTooltip = qs('#chart-tooltip');
@@ -519,13 +519,32 @@ async function init() {
     const pitchMakers = makerTally(sensors).slice(0, 5).map(([name]) => name);
     const pitchMakerColors = new Map(pitchMakers.map((name, index) => [name, MAKER_COLORS[name] || TREND_COLORS[index]]));
     const pitchSensors = sensors.filter((row) => Number(row.pixel_size_um) > 0 && Number(row.resolution_mp) > 0);
-    const pitchGroup = (sensor) => pitchMakerColors.has(sensor.manufacturer) ? sensor.manufacturer : 'Other';
+    const makerGroup = (name) => pitchMakerColors.has(name) ? name : 'Other';
     const pitchSelection = new Set();
+    const selected = (name) => !pitchSelection.size || pitchSelection.has(makerGroup(name));
+    const phonesByModel = new Map(phones.map((phone) => [phone.model, phone]));
+    const dxoPoints = (dashboard.dxomark || []).map((point) => ({ ...point, maker: mainSensorMaker(phonesByModel.get(point.device)) }));
+    let dxoProtocol = 'all';
+    const renderDxo = () => {
+      renderScatter('#dxo-chart', dxoPoints.filter((row) => selected(row.maker) && (dxoProtocol === 'all' || row.protocol === dxoProtocol)), 'pitch', 'score', 'Mean sensor pitch (µm)', 'Camera score', {
+        yStep: 10,
+        scaleData: dxoPoints,
+        legend: [{ label: 'V5', color: OTHER_COLOR }, { label: 'V6', color: OTHER_COLOR, shape: 'diamond' }],
+        pointColor: (row) => pitchMakerColors.get(row.maker) || OTHER_COLOR,
+        shape: (row) => row.protocol === 'V6' ? 'diamond' : 'circle',
+        label: (row) => `${row.device} · ${row.protocol}`,
+        detail: (row) => [row.maker ? `Main sensor: ${row.maker}` : 'Main sensor not mapped', row.sensors].filter(Boolean).join('\n'),
+        href: (row) => catalogUrl({ q: dxomarkSearchTerm(row, sensors) }),
+        hitRadius: 8,
+        dotRadius: 5
+      });
+    };
     const renderPitch = () => {
       hideTooltip();
-      qsa('#pitch-legend [data-maker]').forEach((button) => button.setAttribute('aria-pressed', String(pitchSelection.has(button.dataset.maker))));
-      qs('#pitch-legend').classList.toggle('has-selection', pitchSelection.size > 0);
-      renderScatter('#pitch-chart', pitchSelection.size ? pitchSensors.filter((row) => pitchSelection.has(pitchGroup(row))) : pitchSensors, 'pixel_size_um', 'resolution_mp', 'Pixel pitch (µm)', 'Resolution (MP)', {
+      qsa('[data-maker]').forEach((button) => button.setAttribute('aria-pressed', String(pitchSelection.has(button.dataset.maker))));
+      qsa('.maker-filters').forEach((legend) => legend.classList.toggle('has-selection', pitchSelection.size > 0));
+      renderDxo();
+      renderScatter('#pitch-chart', pitchSensors.filter((row) => selected(row.manufacturer)), 'pixel_size_um', 'resolution_mp', 'Pixel pitch (µm)', 'Resolution (MP)', {
         logX: true,
         logY: true,
         xTicks: [0.5, 0.7, 1, 1.4, 2, 3, 5, 10],
@@ -539,32 +558,34 @@ async function init() {
         dotRadius: 3.5
       });
     };
-    qs('#pitch-legend').innerHTML = [...pitchMakers.map((name) => [name, pitchMakerColors.get(name)]), ['Other', OTHER_COLOR]].map(([name, color]) => `<button class="maker-filter" type="button" data-maker="${esc(name)}" aria-pressed="false"><i style="background:${color}"></i>${esc(name)}</button>`).join('') + '<button class="maker-filter-clear" type="button" data-maker-clear>Show all</button>';
-    qs('#pitch-legend').addEventListener('click', (event) => {
-      const button = event.target.closest('[data-maker], [data-maker-clear]');
-      if (!button) return;
-      if (button.dataset.maker == null) pitchSelection.clear();
-      else if (!pitchSelection.delete(button.dataset.maker)) pitchSelection.add(button.dataset.maker);
-      if (pitchSelection.size === pitchMakerColors.size + 1) pitchSelection.clear();
-      renderPitch();
+    const makerButtons = [...pitchMakers.map((name) => [name, pitchMakerColors.get(name)]), ['Other', OTHER_COLOR]].map(([name, color]) => `<button class="maker-filter" type="button" data-maker="${esc(name)}" aria-pressed="false"><i style="background:${color}"></i>${esc(name)}</button>`).join('') + '<button class="maker-filter-clear" type="button" data-maker-clear>Show all</button>';
+    qsa('.maker-filters').forEach((legend) => {
+      legend.innerHTML = makerButtons;
+      legend.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-maker], [data-maker-clear]');
+        if (!button) return;
+        if (button.dataset.maker == null) pitchSelection.clear();
+        else if (!pitchSelection.delete(button.dataset.maker)) pitchSelection.add(button.dataset.maker);
+        if (pitchSelection.size === pitchMakerColors.size + 1) pitchSelection.clear();
+        renderPitch();
+      });
     });
     renderPitch();
 
-    renderScatter('#dxo-chart', dashboard.dxomark || [], 'pitch', 'score', 'Mean sensor pitch (µm)', 'Camera score', {
-      yStep: 10,
-      legend: [{ label: 'V5', color: PROTOCOL_COLORS.V5 }, { label: 'V6', color: PROTOCOL_COLORS.V6 }],
-      label: (row) => `${row.device} · ${row.protocol}`,
-      href: (row) => catalogUrl({ q: dxomarkSearchTerm(row, sensors) }),
-      hitRadius: 8,
-      dotRadius: 5
-    });
     renderTrends(phones);
     renderMakerMatrix('#matrix-chart', phones);
     renderSensorUsage('#usage-chart', sensors);
     renderRoleComparison(phones);
     qs('#dxo-controls').addEventListener('click', (event) => {
       const button = event.target.closest('[data-dx-filter]');
-      if (button) setProtocolFilter(button.dataset.dxFilter);
+      if (!button) return;
+      hideTooltip();
+      dxoProtocol = button.dataset.dxFilter;
+      qsa('[data-dx-filter]').forEach((item) => {
+        item.classList.toggle('is-active', item === button);
+        item.setAttribute('aria-pressed', String(item === button));
+      });
+      renderDxo();
     });
   } catch (error) {
     document.querySelectorAll('.chart-area').forEach((chart) => { chart.innerHTML = '<div class="chart-empty">Could not load overview data. Try refreshing the page.</div>'; });
