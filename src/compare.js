@@ -32,16 +32,15 @@ function ratioText(sensor, reference) {
   return `${number(ratio, ratio >= 10 ? 1 : 2)}× area`;
 }
 
-function overlaySvg(rows, reference, pixelsPerMm = null) {
+function overlaySvg(rows, reference) {
   const pad = 16, bar = 34;
   const maxW = Math.max(...rows.map((row) => row.w)), maxH = Math.max(...rows.map((row) => row.h));
-  const s = pixelsPerMm || Math.min((640 - pad * 2) / maxW, 400 / maxH);
+  const s = Math.min((640 - pad * 2) / maxW, 400 / maxH);
   const W = Math.round(maxW * s + pad * 2), H = Math.round(maxH * s + pad * 2 + bar);
   const cx = W / 2, cy = pad + maxH * s / 2;
   const scale = maxW > 12 ? 5 : maxW > 5 ? 2 : 1;
   const summary = rows.map((row) => `${label(row)} ${dims(row)}, ${ratioText(row, reference).toLowerCase()}`).join('; ');
-  const actualSize = pixelsPerMm != null;
-  let svg = `<svg class="sc-overlay${actualSize ? ' sc-actual-size' : ''}"${actualSize ? ` width="${W}" height="${H}"` : ''} viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(`${actualSize ? 'Approximate life-size sensors' : 'Sensors drawn to scale'}, centered on each other: ${summary}`)}">`;
+  let svg = `<svg class="sc-overlay" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(`Sensors drawn to scale, centered on each other: ${summary}`)}">`;
   svg += `<line class="sc-axis" x1="${pad}" x2="${W - pad}" y1="${cy}" y2="${cy}"/><line class="sc-axis" x1="${cx}" x2="${cx}" y1="${pad}" y2="${pad + maxH * s}"/>`;
   const seen = new Set();
   rows.slice().sort((a, b) => area(b) - area(a)).forEach((row) => {
@@ -54,12 +53,16 @@ function overlaySvg(rows, reference, pixelsPerMm = null) {
   return svg + '</svg>';
 }
 
-function sideItems(rows, reference, width) {
+function sideItems(rows, reference, width, pixelsPerMm = null) {
   const maxW = Math.max(...rows.map((row) => row.w)), sumW = rows.reduce((sum, row) => sum + row.w, 0);
-  const gap = 24, s = .6 * Math.min(240 / maxW, Math.max((width - gap * (rows.length - 1)) / sumW, (width - gap) / (2 * maxW)));
+  const gap = 24, s = pixelsPerMm || .6 * Math.min(240 / maxW, Math.max((width - gap * (rows.length - 1)) / sumW, (width - gap) / (2 * maxW)));
   return rows.map((row) => {
     const w = row.w * s, h = row.h * s, color = `var(${row.color})`;
-    return `<figure class="sc-side-item" data-id="${esc(row.id)}"><svg width="${w.toFixed(0)}" height="${h.toFixed(0)}" viewBox="-1 -1 ${(w + 2).toFixed(1)} ${(h + 2).toFixed(1)}" role="img" aria-label="${esc(`${label(row)}, ${dims(row)}`)}"><rect class="sc-rect" x="0" y="0" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="3" style="fill:${color};stroke:${color}"/></svg><figcaption><strong>${esc(label(row))}</strong><span>${esc(dims(row))}</span><span>${esc(ratioText(row, reference))}</span></figcaption></figure>`;
+    const rect = pixelsPerMm
+      ? `<rect class="sc-rect sc-rect-life" x=".5" y=".5" width="${(w - 1).toFixed(2)}" height="${(h - 1).toFixed(2)}" style="fill:${color};stroke:${color}"/>`
+      : `<rect class="sc-rect" x="0" y="0" width="${w.toFixed(1)}" height="${h.toFixed(1)}" rx="3" style="fill:${color};stroke:${color}"/>`;
+    const box = pixelsPerMm ? `0 0 ${w.toFixed(2)} ${h.toFixed(2)}` : `-1 -1 ${(w + 2).toFixed(1)} ${(h + 2).toFixed(1)}`;
+    return `<figure class="sc-side-item" data-id="${esc(row.id)}"><svg width="${pixelsPerMm ? w.toFixed(2) : w.toFixed(0)}" height="${pixelsPerMm ? h.toFixed(2) : h.toFixed(0)}" viewBox="${box}" role="img" aria-label="${esc(`${label(row)}, ${dims(row)}`)}">${rect}</svg><figcaption><strong>${esc(label(row))}</strong><span>${esc(dims(row))}</span><span>${esc(ratioText(row, reference))}</span></figcaption></figure>`;
   }).join('');
 }
 
@@ -92,8 +95,7 @@ function init(sensors) {
     <details class="sc-calibration" id="sc-calibration"><summary>Display settings for life-size view</summary><div class="sc-calibration-fields">
       <label>Monitor diagonal <span class="sc-calibration-input"><input id="sc-display-diagonal" class="text-field" type="number" min="1" max="100" step="0.1" inputmode="decimal" placeholder="27"><span>in</span></span></label>
       <label>Native resolution <span class="sc-resolution-inputs"><input id="sc-display-width" class="text-field" type="number" min="320" step="1" inputmode="numeric" placeholder="2560" aria-label="Display resolution width"><span>×</span><input id="sc-display-height" class="text-field" type="number" min="240" step="1" inputmode="numeric" placeholder="1440" aria-label="Display resolution height"><span>px</span></span></label>
-      <button class="button button-secondary" type="button" data-save-display>Use display settings</button>
-      <p id="sc-calibration-status" role="status" aria-live="polite"></p>
+      <div class="sc-calibration-action"><button class="button button-secondary" type="button" data-save-display>Use display settings</button><p id="sc-calibration-status" role="status" aria-live="polite"></p></div>
     </div></details>
     <ul class="sc-chips" aria-label="Selected sensors"></ul>
     <div class="sc-stage" aria-live="polite"></div>
@@ -121,9 +123,9 @@ function init(sensors) {
     if (!current.length) { stage.classList.remove('is-side', 'is-overlay', 'is-life-size', 'has-sensors', 'has-focus'); stage.innerHTML = '<div class="chart-empty"><strong>Your compare list is empty.</strong><span>Add sensors from the catalog, or search for one above.</span><a class="button button-secondary" href="/sensors/">Browse sensor catalog</a></div>'; return; }
     stage.classList.add('has-sensors');
     stage.classList.toggle('is-overlay', mode === 'overlay');
-    stage.classList.toggle('is-side', mode === 'side');
+    stage.classList.toggle('is-side', mode !== 'overlay');
     stage.classList.toggle('is-life-size', mode === 'life');
-    stage.innerHTML = mode === 'side' ? sideItems(current, current[0], stage.clientWidth - 32 || 600) : overlaySvg(current, current[0], mode === 'life' ? displayMetrics()?.pixelsPerMm : null);
+    stage.innerHTML = mode === 'overlay' ? overlaySvg(current, current[0]) : sideItems(current, current[0], stage.clientWidth - 32 || 600, mode === 'life' ? displayMetrics()?.pixelsPerMm : null);
   };
   const render = () => {
     const current = rows(), reference = current[0];
