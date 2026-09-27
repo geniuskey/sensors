@@ -14,7 +14,24 @@ function catalogUrl(filters) {
   return '/sensors/?' + params.toString();
 }
 
-const DOT_COLOR = '#3b6cf6';
+const cssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+const palette = {};
+function readPalette() {
+  palette.trend = [1, 2, 3, 4, 5].map((index) => cssVar(`--series-${index}`));
+  palette.other = cssVar('--series-other');
+  palette.paper = cssVar('--paper');
+  palette.empty = cssVar('--hover');
+  palette.makers = Object.fromEntries(['Sony', 'Samsung', 'OmniVision', 'GalaxyCore', 'SmartSens'].map((name) => [name, cssVar(`--maker-${name.toLowerCase()}`)]));
+}
+readPalette();
+
+function chartWidth(target, design) {
+  const width = Math.floor(qs(target).clientWidth);
+  return width && width < design * 0.75 ? Math.max(width, 280) : design;
+}
+const clip = (text, max) => text.length > max ? text.slice(0, max - 1) + '…' : text;
+const yearText = (year, band) => band < 34 ? `’${String(year).slice(2)}` : String(year);
+const labelEvery = (band, size) => Math.max(1, Math.ceil(size / band));
 
 function markShape(shape, cx, cy, r, attrs) {
   if (shape !== 'diamond') return `<circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${r}" ${attrs}/>`;
@@ -102,7 +119,7 @@ function groupedPoints(valid, xKey, yKey, X, Y, options) {
     ].filter(Boolean).join('\n');
     const href = points.length === 1 ? options.href(points[0]) : catalogUrl({ min: yv, max: yv });
     const x = X(xv).toFixed(1), y = Y(yv).toFixed(1), r = Math.min(3.5 + Math.sqrt(points.length - 1) * 1.8, 11);
-    return `<a class="chart-point" href="${esc(href)}" data-tooltip-title="${esc(title)}" data-tooltip-detail="${esc(detail)}" aria-label="${esc(title)}. ${esc(detail.replaceAll('\n', '. '))}. Open matching catalog results."><circle class="chart-hit" cx="${x}" cy="${y}" r="${Math.max(r + 3, 8)}"/><circle class="chart-dot" cx="${x}" cy="${y}" r="${r.toFixed(1)}" fill="${color}" fill-opacity=".75" stroke="#fff" stroke-width="1"/></a>`;
+    return `<a class="chart-point" href="${esc(href)}" data-tooltip-title="${esc(title)}" data-tooltip-detail="${esc(detail)}" aria-label="${esc(title)}. ${esc(detail.replaceAll('\n', '. '))}. Open matching catalog results."><circle class="chart-hit" cx="${x}" cy="${y}" r="${Math.max(r + 3, options.minHit || 8)}"/><circle class="chart-dot" cx="${x}" cy="${y}" r="${r.toFixed(1)}" fill="${color}" fill-opacity=".75" stroke="${palette.paper}" stroke-width="1"/></a>`;
   }).join('');
 }
 
@@ -113,7 +130,7 @@ function renderScatter(target, data, xKey, yKey, xLabel, yLabel, options = {}) {
     return;
   }
 
-  const w = 680, h = 340, p = { l: 58, r: 20, t: 20, b: 54 };
+  const w = chartWidth(target, 680), narrow = w < 500, h = narrow ? Math.round(w * 0.86) : 340, p = { l: narrow ? 46 : 58, r: narrow ? 12 : 20, t: 20, b: 54 };
   const pw = w - p.l - p.r, ph = h - p.t - p.b;
   const scaled = options.scaleData || valid;
   const sx = axisScale(scaled.map((point) => Number(point[xKey])), { log: options.logX, ticks: options.xTicks, step: options.xStep });
@@ -126,40 +143,37 @@ function renderScatter(target, data, xKey, yKey, xLabel, yLabel, options = {}) {
     const y = Y(value).toFixed(1);
     svg += `<line class="chart-gridline" x1="${p.l}" x2="${w - p.r}" y1="${y}" y2="${y}"/><text class="chart-tick" x="${p.l - 8}" y="${y}" dy=".32em" text-anchor="end">${tickLabel(value)}</text>`;
   });
-  sx.ticks.forEach((value) => {
+  sx.ticks.filter((value, index) => !narrow || sx.ticks.length <= 6 || index % 2 === 0).forEach((value) => {
     const x = X(value).toFixed(1);
     svg += `<line class="chart-gridline chart-gridline-v" x1="${x}" x2="${x}" y1="${p.t}" y2="${h - p.b}"/><text class="chart-tick" x="${x}" y="${h - p.b + 18}" text-anchor="middle">${tickLabel(value)}</text>`;
   });
   svg += `<line class="chart-baseline" x1="${p.l}" x2="${w - p.r}" y1="${h - p.b}" y2="${h - p.b}"/>`;
 
-  if (options.group) svg += groupedPoints(valid, xKey, yKey, X, Y, options);
+  if (options.group) svg += groupedPoints(valid, xKey, yKey, X, Y, { ...options, minHit: narrow ? 11 : 8 });
   else valid.forEach((point) => {
     const label = options.label(point);
     const href = options.href(point);
     const protocol = point.protocol || '';
-    const color = options.pointColor ? options.pointColor(point) : DOT_COLOR;
+    const color = options.pointColor ? options.pointColor(point) : palette.trend[0];
     const cx = X(Number(point[xKey])), cy = Y(Number(point[yKey]));
     const x = cx.toFixed(1), y = cy.toFixed(1);
-    const r = options.hitRadius || 7;
+    const r = (options.hitRadius || 7) + (narrow ? 3 : 0);
     const metadata = [`${number(point[xKey], 2)} ${xLabel} · ${number(point[yKey], 1)} ${yLabel}`, options.detail?.(point)].filter(Boolean).join('\n');
-    svg += `<a class="chart-point${protocol ? ` chart-point-${esc(protocol.toLowerCase())}` : ''}" href="${esc(href)}" data-tooltip-title="${esc(label)}" data-tooltip-detail="${esc(metadata)}"${protocol ? ` data-protocol="${esc(protocol)}"` : ''} aria-label="${esc(label)}. ${esc(metadata.replaceAll('\n', '. '))}. Open matching catalog results."><circle class="chart-hit" cx="${x}" cy="${y}" r="${r}"/>${markShape(options.shape?.(point), cx, cy, options.dotRadius || 4, `class="chart-dot" fill="${color}" fill-opacity=".72" stroke="#fff" stroke-width="1"`)}</a>`;
+    svg += `<a class="chart-point${protocol ? ` chart-point-${esc(protocol.toLowerCase())}` : ''}" href="${esc(href)}" data-tooltip-title="${esc(label)}" data-tooltip-detail="${esc(metadata)}"${protocol ? ` data-protocol="${esc(protocol)}"` : ''} aria-label="${esc(label)}. ${esc(metadata.replaceAll('\n', '. '))}. Open matching catalog results."><circle class="chart-hit" cx="${x}" cy="${y}" r="${r}"/>${markShape(options.shape?.(point), cx, cy, options.dotRadius || 4, `class="chart-dot" fill="${color}" fill-opacity=".72" stroke="${palette.paper}" stroke-width="1"`)}</a>`;
   });
 
   if (options.legend) {
     const lx = w - p.r - 10;
     options.legend.slice().reverse().forEach((item, index) => {
       const x = lx - index * 56;
-      svg += `<g aria-hidden="true">${markShape(item.shape, x - 30, p.t + 12, 5, `fill="${item.color}" fill-opacity=".72" stroke="#fff" stroke-width="1"`)}<text class="chart-legend" x="${x - 21}" y="${p.t + 12}" dy=".32em">${esc(item.label)}</text></g>`;
+      svg += `<g aria-hidden="true">${markShape(item.shape, x - 30, p.t + 12, 5, `fill="${item.color}" fill-opacity=".72" stroke="${palette.paper}" stroke-width="1"`)}<text class="chart-legend" x="${x - 21}" y="${p.t + 12}" dy=".32em">${esc(item.label)}</text></g>`;
     });
   }
 
-  svg += `<text class="chart-axis" x="${p.l + pw / 2}" y="${h - 10}" text-anchor="middle">${esc(xLabel)}</text><text class="chart-axis" transform="translate(16 ${p.t + ph / 2}) rotate(-90)" text-anchor="middle">${esc(yLabel)}</text></svg>`;
+  svg += `<text class="chart-axis" x="${p.l + pw / 2}" y="${h - 10}" text-anchor="middle">${esc(xLabel)}</text><text class="chart-axis" transform="translate(${narrow ? 12 : 16} ${p.t + ph / 2}) rotate(-90)" text-anchor="middle">${esc(yLabel)}</text></svg>`;
   qs(target).innerHTML = svg;
 }
 
-const TREND_COLORS = ['#3b5bfd', '#7c5cf0', '#0ea5a4', '#f08a3c', '#e5487a'];
-const OTHER_COLOR = '#94a3b8';
-const MAKER_COLORS = { Sony: '#111111', Samsung: '#1428a0', OmniVision: '#00a3e0', GalaxyCore: '#f28c28', SmartSens: '#e60012' };
 const FORMAT_TICKS = [4, 3, 2.5, 2, 1.5, 1.3, 1].map((denominator) => 1 / denominator);
 
 function parseOpticalFormat(text) {
@@ -196,7 +210,7 @@ function manufacturerShare(groups, limit = 5) {
     totals.set(name, (totals.get(name) || 0) + 1);
   }));
   const top = [...totals].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, limit).map(([name]) => name);
-  const series = [...top.map((name, index) => ({ name, color: TREND_COLORS[index] })), { name: 'Other', color: OTHER_COLOR, other: true }];
+  const series = [...top.map((name, index) => ({ name, color: palette.trend[index] })), { name: 'Other', color: palette.other, other: true }];
   const rows = groups.map(({ year, cameras }) => {
     const counts = cameras.reduce((map, camera) => {
       const name = top.includes(camera.sensor_manufacturer) ? camera.sensor_manufacturer : 'Other';
@@ -233,8 +247,8 @@ function cameraDistribution(groups, value) {
 }
 
 function renderShareChart(target, share) {
-  const w = 1100, h = 320, p = { l: 48, r: 8, t: 12, b: 48 };
-  const pw = w - p.l - p.r, ph = h - p.t - p.b, band = pw / share.rows.length, bar = Math.min(44, band * 0.56);
+  const w = chartWidth(target, 1100), h = w < 600 ? 260 : 320, p = { l: 42, r: 8, t: 12, b: 48 };
+  const pw = w - p.l - p.r, ph = h - p.t - p.b, band = pw / share.rows.length, bar = Math.min(44, band * 0.62), every = labelEvery(band, 34);
   const Y = (ratio) => h - p.b - ratio * ph;
   let svg = `<svg viewBox="0 0 ${w} ${h}" role="group" aria-label="Sensor manufacturer share of camera mappings by phone release year">`;
   [0, 0.25, 0.5, 0.75, 1].forEach((ratio) => {
@@ -253,7 +267,7 @@ function renderShareChart(target, share) {
         ? `<g class="chart-point" tabindex="0" role="img" data-tooltip-title="${esc(title)}" data-tooltip-detail="${esc(detail)}" aria-label="${esc(title)}: ${esc(detail)}">${rect}</g>`
         : `<a class="chart-point" href="${esc(catalogUrl({ manufacturer: segment.name }))}" data-tooltip-title="${esc(title)}" data-tooltip-detail="${esc(detail)}" aria-label="${esc(title)}: ${esc(detail)}. Open ${esc(segment.name)} sensors in the catalog.">${rect}</a>`;
     });
-    svg += `<text class="chart-tick" x="${cx.toFixed(1)}" y="${h - p.b + 18}" text-anchor="middle">${row.year}</text><text class="chart-tick trend-count" x="${cx.toFixed(1)}" y="${h - p.b + 33}" text-anchor="middle">n=${row.total}</text>`;
+    if ((share.rows.length - 1 - index) % every === 0) svg += `<text class="chart-tick" x="${cx.toFixed(1)}" y="${h - p.b + 18}" text-anchor="middle">${yearText(row.year, band * every)}</text>` + (band >= 34 ? `<text class="chart-tick trend-count" x="${cx.toFixed(1)}" y="${h - p.b + 33}" text-anchor="middle">n=${row.total}</text>` : '');
   });
   svg += `<line class="chart-baseline" x1="${p.l}" x2="${w - p.r}" y1="${Y(0)}" y2="${Y(0)}"/></svg>`;
   qs(target).innerHTML = svg;
@@ -265,7 +279,7 @@ function renderDistribution(target, rows, categories, options) {
     qs(target).innerHTML = '<div class="chart-empty">No camera data for this view.</div>';
     return;
   }
-  const w = 400, h = 260, p = { l: 52, r: 16, t: 16, b: 30 };
+  const w = chartWidth(target, 400), h = 260, p = { l: 52, r: 16, t: 16, b: 30 };
   const pw = w - p.l - p.r, ph = h - p.t - p.b;
   const t = options.log ? Math.log10 : (value) => value;
   const values = rows.flatMap((row) => row.bins.map((bin) => bin.value));
@@ -282,14 +296,14 @@ function renderDistribution(target, rows, categories, options) {
   const maxCount = Math.max(...rows.flatMap((row) => row.bins.map((bin) => bin.count)));
   const rMax = Math.min(band * 0.45, options.rMax || 13);
   const radius = (count) => Math.max(2.5, rMax * Math.sqrt(count / maxCount));
-  const step = Math.ceil(categories.length / 5);
+  const step = Math.max(Math.ceil(categories.length / 5), labelEvery(band, 36));
   let svg = `<svg viewBox="0 0 ${w} ${h}" role="group" aria-label="${esc(options.label)} distribution">`;
   ticks.forEach((value) => {
     const y = Y(value).toFixed(1);
     svg += `<line class="chart-gridline" x1="${p.l}" x2="${w - p.r}" y1="${y}" y2="${y}"/><text class="chart-tick" x="${p.l - 8}" y="${y}" dy=".32em" text-anchor="end">${esc(format(value))}</text>`;
   });
   categories.filter((key, index) => (categories.length - 1 - index) % step === 0).forEach((key) => {
-    svg += `<text class="chart-tick" x="${X(key).toFixed(1)}" y="${h - p.b + 18}" text-anchor="middle">${esc(keyLabel(key))}</text>`;
+    svg += `<text class="chart-tick" x="${X(key).toFixed(1)}" y="${h - p.b + 18}" text-anchor="middle">${esc((band < 72 && options.shortLabel || keyLabel)(key))}</text>`;
   });
   svg += `<line class="chart-baseline" x1="${p.l}" x2="${w - p.r}" y1="${h - p.b}" y2="${h - p.b}"/>`;
   const half = band * 0.32;
@@ -307,7 +321,7 @@ function renderDistribution(target, rows, categories, options) {
       const top = [...bin.sensors].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([name, count]) => `${name} (${count})`).join(', ');
       const title = `${keyLabel(row.key)} · ${format(bin.value)}${unit}`;
       const detail = [`${bin.count} of ${row.n} ${options.noun} (${number(share * 100, 0)}%)`, top, `Median ${format(row.median)}${unit} · IQR ${format(row.q1)}–${format(row.q3)}`].filter(Boolean).join('\n');
-      svg += `<g class="chart-point" tabindex="0" role="img" data-tooltip-title="${esc(title)}" data-tooltip-detail="${esc(detail)}" aria-label="${esc(title)}: ${esc(detail.replaceAll('\n', '. '))}"><circle class="chart-hit" cx="${x}" cy="${y}" r="${Math.max(r + 2, 6).toFixed(1)}"/><circle class="chart-dot" cx="${x}" cy="${y}" r="${r.toFixed(1)}" fill="${options.color}" fill-opacity="${(0.18 + 0.72 * Math.sqrt(share)).toFixed(2)}" stroke="#fff" stroke-width=".5" stroke-opacity=".6"/></g>`;
+      svg += `<g class="chart-point" tabindex="0" role="img" data-tooltip-title="${esc(title)}" data-tooltip-detail="${esc(detail)}" aria-label="${esc(title)}: ${esc(detail.replaceAll('\n', '. '))}"><circle class="chart-hit" cx="${x}" cy="${y}" r="${Math.max(r + 2, 6).toFixed(1)}"/><circle class="chart-dot" cx="${x}" cy="${y}" r="${r.toFixed(1)}" fill="${options.color}" fill-opacity="${(0.18 + 0.72 * Math.sqrt(share)).toFixed(2)}" stroke="${palette.paper}" stroke-width=".5" stroke-opacity=".6"/></g>`;
     });
   });
   if (options.connect) svg += `<polyline class="trend-line" points="${rows.map((row) => `${X(row.key).toFixed(1)},${Y(row.median).toFixed(1)}`).join(' ')}" stroke="${options.color}"/>`;
@@ -319,9 +333,9 @@ function renderDistribution(target, rows, categories, options) {
 }
 
 const METRICS = [
-  { id: 'mp', label: 'Resolution (MP)', unit: ' MP', log: true, ticks: [2, 5, 12, 25, 50, 100, 200], color: TREND_COLORS[0], value: (camera) => camera.resolution_mp, format: (value) => number(value, 1) },
-  { id: 'pitch', label: 'Pixel pitch (µm)', unit: ' µm', log: true, ticks: [0.6, 0.8, 1, 1.2, 1.6, 2, 2.4], color: TREND_COLORS[2], value: (camera) => camera.pixel_size_um },
-  { id: 'format', label: 'Optical format (inch)', log: true, ticks: FORMAT_TICKS, color: TREND_COLORS[1], value: (camera) => parseOpticalFormat(camera.sensor_size), format: formatOptical }
+  { id: 'mp', label: 'Resolution (MP)', unit: ' MP', log: true, ticks: [2, 5, 12, 25, 50, 100, 200], series: 0, value: (camera) => camera.resolution_mp, format: (value) => number(value, 1) },
+  { id: 'pitch', label: 'Pixel pitch (µm)', unit: ' µm', log: true, ticks: [0.6, 0.8, 1, 1.2, 1.6, 2, 2.4], series: 2, value: (camera) => camera.pixel_size_um },
+  { id: 'format', label: 'Optical format (inch)', log: true, ticks: FORMAT_TICKS, series: 1, value: (camera) => parseOpticalFormat(camera.sensor_size), format: formatOptical }
 ];
 
 function renderTrends(phones) {
@@ -335,16 +349,16 @@ function renderTrends(phones) {
   qs('#trend-min').textContent = TREND_MIN_MAPPINGS;
   renderShareChart('#share-chart', manufacturerShare(groups));
   const mainGroups = groups.map(({ year, cameras }) => ({ key: year, cameras: cameras.filter(isMainCamera) }));
-  METRICS.forEach((metric) => renderDistribution(`#${metric.id}-trend-chart`, cameraDistribution(mainGroups, metric.value), years, { ...metric, connect: true, noun: 'main cameras' }));
+  METRICS.forEach((metric) => renderDistribution(`#${metric.id}-trend-chart`, cameraDistribution(mainGroups, metric.value), years, { ...metric, color: palette.trend[metric.series], connect: true, noun: 'main cameras' }));
 }
 
-const ROLES = [['Rear Main', 'Main'], ['Rear Ultra-wide', 'Ultra-wide'], ['Rear Telephoto', 'Telephoto'], ['Front Main', 'Front']];
+const ROLES = [['Rear Main', 'Main', 'Main'], ['Rear Ultra-wide', 'Ultra-wide', 'UW'], ['Rear Telephoto', 'Telephoto', 'Tele'], ['Front Main', 'Front', 'Front']];
 
 function renderRoleComparison(phones) {
   const cameras = phones.flatMap((phone) => phone.cameras || []);
   const groups = ROLES.map(([role]) => ({ key: role, cameras: cameras.filter((camera) => String(camera.role || '').split(/\s*\+\s*/).includes(role)) }));
-  const labels = new Map(ROLES);
-  METRICS.forEach((metric) => renderDistribution(`#role-${metric.id}-chart`, cameraDistribution(groups, metric.value), ROLES.map(([role]) => role), { ...metric, keyLabel: (role) => labels.get(role), noun: 'cameras', rMax: 16 }));
+  const labels = new Map(ROLES.map(([role, name]) => [role, name])), short = new Map(ROLES.map(([role, , abbr]) => [role, abbr]));
+  METRICS.forEach((metric) => renderDistribution(`#role-${metric.id}-chart`, cameraDistribution(groups, metric.value), ROLES.map(([role]) => role), { ...metric, color: palette.trend[metric.series], keyLabel: (role) => labels.get(role), shortLabel: (role) => short.get(role), noun: 'cameras', rMax: 16 }));
 }
 
 function renderMakerMatrix(target, phones) {
@@ -358,23 +372,25 @@ function renderMakerMatrix(target, phones) {
   }));
   const total = (row) => [...row.values()].reduce((sum, count) => sum + count, 0);
   const oems = [...counts].sort((a, b) => total(b[1]) - total(a[1]) || a[0].localeCompare(b[0])).slice(0, 12);
-  const makers = [...makerTotals].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 6).map(([name]) => name);
+  const w = chartWidth(target, 1100), narrow = w < 600;
+  const makers = [...makerTotals].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, narrow ? 4 : 6).map(([name]) => name);
   const columns = [...makers, 'Other'];
-  const w = 1100, rowH = 30, p = { l: 120, r: 70, t: 30, b: 8 };
+  const rowH = 30, p = narrow ? { l: 84, r: 40, t: 62, b: 8 } : { l: 120, r: 70, t: 30, b: 8 };
   const cellW = (w - p.l - p.r) / columns.length, h = p.t + oems.length * rowH + p.b;
   let svg = `<svg viewBox="0 0 ${w} ${h}" role="group" aria-label="Sensor manufacturer share by phone manufacturer">`;
   columns.forEach((name, index) => {
-    svg += `<text class="chart-axis" x="${(p.l + cellW * (index + 0.5)).toFixed(1)}" y="${p.t - 12}" text-anchor="middle">${esc(name)}</text>`;
+    const x = (p.l + cellW * (index + 0.5)).toFixed(1);
+    svg += narrow ? `<text class="chart-axis" transform="translate(${x} ${p.t - 8}) rotate(-40)">${esc(name)}</text>` : `<text class="chart-axis" x="${x}" y="${p.t - 12}" text-anchor="middle">${esc(name)}</text>`;
   });
-  svg += `<text class="chart-tick" x="${w - p.r + 12}" y="${p.t - 12}">Cameras</text>`;
+  svg += `<text class="chart-tick" x="${w - p.r + (narrow ? 8 : 12)}" y="${p.t - 12}">${narrow ? 'n' : 'Cameras'}</text>`;
   oems.forEach(([oem, row], rowIndex) => {
     const sum = total(row), y = p.t + rowIndex * rowH;
     const other = [...row].filter(([name]) => !makers.includes(name)).sort((a, b) => b[1] - a[1]);
-    svg += `<text class="chart-axis" x="${p.l - 12}" y="${y + rowH / 2}" dy=".32em" text-anchor="end">${esc(oem)}</text><text class="chart-tick" x="${w - p.r + 12}" y="${y + rowH / 2}" dy=".32em">${sum}</text>`;
+    svg += `<text class="chart-axis" x="${p.l - (narrow ? 8 : 12)}" y="${y + rowH / 2}" dy=".32em" text-anchor="end">${esc(narrow ? clip(oem, 11) : oem)}</text><text class="chart-tick" x="${w - p.r + (narrow ? 8 : 12)}" y="${y + rowH / 2}" dy=".32em">${sum}</text>`;
     columns.forEach((name, index) => {
       const count = name === 'Other' ? other.reduce((acc, [, value]) => acc + value, 0) : row.get(name) || 0;
       const share = count / sum, x = p.l + cellW * index;
-      const rect = `<rect class="chart-dot matrix-cell" x="${(x + 1).toFixed(1)}" y="${y + 1}" width="${(cellW - 2).toFixed(1)}" height="${rowH - 2}" rx="4" fill="${count ? TREND_COLORS[0] : '#f1f4f8'}" fill-opacity="${count ? (0.08 + 0.87 * share).toFixed(2) : 1}"/>`;
+      const rect = `<rect class="chart-dot matrix-cell" x="${(x + 1).toFixed(1)}" y="${y + 1}" width="${(cellW - 2).toFixed(1)}" height="${rowH - 2}" rx="4" fill="${count ? palette.trend[0] : palette.empty}" fill-opacity="${count ? (0.08 + 0.87 * share).toFixed(2) : 1}"/>`;
       if (!count) { svg += rect; return; }
       const label = `<text class="matrix-label${share > 0.45 ? ' is-strong' : ''}" x="${(x + cellW / 2).toFixed(1)}" y="${y + rowH / 2}" dy=".32em" text-anchor="middle">${number(share * 100, 0)}%</text>`;
       const title = `${oem} · ${name}`;
@@ -392,9 +408,8 @@ function sensorPath(sensor) {
   return '/sensors/' + slug(sensor.canonical_id.slice(0, index)) + '/' + slug(sensor.canonical_id.slice(index + 1)) + '/';
 }
 
-const clip = (text, max) => text.length > max ? text.slice(0, max - 1) + '…' : text;
-
-function renderSensorUsage(target, sensors, limit = 20) {
+function renderSensorUsage(target, sensors) {
+  const w = chartWidth(target, 1100), narrow = w < 600, limit = narrow ? 12 : 20;
   const used = sensors.filter((sensor) => phoneCount(sensor) > 0).sort(byUsage);
   if (!used.length) {
     qs(target).innerHTML = '<div class="chart-empty">No sensors are mapped to phones yet.</div>';
@@ -417,30 +432,31 @@ function renderSensorUsage(target, sensors, limit = 20) {
   const allYears = perYear.flatMap((years) => [...years.keys()]);
   const first = Math.min(...allYears), last = Math.max(...allYears);
   const years = Array.from({ length: last - first + 1 }, (_, index) => first + index);
-  const w = 1100, rowH = 26, p = { l: 190, r: 250, t: 26, b: 8 };
-  const band = (w - p.l - p.r) / years.length, h = p.t + top.length * rowH + p.b;
+  const rowH = 26, p = narrow ? { l: 112, r: 34, t: 26, b: 8 } : { l: 190, r: Math.min(250, Math.round(w * 0.23)), t: 26, b: 8 };
+  const band = (w - p.l - p.r) / years.length, h = p.t + top.length * rowH + p.b, every = labelEvery(band, 34);
   const X = (year) => (p.l + band * (year - first + 0.5)).toFixed(1);
   const maxYear = Math.max(...perYear.flatMap((map) => [...map.values()].map((entry) => entry.count)));
   const rMax = Math.min(band * 0.45, rowH * 0.48);
   const barX = w - p.r + 24, barW = p.r - 110, maxCount = phoneCount(top[0]);
   let cumulative = 0;
   let svg = `<svg viewBox="0 0 ${w} ${h}" role="group" aria-label="Most-used sensors by phone release year">`;
-  years.forEach((year) => {
-    svg += `<line class="chart-gridline chart-gridline-v" x1="${X(year)}" x2="${X(year)}" y1="${p.t - 6}" y2="${h - p.b}"/><text class="chart-tick" x="${X(year)}" y="${p.t - 12}" text-anchor="middle">${year}</text>`;
+  years.forEach((year, index) => {
+    svg += `<line class="chart-gridline chart-gridline-v" x1="${X(year)}" x2="${X(year)}" y1="${p.t - 6}" y2="${h - p.b}"/>` + ((years.length - 1 - index) % every === 0 ? `<text class="chart-tick" x="${X(year)}" y="${p.t - 12}" text-anchor="middle">${yearText(year, band * every)}</text>` : '');
   });
-  svg += `<text class="chart-tick" x="${barX}" y="${p.t - 12}">Phones</text><text class="chart-tick" x="${w - 8}" y="${p.t - 12}" text-anchor="end">Cumulative</text>`;
+  svg += narrow ? `<text class="chart-tick" x="${w - 4}" y="${p.t - 12}" text-anchor="end">n</text>` : `<text class="chart-tick" x="${barX}" y="${p.t - 12}">Phones</text><text class="chart-tick" x="${w - 8}" y="${p.t - 12}" text-anchor="end">Cumulative</text>`;
   top.forEach((sensor, index) => {
-    const y = p.t + index * rowH + rowH / 2, color = MAKER_COLORS[sensor.manufacturer] || OTHER_COLOR, map = perYear[index], href = sensorPath(sensor);
+    const y = p.t + index * rowH + rowH / 2, color = palette.makers[sensor.manufacturer] || palette.other, map = perYear[index], href = sensorPath(sensor);
     const active = [...map.keys()];
     cumulative += phoneCount(sensor);
     if (active.length) svg += `<line class="usage-span" x1="${X(Math.min(...active))}" x2="${X(Math.max(...active))}" y1="${y}" y2="${y}" stroke="${color}"/>`;
-    svg += `<a class="usage-label" href="${esc(href)}"><text class="chart-axis" x="${p.l - 12}" y="${y}" dy=".32em" text-anchor="end">${esc(clip(sensorLabel(sensor), 26))}</text><title>${esc(sensorLabel(sensor))}</title></a>`;
+    svg += `<a class="usage-label" href="${esc(href)}"><text class="chart-axis" x="${p.l - 12}" y="${y}" dy=".32em" text-anchor="end">${esc(clip(sensorLabel(sensor), narrow ? 16 : 26))}</text><title>${esc(sensorLabel(sensor))}</title></a>`;
     [...map].sort((a, b) => b[1].count - a[1].count).forEach(([year, entry]) => {
       const r = Math.max(2.5, rMax * Math.sqrt(entry.count / maxYear));
       const title = `${sensorLabel(sensor)} · ${year}`;
       const detail = `${entry.count} phone${entry.count === 1 ? '' : 's'}\n` + [...entry.roles].sort((a, b) => b[1] - a[1]).map(([role, count]) => `${role} ${count}`).join(' · ');
-      svg += `<a class="chart-point" href="${esc(href)}" data-tooltip-title="${esc(title)}" data-tooltip-detail="${esc(detail)}" aria-label="${esc(title)}: ${esc(detail.replaceAll('\n', '. '))}. Open sensor details."><circle class="chart-hit" cx="${X(year)}" cy="${y}" r="${Math.max(r + 2, 7).toFixed(1)}"/><circle class="chart-dot" cx="${X(year)}" cy="${y}" r="${r.toFixed(1)}" fill="${color}" fill-opacity=".8" stroke="#fff" stroke-width=".75"/></a>`;
+      svg += `<a class="chart-point" href="${esc(href)}" data-tooltip-title="${esc(title)}" data-tooltip-detail="${esc(detail)}" aria-label="${esc(title)}: ${esc(detail.replaceAll('\n', '. '))}. Open sensor details."><circle class="chart-hit" cx="${X(year)}" cy="${y}" r="${Math.max(r + 2, 7).toFixed(1)}"/><circle class="chart-dot" cx="${X(year)}" cy="${y}" r="${r.toFixed(1)}" fill="${color}" fill-opacity=".8" stroke="${palette.paper}" stroke-width=".75"/></a>`;
     });
+    if (narrow) { svg += `<text class="chart-tick" x="${w - 4}" y="${y}" dy=".32em" text-anchor="end">${phoneCount(sensor)}</text>`; return; }
     const length = Math.max(2, barW * phoneCount(sensor) / maxCount);
     svg += `<rect class="usage-bar" x="${barX}" y="${y - 6}" width="${length.toFixed(1)}" height="12" rx="3" fill="${color}"/><text class="chart-tick" x="${(barX + length + 6).toFixed(1)}" y="${y}" dy=".32em">${phoneCount(sensor)}</text><text class="chart-tick trend-count" x="${w - 8}" y="${y}" dy=".32em" text-anchor="end">${number(cumulative / totalMappings * 100, 0)}%</text>`;
   });
@@ -448,8 +464,8 @@ function renderSensorUsage(target, sensors, limit = 20) {
   const share = (count) => number(used.slice(0, count).reduce((sum, sensor) => sum + phoneCount(sensor), 0) / totalMappings * 100, 0);
   const single = used.filter((sensor) => phoneCount(sensor) === 1).length;
   qs('#usage-summary').textContent = `The top 3 sensors account for ${share(3)}% and the top ${top.length} for ${share(top.length)}% of ${number(totalMappings, 0)} phone mappings; ${single} of ${used.length} mapped sensors appear in a single phone.`;
-  const makers = [...new Set(top.map((sensor) => MAKER_COLORS[sensor.manufacturer] ? sensor.manufacturer : 'Other'))];
-  qs('#usage-legend').innerHTML = makers.map((name) => `<span><i style="background:${MAKER_COLORS[name] || OTHER_COLOR}"></i>${esc(name)}</span>`).join('');
+  const makers = [...new Set(top.map((sensor) => palette.makers[sensor.manufacturer] ? sensor.manufacturer : 'Other'))];
+  qs('#usage-legend').innerHTML = makers.map((name) => `<span><i style="background:${palette.makers[name] || palette.other}"></i>${esc(name)}</span>`).join('');
 }
 
 function dxomarkSearchTerm(point, sensors) {
@@ -492,7 +508,7 @@ qsa('.chart-area').forEach((area) => {
   });
   area.addEventListener('pointerout', (event) => {
     const point = event.target.closest('.chart-point');
-    if (point && !point.contains(event.relatedTarget)) hideTooltip();
+    if (point && event.pointerType !== 'touch' && !point.contains(event.relatedTarget)) hideTooltip();
   });
   area.addEventListener('focusin', (event) => {
     const point = event.target.closest('.chart-point');
@@ -502,7 +518,17 @@ qsa('.chart-area').forEach((area) => {
     if (event.target.closest('.chart-point')) hideTooltip();
   });
 });
-window.addEventListener('scroll', hideTooltip, true);
+let touchPoint = null, lastPointer = 'mouse';
+addEventListener('pointerdown', (event) => { lastPointer = event.pointerType; }, true);
+qsa('.chart-area').forEach((area) => area.addEventListener('click', (event) => {
+  const point = event.target.closest('a.chart-point');
+  if (!point || lastPointer !== 'touch' || point === touchPoint) return;
+  event.preventDefault();
+  touchPoint = point;
+  showTooltip(point);
+}));
+document.addEventListener('click', (event) => { if (!event.target.closest('.chart-point')) { touchPoint = null; hideTooltip(); } });
+window.addEventListener('scroll', () => { touchPoint = null; hideTooltip(); }, true);
 window.addEventListener('resize', hideTooltip);
 
 async function init() {
@@ -517,7 +543,6 @@ async function init() {
     qs('#mappings').textContent = number(stats.mappings, 0);
 
     const pitchMakers = makerTally(sensors).slice(0, 5).map(([name]) => name);
-    const pitchMakerColors = new Map(pitchMakers.map((name, index) => [name, MAKER_COLORS[name] || TREND_COLORS[index]]));
     const pitchSensors = sensors.filter((row) => Number(row.pixel_size_um) > 0 && Number(row.resolution_mp) > 0);
     const phonesByModel = new Map(phones.map((phone) => [phone.model, phone]));
     const dxoPoints = (dashboard.dxomark || []).map((point) => {
@@ -528,7 +553,7 @@ async function init() {
     [...phones, ...dxoPoints].forEach((row) => row.oem && oemWeight.set(row.oem, (oemWeight.get(row.oem) || 0) + 1));
     const topOems = [...oemWeight].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 6).map(([name]) => name);
     const filters = {
-      sensor: { label: 'Sensor', names: pitchMakers, selection: new Set(), color: (name) => pitchMakerColors.get(name) || OTHER_COLOR },
+      sensor: { label: 'Sensor', names: pitchMakers, selection: new Set(), color: (name) => pitchMakers.includes(name) ? palette.makers[name] || palette.trend[pitchMakers.indexOf(name)] : palette.other },
       oem: { label: 'Phone', names: topOems, selection: new Set() }
     };
     const matches = (kind, names) => {
@@ -542,7 +567,7 @@ async function init() {
       renderScatter('#dxo-chart', dxoPoints.filter((row) => matches('sensor', [row.maker]) && matches('oem', [row.oem]) && (dxoProtocol === 'all' || row.protocol === dxoProtocol)), 'pitch', 'score', 'Mean sensor pitch (µm)', 'Camera score', {
         yStep: 10,
         scaleData: dxoPoints,
-        legend: [{ label: 'V5', color: OTHER_COLOR }, { label: 'V6', color: OTHER_COLOR, shape: 'diamond' }],
+        legend: [{ label: 'V5', color: palette.other }, { label: 'V6', color: palette.other, shape: 'diamond' }],
         pointColor: (row) => filters.sensor.color(row.maker),
         shape: (row) => row.protocol === 'V6' ? 'diamond' : 'circle',
         label: (row) => `${row.device} · ${row.protocol}`,
@@ -573,9 +598,9 @@ async function init() {
         dotRadius: 3.5
       });
     };
-    const filterRows = Object.entries(filters).map(([kind, { label, names, color }]) => `<div class="maker-filters" data-kind="${kind}" role="group" aria-label="Filter by ${kind === 'oem' ? 'phone' : 'sensor'} manufacturer"><span class="maker-filters-label">${label}</span>` + [...names, 'Other'].map((name) => `<button class="maker-filter" type="button" data-value="${esc(name)}" aria-pressed="false">${color ? `<i style="background:${color(name)}"></i>` : ''}${esc(name)}</button>`).join('') + `<button class="maker-filter-clear" type="button" data-clear aria-label="Show all ${kind === 'oem' ? 'phone' : 'sensor'} makers" title="Show all">×</button></div>`).join('');
+    const filterRows = () => Object.entries(filters).map(([kind, { label, names, color }]) => `<div class="maker-filters" data-kind="${kind}" role="group" aria-label="Filter by ${kind === 'oem' ? 'phone' : 'sensor'} manufacturer"><span class="maker-filters-label">${label}</span>` + [...names, 'Other'].map((name) => `<button class="maker-filter" type="button" data-value="${esc(name)}" aria-pressed="false">${color ? `<i style="background:${color(name)}"></i>` : ''}${esc(name)}</button>`).join('') + `<button class="maker-filter-clear" type="button" data-clear aria-label="Show all ${kind === 'oem' ? 'phone' : 'sensor'} makers" title="Show all">×</button></div>`).join('');
     qsa('.landscape-filters').forEach((panel) => {
-      panel.innerHTML = filterRows;
+      panel.innerHTML = filterRows();
       panel.addEventListener('click', (event) => {
         const button = event.target.closest('[data-value], [data-clear]');
         if (!button) return;
@@ -586,12 +611,28 @@ async function init() {
         renderPitch();
       });
     });
-    renderPitch();
-
-    renderTrends(phones);
-    renderMakerMatrix('#matrix-chart', phones);
-    renderSensorUsage('#usage-chart', sensors);
-    renderRoleComparison(phones);
+    const renderAll = () => {
+      renderPitch();
+      renderTrends(phones);
+      renderMakerMatrix('#matrix-chart', phones);
+      renderSensorUsage('#usage-chart', sensors);
+      renderRoleComparison(phones);
+    };
+    renderAll();
+    matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+      readPalette();
+      qsa('.landscape-filters').forEach((panel) => { panel.innerHTML = filterRows(); });
+      renderAll();
+    });
+    let lastWidth = innerWidth, resizeTimer = 0;
+    addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        if (Math.abs(innerWidth - lastWidth) < 40) return;
+        lastWidth = innerWidth;
+        renderAll();
+      }, 200);
+    });
     qs('#dxo-controls').addEventListener('click', (event) => {
       const button = event.target.closest('[data-dx-filter]');
       if (!button) return;

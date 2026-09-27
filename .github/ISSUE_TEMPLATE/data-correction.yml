@@ -1,0 +1,44 @@
+name: Data correction
+description: Report a wrong sensor spec, phone camera mapping or score.
+title: "[Correction] "
+labels: ["data-correction"]
+body:
+  - type: input
+    id: record
+    attributes:
+      label: Record ID
+      description: Sensor or phone canonical ID shown on the page (e.g. SONY:IMX989, PHONE:XIAOMI13ULTRA).
+    validations:
+      required: true
+  - type: input
+    id: page
+    attributes:
+      label: Page URL
+  - type: input
+    id: field
+    attributes:
+      label: Field
+      description: Which value is wrong (e.g. pixel pitch, main camera sensor, release year).
+    validations:
+      required: true
+  - type: input
+    id: current
+    attributes:
+      label: Current value
+  - type: input
+    id: correct
+    attributes:
+      label: Correct value
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Source URL
+      description: Official datasheet, manufacturer page, teardown or review that confirms the correct value.
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes

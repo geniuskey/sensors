@@ -1,6 +1,39 @@
-# sensors.euiyun.com
+# Mobile Image Sensor Database
 
-Open mobile image-sensor catalog and smartphone adoption database for `sensors.euiyun.com`.
+**[sensors.euiyun.com](https://sensors.euiyun.com/)**: an open, source-traceable catalog of smartphone camera sensors (Sony, Samsung ISOCELL, OmniVision, SmartSens, GalaxyCore and more), and of which phones use them.
+
+[![Sensors](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fsensors.euiyun.com%2Fdata%2Fstats.json&query=%24.sensors&label=sensors&color=0ea5e9)](https://sensors.euiyun.com/sensors/)
+[![Phones](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fsensors.euiyun.com%2Fdata%2Fstats.json&query=%24.phones&label=phones&color=0ea5e9)](https://sensors.euiyun.com/phones/)
+[![Camera mappings](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fsensors.euiyun.com%2Fdata%2Fstats.json&query=%24.mappings&label=camera%20mappings&color=0ea5e9)](https://sensors.euiyun.com/data/all-in-one.csv)
+[![Data license: CC BY 4.0](https://img.shields.io/badge/data-CC%20BY%204.0-lightgrey)](https://creativecommons.org/licenses/by/4.0/)
+[![Deploy](https://github.com/geniuskey/sensors/actions/workflows/deploy.yml/badge.svg)](https://github.com/geniuskey/sensors/actions/workflows/deploy.yml)
+
+![Overview dashboard](docs/screenshots/overview.png)
+
+## What's inside
+
+- **Trends**: pixel pitch vs resolution, main-camera sensor size over time, sensor-maker share, DXOMARK scores by sensor.
+- **[Sensor catalog](https://sensors.euiyun.com/sensors/)**: filter by maker, camera role, resolution and optical format; every spec links to its source.
+- **[Phone catalog](https://sensors.euiyun.com/phones/)**: the sensor behind each camera (main, ultrawide, telephoto, selfie).
+- **[Size comparison](https://sensors.euiyun.com/compare/)**: overlay up to six sensors at true physical scale, plus head-to-head pages such as [IMX989 vs LYT-900](https://sensors.euiyun.com/compare/sony-imx989-vs-sony-lytia-900-lyt-900-imx06a/).
+
+![Sensor size comparison](docs/screenshots/compare.png)
+
+## Open data & API
+
+Free, no key. Details at [sensors.euiyun.com/open-data](https://sensors.euiyun.com/open-data/).
+
+| | |
+|---|---|
+| CSV | [`/data/all-in-one.csv`](https://sensors.euiyun.com/data/all-in-one.csv) |
+| JSON | [`/data/sensors.json`](https://sensors.euiyun.com/data/sensors.json), [`/data/phones.json`](https://sensors.euiyun.com/data/phones.json) |
+| API | `GET /api/sensors?q=`, `GET /api/sensors/{id}`, `GET /api/phones?q=`, `GET /api/stats` |
+
+```bash
+curl "https://sensors.euiyun.com/api/sensors/SONY:IMX989"
+```
+
+The data is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Please cite *Mobile Image Sensor Database, https://sensors.euiyun.com/*. Found a wrong spec or mapping? Use **Report a data error** on any sensor or phone page, or [open a correction](https://github.com/geniuskey/sensors/issues/new?template=data-correction.yml). Please include a source.
 
 ## Architecture
 

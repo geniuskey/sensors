@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Data sources
+    url: https://sensors.euiyun.com/sources/
+    about: Where each spec and mapping comes from.

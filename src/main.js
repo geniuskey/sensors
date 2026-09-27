@@ -46,6 +46,7 @@ function sensorPath(row) {
 function esc(value) {
   return String(value ?? '').replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[character]));
 }
+const compact = (text) => text.replace(/[^a-z0-9]+/g, '');
 function formatNumber(value, digits = 1) {
   return value == null || value === '' ? '—' : Number(value).toLocaleString(undefined, { maximumFractionDigits: digits });
 }
@@ -171,7 +172,10 @@ function rowMatches(row, filters) {
   if (filters.query) {
     const phoneModels = (row.phones || []).map((phone) => phone.model).join(' ');
     const haystack = [row.manufacturer, row.sensor, row.marketing_name, row.internal_code, row.canonical_id, row.example_phones, phoneModels, row.roles].join(' ').toLowerCase();
-    if (!haystack.includes(filters.query)) return false;
+    if (!haystack.includes(filters.query)) {
+      const flat = compact(haystack);
+      if (!flat.includes(compact(filters.query)) && !filters.query.split(/\s+/).every((token) => flat.includes(compact(token)))) return false;
+    }
   }
   return true;
 }
@@ -204,6 +208,7 @@ function updateComparisonBar() {
   qs('#compare-count').textContent = count + (count === 1 ? ' sensor selected' : ' sensors selected');
   qs('#compare-notice').textContent = count < 4 ? 'Select up to 4 sensors to compare.' : 'Comparison limit reached.';
   qs('#open-comparison').disabled = count < 2;
+  qs('#compare-sizes').href = '/compare/?ids=' + Array.from(compareIds, (id) => encodeURIComponent(id).replace(/%3A/gi, ':')).join(',');
 }
 function render(resetList = false) {
   if (resetList) visibleCount = window.matchMedia('(max-width: 720px)').matches ? 24 : 60;
