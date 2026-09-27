@@ -58,7 +58,8 @@ const phoneCount = (sensor) => Number(sensor.phone_count) || 0;
 const byUsage = (a, b) => phoneCount(b) - phoneCount(a) || a.canonical_name.localeCompare(b.canonical_name);
 
 function sensorLabel(sensor) {
-  return sensor.canonical_name.toLowerCase().includes(String(sensor.manufacturer).toLowerCase()) ? sensor.canonical_name : `${sensor.manufacturer} ${sensor.canonical_name}`;
+  const name = sensor.canonical_name.toLowerCase().includes(String(sensor.manufacturer).toLowerCase()) ? sensor.canonical_name : `${sensor.manufacturer} ${sensor.canonical_name}`;
+  return /^IMX/i.test(sensor.internal_code || '') ? `${name} (${sensor.internal_code})` : name;
 }
 
 function sensorSummary(sensor) {

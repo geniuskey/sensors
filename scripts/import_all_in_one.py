@@ -13,7 +13,8 @@ VERIFIED_MAPPINGS=EXPORTS/'verified-mapping-additions-2026-09-26.csv'
 ROLE_UPDATES=EXPORTS/'verified-role-updates-2026-09-26.csv'
 UNKNOWN_ROLES=('','unknown','unspecified')
 REVIEW=ROOT/'data/review'
-SENSOR_FIELDS=('Marketing_Name','Internal_Code','Naming_Status','Resolution_MP','Resolution_Px','Sensor_Size','Pixel_Size_um','Pixel_Binning','FWC','AF','HDR','CFA','Two_Layer_Transistor','Transfer_Gate','Source_URL','Source_Type','Notes','First_Listed_Year','Sensor_Confidence','Additional_Source_URL','Aliases')
+NAMING_FIELDS=('Sensor','Marketing_Name','Internal_Code','Naming_Status','Aliases')
+SENSOR_FIELDS=('Sensor','Marketing_Name','Internal_Code','Naming_Status','Resolution_MP','Resolution_Px','Sensor_Size','Pixel_Size_um','Pixel_Binning','FWC','AF','HDR','CFA','Two_Layer_Transistor','Transfer_Gate','Source_URL','Source_Type','Notes','First_Listed_Year','Sensor_Confidence','Additional_Source_URL','Aliases')
 PUBLIC.mkdir(parents=True,exist_ok=True); EXPORTS.mkdir(parents=True,exist_ok=True)
 
 def clean(v): return (v or '').strip()
@@ -207,6 +208,7 @@ def merge_phone_ids(rows):
     print(f'Merged {moved} mapping rows into existing phone IDs')
     return rows
 
+MERGED_SENSORS={}
 def apply_sensor_decisions(rows):
     decisions=[u for u in read_review('sensor-decisions-2026-09-26.csv') if clean(u['Action']) in ('merge','set_spec','add_alias')]
     templates={}
@@ -225,7 +227,7 @@ def apply_sensor_decisions(rows):
             for r in rows:
                 if clean(r['Canonical_ID'])==target and cid.split(':',1)[1] not in split_aliases(r['Aliases']):
                     r['Aliases']='; '.join(split_aliases(r['Aliases'])+[cid.split(':',1)[1]])
-            del templates[cid]
+            del templates[cid]; MERGED_SENSORS[cid]=target
         elif action=='add_alias':
             for r in rows:
                 if clean(r['Canonical_ID'])==cid and clean(u['New_Value']) not in split_aliases(r['Aliases']):
@@ -237,6 +239,7 @@ def apply_sensor_decisions(rows):
             for r in rows:
                 if clean(r['Canonical_ID'])==cid:
                     r[field]=clean(u['New_Value'])
+                    if field in NAMING_FIELDS: continue
                     if note not in r['Notes']: r['Notes']=(clean(r['Notes'])+' '+note+'.').strip()
                     if not clean(r['Additional_Source_URL']): r['Additional_Source_URL']=clean(u['Source_URL']).split(';')[0].strip()
     print(f'Applied {len(decisions)} reviewed sensor decisions')
@@ -260,7 +263,7 @@ def apply_mapping_review(rows,fieldnames):
     review=[u for u in read_review('mapping-review-2026-09-26.csv') if clean(u['Action']) in ('remove','add','set_role','keep','wrong')]
     phones={phone_id(r):r for r in rows if clean(r['Phone'])}; sensors={clean(r['Canonical_ID']):r for r in rows}
     for u in review:
-        action=clean(u['Action']); pcid=clean(u['Phone_Canonical_ID']); cid=clean(u['Sensor_Canonical_ID']); label=f"{action} {u['Phone']} / {cid}"
+        action=clean(u['Action']); pcid=clean(u['Phone_Canonical_ID']); cid=MERGED_SENSORS.get(clean(u['Sensor_Canonical_ID']),clean(u['Sensor_Canonical_ID'])); label=f"{action} {u['Phone']} / {cid}"
         require_source(u,label)
         match=[r for r in rows if clean(r['Phone']) and clean(r['Canonical_ID'])==cid and phone_id(r)==pcid]
         if action=='remove':

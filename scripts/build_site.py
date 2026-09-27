@@ -2,7 +2,7 @@ from pathlib import Path
 from datetime import date
 from html import escape
 from urllib.parse import quote
-import json, re, shutil
+import csv, json, re, shutil
 ROOT=Path(__file__).resolve().parents[1]; DIST=ROOT/'dist'; SITE='https://sensors.euiyun.com'; OG_IMAGE=SITE+'/images/image-sensor.png'
 if DIST.exists(): shutil.rmtree(DIST)
 DIST.mkdir()
@@ -96,7 +96,7 @@ sensor_by_id={s['canonical_id']:s for s in sensors}; phone_by_id={p['canonical_i
 urls=['/','/sensors/','/phones/']
 
 for s in sensors:
-    name=s.get('sensor') or s.get('marketing_name') or s['canonical_name']; maker=s.get('manufacturer') or ''; full=f'{maker} {name}'.strip()
+    name=s.get('sensor') or s.get('marketing_name') or s['canonical_name']; maker=s.get('manufacturer') or ''; code=s.get('internal_code') or ''; full=f'{maker} {name}'.strip()+(f' ({code})' if code and code.lower() not in name.lower() else '')
     mp=num(s.get('resolution_mp')); size=fmt_size(s.get('sensor_size')); pitch=num(s.get('pixel_size_um'),2)
     headline=' '.join(x for x in (mp and mp+'MP', size) if x)
     ps=s.get('phones') or []; path=sensor_path(s); urls.append(path)
@@ -145,6 +145,13 @@ for p in phones:
     old_names=[p['model']]
     if p.get('oem') and not p['model'].lower().startswith(p['oem'].lower()+' '): old_names.append(f"{p['oem']} {p['model']}")
     redirects+=[f'/phone/{slug(n)}/ {phone_path(p)} 301' for n in old_names]
+for path in sorted((ROOT/'data/review').glob('sensor-decisions-*.csv')):
+    with path.open(encoding='utf-8-sig',newline='') as f:
+        for d in csv.DictReader(f):
+            target=sensor_by_id.get(d['Target_Canonical_ID'].strip())
+            if d['Action'].strip()=='merge' and target:
+                old={'canonical_id':d['Canonical_ID'].strip()}
+                redirects+=[f'{sensor_path(old)} {sensor_path(target)} 301',f'/sensors/{slug(old["canonical_id"])}/ {sensor_path(target)} 301']
 redirects+=['/catalog/ /sensors/ 301','/catalog /sensors/ 301']
 (DIST/'_redirects').write_text('\n'.join(redirects)+'\n',encoding='utf-8')
 
