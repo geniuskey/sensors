@@ -83,7 +83,7 @@
 
       <section class="dashboard-panel trend-dashboard" aria-labelledby="trends-title">
         <div class="overview-section-head">
-          <div><div class="section-kicker">BY YEAR</div><h2 id="trends-title">Trends over time</h2><p class="dashboard-intro">Phone camera mappings grouped by phone release year<span id="trend-range"></span>. Years with fewer than <span id="trend-min"></span> mappings are skipped; points need at least 3 main cameras.</p></div>
+          <div><div class="section-kicker">BY YEAR</div><h2 id="trends-title">Trends over time</h2><p class="dashboard-intro">Phone camera mappings grouped by phone release year<span id="trend-range"></span>. Years with fewer than <span id="trend-min"></span> mappings are skipped; years need at least 3 main cameras. Bubble size and opacity show how many main cameras share a value; the line is the median and the band the middle 50%.</p></div>
           <a class="text-link" href="/phones/">Browse phones <span aria-hidden="true">→</span></a>
         </div>
         <div class="chart-grid">
@@ -97,17 +97,17 @@
         <div class="trend-trio">
           <article class="chart-card">
             <h3>Main camera resolution</h3>
-            <p>Median megapixels of rear main cameras.</p>
+            <p>Distribution of rear main camera megapixels (log scale).</p>
             <div id="mp-trend-chart" class="chart-area"><div class="chart-empty">Loading phone data…</div></div>
           </article>
           <article class="chart-card">
             <h3>Main camera pixel pitch</h3>
-            <p>Median pixel size of rear main cameras.</p>
+            <p>Distribution of rear main pixel sizes (log scale).</p>
             <div id="pitch-trend-chart" class="chart-area"><div class="chart-empty">Loading phone data…</div></div>
           </article>
           <article class="chart-card">
             <h3>Main camera optical format</h3>
-            <p>Median rear main sensor size. Higher means larger.</p>
+            <p>Distribution of rear main sensor sizes. Higher means larger.</p>
             <div id="format-trend-chart" class="chart-area"><div class="chart-empty">Loading phone data…</div></div>
           </article>
         </div>

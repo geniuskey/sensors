@@ -474,7 +474,8 @@ th[aria-sort="ascending"] .sort-button span, th[aria-sort="descending"] .sort-bu
 .trend-count { fill: var(--subtle); font-size: 10px; opacity: .8; }
 .trend-trio { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 16px; }
 .trend-dashboard .chart-card:not(.chart-wide) .chart-area svg { min-width: 0; }
-.trend-line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.trend-line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; pointer-events: none; }
+.trend-band { fill-opacity: .1; pointer-events: none; }
 .trend-dashboard rect.chart-dot { transition: fill-opacity .12s; }
 .trend-dashboard .chart-point:hover rect.chart-dot, .trend-dashboard .chart-point:focus-visible rect.chart-dot { stroke: var(--ink); stroke-width: 1.5; }
 .trend-dashboard .chart-point:focus-visible { outline: none; }

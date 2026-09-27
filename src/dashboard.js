@@ -153,13 +153,7 @@ function renderScatter(target, data, xKey, yKey, xLabel, yLabel, options = {}) {
 const TREND_COLORS = ['#3b5bfd', '#7c5cf0', '#0ea5a4', '#f08a3c', '#e5487a'];
 const OTHER_COLOR = '#94a3b8';
 const MAKER_COLORS = { Sony: '#111111', Samsung: '#1428a0', OmniVision: '#00a3e0', GalaxyCore: '#f28c28', SmartSens: '#e60012' };
-const FORMAT_TICKS = [4, 3, 2.5, 2, 1.7, 1.5, 1.3, 1.12, 1].map((denominator) => 1 / denominator);
-
-function median(values) {
-  if (!values.length) return null;
-  const sorted = [...values].sort((a, b) => a - b), mid = Math.floor(sorted.length / 2);
-  return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
-}
+const FORMAT_TICKS = [4, 3, 2.5, 2, 1.5, 1.3, 1].map((denominator) => 1 / denominator);
 
 function parseOpticalFormat(text) {
   const value = String(text || '').replace(/^type\s*/i, '').replace(/["”″]|inch(es)?/gi, '').trim();
@@ -207,10 +201,27 @@ function manufacturerShare(groups, limit = 5) {
   return { series, rows };
 }
 
-function mainCameraMedians(groups, value) {
+function quantile(sorted, q) {
+  const index = (sorted.length - 1) * q, low = Math.floor(index);
+  return sorted[low] + (sorted[Math.min(low + 1, sorted.length - 1)] - sorted[low]) * (index - low);
+}
+
+function mainCameraDistribution(groups, value) {
   return groups.map(({ year, cameras }) => {
-    const values = cameras.filter(isMainCamera).map(value).filter((item) => Number(item) > 0).map(Number);
-    return { year, value: median(values), n: values.length };
+    const bins = new Map();
+    const values = [];
+    cameras.filter(isMainCamera).forEach((camera) => {
+      const raw = Number(value(camera));
+      if (!(raw > 0)) return;
+      const key = Number(raw.toFixed(4));
+      values.push(key);
+      const bin = bins.get(key) || { value: key, count: 0, sensors: new Map() };
+      bin.count += 1;
+      if (camera.sensor) bin.sensors.set(camera.sensor, (bin.sensors.get(camera.sensor) || 0) + 1);
+      bins.set(key, bin);
+    });
+    const sorted = values.sort((a, b) => a - b);
+    return { year, n: sorted.length, bins: [...bins.values()], q1: sorted.length ? quantile(sorted, 0.25) : null, median: sorted.length ? quantile(sorted, 0.5) : null, q3: sorted.length ? quantile(sorted, 0.75) : null };
   }).filter((row) => row.n >= TREND_MIN_MAIN);
 }
 
@@ -242,25 +253,28 @@ function renderShareChart(target, share) {
   qs('#share-legend').innerHTML = share.series.map((item) => `<span><i style="background:${item.color}"></i>${esc(item.name)}</span>`).join('');
 }
 
-function renderTrendLine(target, rows, years, options) {
+function renderTrendDistribution(target, rows, years, options) {
   if (!rows.length) {
     qs(target).innerHTML = '<div class="chart-empty">No main camera data for these years.</div>';
     return;
   }
-  const w = 400, h = 240, p = { l: 52, r: 16, t: 14, b: 30 };
+  const w = 400, h = 260, p = { l: 52, r: 16, t: 16, b: 30 };
   const pw = w - p.l - p.r, ph = h - p.t - p.b, first = years[0], last = years[years.length - 1];
-  const values = rows.map((row) => row.value);
-  let lo, hi, ticks;
-  if (options.ticks) {
-    lo = Math.min(...values, ...(options.domain || [])); hi = Math.max(...values, ...(options.domain || []));
-    const pad = (hi - lo) * 0.08; lo -= pad; hi += pad;
-    ticks = options.ticks.filter((value) => value >= lo && value <= hi);
-  } else ({ lo, hi, ticks } = axisScale([...values, ...(options.domain || [])], {}));
-  const X = (year) => p.l + (last === first ? 0.5 : (year - first) / (last - first)) * pw;
-  const Y = (value) => h - p.b - (value - lo) / (hi - lo) * ph;
+  const t = options.log ? Math.log10 : (value) => value;
+  const values = rows.flatMap((row) => row.bins.map((bin) => bin.value));
+  let lo = t(Math.min(...values)), hi = t(Math.max(...values));
+  if (hi === lo) { lo -= 0.5; hi += 0.5; }
+  const pad = (hi - lo) * 0.1; lo -= pad; hi += pad;
+  const ticks = options.ticks.filter((value) => t(value) >= lo && t(value) <= hi);
+  const band = pw / Math.max(years.length, 1);
+  const X = (year) => p.l + (last === first ? pw / 2 : band / 2 + (year - first) / (last - first) * (pw - band));
+  const Y = (value) => h - p.b - (t(value) - lo) / (hi - lo) * ph;
   const format = options.format || ((value) => number(value, 2));
+  const maxCount = Math.max(...rows.flatMap((row) => row.bins.map((bin) => bin.count)));
+  const rMax = Math.min(band * 0.48, 13);
+  const radius = (count) => Math.max(2.5, rMax * Math.sqrt(count / maxCount));
   const step = Math.ceil(years.length / 5);
-  let svg = `<svg viewBox="0 0 ${w} ${h}" role="group" aria-label="${esc(options.label)} by phone release year">`;
+  let svg = `<svg viewBox="0 0 ${w} ${h}" role="group" aria-label="${esc(options.label)} distribution by phone release year">`;
   ticks.forEach((value) => {
     const y = Y(value).toFixed(1);
     svg += `<line class="chart-gridline" x1="${p.l}" x2="${w - p.r}" y1="${y}" y2="${y}"/><text class="chart-tick" x="${p.l - 8}" y="${y}" dy=".32em" text-anchor="end">${esc(format(value))}</text>`;
@@ -269,12 +283,20 @@ function renderTrendLine(target, rows, years, options) {
     svg += `<text class="chart-tick" x="${X(year).toFixed(1)}" y="${h - p.b + 18}" text-anchor="middle">${year}</text>`;
   });
   svg += `<line class="chart-baseline" x1="${p.l}" x2="${w - p.r}" y1="${h - p.b}" y2="${h - p.b}"/>`;
-  svg += `<polyline class="trend-line" points="${rows.map((row) => `${X(row.year).toFixed(1)},${Y(row.value).toFixed(1)}`).join(' ')}" stroke="${options.color}"/>`;
+  const upper = rows.map((row) => `${X(row.year).toFixed(1)},${Y(row.q3).toFixed(1)}`);
+  const lower = rows.slice().reverse().map((row) => `${X(row.year).toFixed(1)},${Y(row.q1).toFixed(1)}`);
+  svg += `<polygon class="trend-band" points="${[...upper, ...lower].join(' ')}" fill="${options.color}"/>`;
   rows.forEach((row) => {
-    const x = X(row.year).toFixed(1), y = Y(row.value).toFixed(1);
-    const title = `${row.year} · ${options.label}`, detail = `Median ${format(row.value)}${options.unit || ''} · ${row.n} main camera${row.n === 1 ? '' : 's'}`;
-    svg += `<g class="chart-point" tabindex="0" role="img" data-tooltip-title="${esc(title)}" data-tooltip-detail="${esc(detail)}" aria-label="${esc(title)}: ${esc(detail)}"><circle class="chart-hit" cx="${x}" cy="${y}" r="8"/><circle class="chart-dot" cx="${x}" cy="${y}" r="4" fill="${options.color}" stroke="#fff" stroke-width="1"/></g>`;
+    const x = X(row.year).toFixed(1);
+    row.bins.slice().sort((a, b) => b.count - a.count).forEach((bin) => {
+      const y = Y(bin.value).toFixed(1), r = radius(bin.count), share = bin.count / row.n;
+      const top = [...bin.sensors].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([name, count]) => `${name} (${count})`).join(', ');
+      const title = `${row.year} · ${format(bin.value)}${options.unit || ''}`;
+      const detail = [`${bin.count} of ${row.n} main cameras (${number(share * 100, 0)}%)`, top, `Year median ${format(row.median)}${options.unit || ''} · IQR ${format(row.q1)}–${format(row.q3)}`].filter(Boolean).join('\n');
+      svg += `<g class="chart-point" tabindex="0" role="img" data-tooltip-title="${esc(title)}" data-tooltip-detail="${esc(detail)}" aria-label="${esc(title)}: ${esc(detail.replaceAll('\n', '. '))}"><circle class="chart-hit" cx="${x}" cy="${y}" r="${Math.max(r + 2, 6).toFixed(1)}"/><circle class="chart-dot" cx="${x}" cy="${y}" r="${r.toFixed(1)}" fill="${options.color}" fill-opacity="${(0.18 + 0.72 * Math.sqrt(share)).toFixed(2)}" stroke="#fff" stroke-width=".5" stroke-opacity=".6"/></g>`;
+    });
   });
+  svg += `<polyline class="trend-line" points="${rows.map((row) => `${X(row.year).toFixed(1)},${Y(row.median).toFixed(1)}`).join(' ')}" stroke="${options.color}"/>`;
   qs(target).innerHTML = svg + '</svg>';
 }
 
@@ -288,9 +310,9 @@ function renderTrends(phones) {
   qs('#trend-range').textContent = ` (${years[0]}–${years[years.length - 1]})`;
   qs('#trend-min').textContent = TREND_MIN_MAPPINGS;
   renderShareChart('#share-chart', manufacturerShare(groups));
-  renderTrendLine('#mp-trend-chart', mainCameraMedians(groups, (camera) => camera.resolution_mp), years, { label: 'Resolution (MP)', unit: ' MP', domain: [0], color: TREND_COLORS[0], format: (value) => number(value, 1) });
-  renderTrendLine('#pitch-trend-chart', mainCameraMedians(groups, (camera) => camera.pixel_size_um), years, { label: 'Pixel pitch (µm)', unit: ' µm', domain: [0], color: TREND_COLORS[2] });
-  renderTrendLine('#format-trend-chart', mainCameraMedians(groups, (camera) => parseOpticalFormat(camera.sensor_size)), years, { label: 'Optical format (inch)', color: TREND_COLORS[1], ticks: FORMAT_TICKS, domain: [1 / 3, 1], format: formatOptical });
+  renderTrendDistribution('#mp-trend-chart', mainCameraDistribution(groups, (camera) => camera.resolution_mp), years, { label: 'Resolution (MP)', unit: ' MP', log: true, ticks: [2, 5, 12, 25, 50, 100, 200], color: TREND_COLORS[0], format: (value) => number(value, 1) });
+  renderTrendDistribution('#pitch-trend-chart', mainCameraDistribution(groups, (camera) => camera.pixel_size_um), years, { label: 'Pixel pitch (µm)', unit: ' µm', log: true, ticks: [0.6, 0.8, 1, 1.2, 1.6, 2, 2.4], color: TREND_COLORS[2] });
+  renderTrendDistribution('#format-trend-chart', mainCameraDistribution(groups, (camera) => parseOpticalFormat(camera.sensor_size)), years, { label: 'Optical format (inch)', log: true, ticks: FORMAT_TICKS, color: TREND_COLORS[1], format: formatOptical });
 }
 
 function dxomarkSearchTerm(point, sensors) {
