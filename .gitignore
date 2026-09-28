@@ -7,3 +7,4 @@ database/local.sqlite3
 .DS_Store
 __pycache__/
 data/raw/*.html
+.playwright-mcp/

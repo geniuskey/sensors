@@ -4,21 +4,21 @@
  "snapshot": "data/raw/samsung/2026-09-26/snapshot.json",
  "snapshot_date": "2026-09-26",
  "checked_at": "2026-09-26T11:33:27Z",
- "generated_at": "2026-09-26T11:37:39Z",
+ "generated_at": "2026-09-28T11:47:11Z",
  "db": {
-  "sensors": 450,
-  "phones": 498
+  "sensors": 441,
+  "phones": 502
  },
  "summary": {
   "records": 28,
   "non_mobile_skipped": 0,
-  "matched_by_url": 0,
-  "matched_by_name": 27,
+  "matched_by_url": 2,
+  "matched_by_name": 25,
   "new_sensors": 1,
   "ambiguous": 0,
-  "spec_conflicts": 1,
-  "official_vs_secondary_conflicts": 1,
-  "db_gaps_fillable": 1,
+  "spec_conflicts": 0,
+  "official_vs_secondary_conflicts": 0,
+  "db_gaps_fillable": 0,
   "new_phone_mappings": 0,
   "new_mappings_phone_in_db": 0,
   "snapshot_errors": 0
@@ -39,30 +39,7 @@
   }
  ],
  "ambiguous": [],
- "spec_conflicts": [
-  {
-   "canonical_id": "SAMSUNG:3J1",
-   "name": "ISOCELL 3J1",
-   "field": "resolution_mp",
-   "db_value": 10.0,
-   "source_value": "3,976 x 2,736 (10.87MP)",
-   "source_parsed": 10.87,
-   "source_tier": "official",
-   "source_url": "https://semiconductor.samsung.com/aemapi/semi/prdSpecInfo?siteCode=global&iaId=542&prdId=",
-   "db_confidence": "High",
-   "db_source_types": [
-    "helpix smartphone sensor index"
-   ],
-   "official_vs_secondary": true
-  }
- ],
- "db_gaps": [
-  {
-   "canonical_id": "SAMSUNG:JNP",
-   "field": "sensor_size",
-   "source_value": "1/2.74\"",
-   "source_url": "https://semiconductor.samsung.com/image-sensor/mobile-image-sensor/isocell-jnp/"
-  }
- ],
+ "spec_conflicts": [],
+ "db_gaps": [],
  "new_phone_mappings": []
 }

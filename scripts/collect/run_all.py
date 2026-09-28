@@ -42,7 +42,7 @@ def collect(source: str, max_pages: int, date: str, fetcher: PoliteFetcher) -> d
 
 def render_summary(date: str, runs: list[dict], reports: list[dict], audit: dict, audit_path, full_audit: bool) -> str:
     md = [f'# Weekly source collection ({date})', '',
-          'Automated by `scripts/collect/run_all.py`. This PR only adds raw snapshots and reports; '
+          'Automated by `scripts/collect/run_all.py`. This collection only adds raw snapshots and reports; '
           'it does not change `public/data`, the local SQLite DB or production D1. '
           'Apply accepted changes through the normal importer/review flow.', '',
           '## Collectors', '', '| Source | Status | Records | Requests | Page errors |', '|---|---|---|---|---|']
@@ -101,6 +101,15 @@ def main(argv: list[str] | None = None) -> int:
         fetcher = PoliteFetcher(delay=args.delay)
         for source in sources:
             runs.append(collect(source, args.max_pages or ENABLED[source], args.date, fetcher))
+    else:
+        for source in sources:
+            snapshot_path = latest_snapshot(source)
+            if not snapshot_path:
+                continue
+            snapshot = json.loads(snapshot_path.read_text(encoding='utf-8'))
+            runs.append({'source': source, 'ok': True, 'records': snapshot.get('record_count', len(snapshot.get('records') or [])),
+                         'requests': snapshot.get('request_count', ''), 'errors': len(snapshot.get('errors') or []),
+                         'snapshot': snapshot_path.relative_to(ROOT).as_posix()})
 
     db = diff_report.Database()
     reports = []
