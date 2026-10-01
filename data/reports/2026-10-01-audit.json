@@ -1,0 +1,3267 @@
+{
+ "date": "2026-10-01",
+ "generated_at": "2026-10-01T11:27:51Z",
+ "confidence_distribution": {
+  "sensors": {
+   "Medium": 278,
+   "High": 138,
+   "Medium-High": 25
+  },
+  "mappings": {
+   "High": 570,
+   "Medium": 64,
+   "Medium-High": 5
+  }
+ },
+ "summary": {
+  "sensors": 441,
+  "low_confidence_sensors": 278,
+  "sensors_without_source": 0,
+  "sensors_missing_core_specs": 17,
+  "mappings": 639,
+  "low_confidence_mappings": 64,
+  "mappings_without_source": 0
+ },
+ "low_confidence_sensors": [
+  {
+   "canonical_id": "SONY:IMX586",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 6,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX355",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 5,
+   "source_hosts": [
+    "helpix.ru",
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV64B",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 4,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:3T2",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 4,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX615",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 4,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV8856",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 3,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV8858",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 3,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV8865",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 3,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:GH1",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 3,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX386",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 3,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX557",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 3,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX576",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 3,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX582",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 3,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX598",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 3,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX616",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 3,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX633",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 3,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX650",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 3,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX663",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 3,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX682",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 3,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV02B10",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 2,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV08D10",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 2,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV12A10",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 2,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV13B10",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 2,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV32C",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 2,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV64A",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 2,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:2LD",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 2,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:3LU",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 2,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:4H5",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 2,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:4H7",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 2,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:4H8",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 2,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:5E9",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 2,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:GD1",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 2,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:GD2",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 2,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX381",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 2,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX398",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 2,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX400",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 2,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX486",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 2,
+   "source_hosts": [
+    "helpix.ru",
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX519",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 2,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX564",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 2,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX600",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 2,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX600Y",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 2,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC02M1",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC02M2",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC0310",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC2355",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC2375H",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC5024",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC5035",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC8034",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC8054",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV02A",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV12D2Q",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV13855",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV13858",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV13B",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV16885",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV16A10",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV16A1Q",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV16E10",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV20880",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV20B",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV5640",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV5695",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV9762",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:2L8",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:2L9",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:2P6",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:2X5",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:3L2",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:3L5",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:3L6",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:3L8",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:5E2",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:5E8",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:5EA",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:5L8",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:HP0",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:JNS",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SK_HYNIX:Hi-1332",
+   "manufacturer": "SK hynix",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SK_HYNIX:Hi-1333",
+   "manufacturer": "SK hynix",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SK_HYNIX:Hi-1339",
+   "manufacturer": "SK hynix",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SK_HYNIX:Hi-553",
+   "manufacturer": "SK hynix",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SK_HYNIX:Hi-556",
+   "manufacturer": "SK hynix",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SK_HYNIX:Hi-846",
+   "manufacturer": "SK hynix",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SMARTSENS:SC550XS",
+   "manufacturer": "SmartSens",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SMARTSENS:SC590XS",
+   "manufacturer": "SmartSens",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SMARTSENS:SC5A0CS / SC5AOS",
+   "manufacturer": "SmartSens",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SMARTSENS:SC800CS",
+   "manufacturer": "SmartSens",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SMARTSENS:SC821CS",
+   "manufacturer": "SmartSens",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX091",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX105",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX111",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX132",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX134",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX135",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX145",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX149",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX164",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX175",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX219PQ",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX220",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX234",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX240",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX268",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX914",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "BYD:BF2257",
+   "manufacturer": "BYD",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "BYD:BF2553",
+   "manufacturer": "BYD",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC02K0",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC02M1B",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC02M3",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC02M3B",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC030A",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC032A",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC05A2",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC05A3",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC08A8",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC12A2",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC13003",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC13023",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC13033",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC13053",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC13A0",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC13A2",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC16B3 (GC16B3C)",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC20A3",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC2335",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC2365",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC2385",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC2755",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC32E1",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC32E2",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC5005",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC5025",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC50B2",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC50D1",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC50E0",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC50F6",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC6133",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC6153",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC8024",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "METASILICON:MT13F0",
+   "manufacturer": "MetaSilicon",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "METASILICON:MT510",
+   "manufacturer": "MetaSilicon",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "METASILICON:MT815",
+   "manufacturer": "MetaSilicon",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OEM/BRANDED:Light Fusion 1050L (Hunter 1050L)",
+   "manufacturer": "OEM/Branded",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OEM/BRANDED:Light Fusion 400 (Hunter 400)",
+   "manufacturer": "OEM/Branded",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OEM/BRANDED:Light Fusion 600 (Hunter 600)",
+   "manufacturer": "OEM/Branded",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OEM/BRANDED:Light Fusion 800 (Hunter 800)",
+   "manufacturer": "OEM/Branded",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OEM/BRANDED:Light Fusion 900 (Hunter 900)",
+   "manufacturer": "OEM/Branded",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OEM/BRANDED:Light Fusion 950 (Hunter 950)",
+   "manufacturer": "OEM/Branded",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OEM/BRANDED:Light Fusion 950L (Hunter 950L)",
+   "manufacturer": "OEM/Branded",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OEM/BRANDED:Light&Shadow Master 990",
+   "manufacturer": "OEM/Branded",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OS05A10",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV02B",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV02K",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV05C",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV08B",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV08B10",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV08X",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV12830",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV12890",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV12895",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV12D",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV13853",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV13880",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV13A10",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV16825",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV16880",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV16A",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV16B10",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV16E",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV24A",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV2643",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV2680",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV2710",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV32D",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV4688",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV50C40",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV50K40",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV50Q",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV50T",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV51A",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV52A",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV5650",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV5675",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV64E",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV8D1",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OVB0A",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OVB0B",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "ONSEMI:AR1335",
+   "manufacturer": "onsemi",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "PANASONIC:MN34152",
+   "manufacturer": "Panasonic",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "PANASONIC:MN34153",
+   "manufacturer": "Panasonic",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:2M8",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:2P8",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:2T7",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:2T8",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:3H2",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:3H7",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:3LC",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:3LD",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:3M3",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:3M5",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:3P3",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:3P8",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:3P9",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:3T1",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:4E2",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:4E6",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:4E8",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:5E3",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:GNG",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:GNH",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:GW2",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:GW3",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:GWB",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:HM9",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:HPE",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:JNL",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:JNP",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru",
+    "semiconductor.samsung.com"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:KD1",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:KDS",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SK_HYNIX:Hi-1336",
+   "manufacturer": "SK hynix",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SK_HYNIX:Hi-1631Q",
+   "manufacturer": "SK hynix",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SK_HYNIX:Hi-259H",
+   "manufacturer": "SK hynix",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SK_HYNIX:Hi-3231Q",
+   "manufacturer": "SK hynix",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SK_HYNIX:Hi-5021",
+   "manufacturer": "SK hynix",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SK_HYNIX:Hi-5022",
+   "manufacturer": "SK hynix",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SK_HYNIX:Hi-551",
+   "manufacturer": "SK hynix",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SK_HYNIX:Hi-552",
+   "manufacturer": "SK hynix",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SK_HYNIX:Hi-842",
+   "manufacturer": "SK hynix",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SK_HYNIX:Hi-843b",
+   "manufacturer": "SK hynix",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SMARTSENS:SC1220CS",
+   "manufacturer": "SmartSens",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SMARTSENS:SC200AI",
+   "manufacturer": "SmartSens",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SMARTSENS:SC555XS",
+   "manufacturer": "SmartSens",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SMARTSENS:SC580XS",
+   "manufacturer": "SmartSens",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SMARTSENS:SC585XS",
+   "manufacturer": "SmartSens",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SMARTSENS:SC5A0XS / SC5AOXS",
+   "manufacturer": "SmartSens",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SMARTSENS:SC5A5XS",
+   "manufacturer": "SmartSens",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "spinformation.info"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX166",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX179",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX278",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX286",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX300",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX314",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX315",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX316",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX318",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX319",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX320",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX328",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX333",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX338",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX345",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX350",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX351",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX356",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX371",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX372",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX374",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX376",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX377",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX378",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX380",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX445",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX476",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX480",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX498",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX608",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX688",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX703",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX708",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX752",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX772",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX852",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SONY:LYTIA 710 (IMX917)",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SUPERPIX:SP2509",
+   "manufacturer": "SuperPix",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SUPERPIX:SP5506",
+   "manufacturer": "SuperPix",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SUPERPIX:SP5507",
+   "manufacturer": "SuperPix",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  },
+  {
+   "canonical_id": "SUPERPIX:SP8407",
+   "manufacturer": "SuperPix",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ]
+  }
+ ],
+ "sensors_without_source": [],
+ "sensors_missing_core_specs": [
+  {
+   "canonical_id": "GALAXYCORE:GC05A3",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ],
+   "missing": [
+    "pixel_size_um",
+    "sensor_size"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC12A2",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ],
+   "missing": [
+    "pixel_size_um",
+    "sensor_size"
+   ]
+  },
+  {
+   "canonical_id": "GALAXYCORE:GC2335",
+   "manufacturer": "GalaxyCore",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ],
+   "missing": [
+    "pixel_size_um"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV50C",
+   "manufacturer": "OmniVision",
+   "confidence": "High",
+   "phone_count": 2,
+   "source_hosts": [
+    "spinformation.info"
+   ],
+   "missing": [
+    "pixel_size_um",
+    "sensor_size"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV50N",
+   "manufacturer": "OmniVision",
+   "confidence": "High",
+   "phone_count": 0,
+   "source_hosts": [
+    "spinformation.info"
+   ],
+   "missing": [
+    "pixel_size_um",
+    "sensor_size"
+   ]
+  },
+  {
+   "canonical_id": "OMNIVISION:OV8D1",
+   "manufacturer": "OmniVision",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ],
+   "missing": [
+    "pixel_size_um",
+    "sensor_size"
+   ]
+  },
+  {
+   "canonical_id": "PANASONIC:MN34152",
+   "manufacturer": "Panasonic",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ],
+   "missing": [
+    "pixel_size_um",
+    "sensor_size"
+   ]
+  },
+  {
+   "canonical_id": "PANASONIC:MN34153",
+   "manufacturer": "Panasonic",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ],
+   "missing": [
+    "pixel_size_um",
+    "sensor_size"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:3L5",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ],
+   "missing": [
+    "pixel_size_um",
+    "sensor_size"
+   ]
+  },
+  {
+   "canonical_id": "SAMSUNG:3LC",
+   "manufacturer": "Samsung",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ],
+   "missing": [
+    "pixel_size_um",
+    "sensor_size"
+   ]
+  },
+  {
+   "canonical_id": "SMARTSENS:SC080CS",
+   "manufacturer": "SmartSens",
+   "confidence": "High",
+   "phone_count": 0,
+   "source_hosts": [
+    "www.smartsenstech.com"
+   ],
+   "missing": [
+    "resolution_mp"
+   ]
+  },
+  {
+   "canonical_id": "SMARTSENS:SC1220CS",
+   "manufacturer": "SmartSens",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ],
+   "missing": [
+    "resolution_mp",
+    "pixel_size_um"
+   ]
+  },
+  {
+   "canonical_id": "SMARTSENS:SCC85XS",
+   "manufacturer": "SmartSens",
+   "confidence": "High",
+   "phone_count": 0,
+   "source_hosts": [
+    "www.smartsenstech.com"
+   ],
+   "missing": [
+    "resolution_mp",
+    "pixel_size_um",
+    "sensor_size"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX328",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ],
+   "missing": [
+    "pixel_size_um"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX712",
+   "manufacturer": "Sony",
+   "confidence": "High",
+   "phone_count": 4,
+   "source_hosts": [
+    "helpix.ru",
+    "spinformation.info"
+   ],
+   "missing": [
+    "pixel_size_um"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX752",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 0,
+   "source_hosts": [
+    "helpix.ru"
+   ],
+   "missing": [
+    "sensor_size"
+   ]
+  },
+  {
+   "canonical_id": "SONY:IMX914",
+   "manufacturer": "Sony",
+   "confidence": "Medium",
+   "phone_count": 1,
+   "source_hosts": [
+    "helpix.ru"
+   ],
+   "missing": [
+    "sensor_size"
+   ]
+  }
+ ],
+ "low_confidence_mappings": [
+  {
+   "phone": "PHONE:14T",
+   "model": "Xiaomi 14T",
+   "sensor_id": "OMNIVISION:OV13B10",
+   "role": "Rear Ultra-wide",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/isensor/omnivision_ov13b/"
+  },
+  {
+   "phone": "PHONE:15SPRO",
+   "model": "Xiaomi 15S Pro",
+   "sensor_id": "OMNIVISION:OVX9000",
+   "role": "Rear Main",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/isensor/light_hunter_900/"
+  },
+  {
+   "phone": "PHONE:ASUSZENFONE12ULTRA",
+   "model": "ASUS Zenfone 12 Ultra",
+   "sensor_id": "OMNIVISION:OV13B10",
+   "role": "Rear Ultra-wide",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/isensor/omnivision_ov13b/"
+  },
+  {
+   "phone": "PHONE:BLACKSHARK5PRO",
+   "model": "Black Shark 5 Pro",
+   "sensor_id": "OMNIVISION:OV16A10",
+   "role": "Front Main",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/isensor/omnivision_ov16a/"
+  },
+  {
+   "phone": "PHONE:BLACKVIEWA53",
+   "model": "BlackView A53",
+   "sensor_id": "SAMSUNG:4H7",
+   "role": "Unknown",
+   "confidence": "Medium",
+   "source_url": "https://spinformation.info/all/smartphone-image-sensor/"
+  },
+  {
+   "phone": "PHONE:BLACKVIEWA60PLUS",
+   "model": "Blackview A60 Plus",
+   "sensor_id": "OMNIVISION:OV8858",
+   "role": "Unknown",
+   "confidence": "Medium",
+   "source_url": "https://spinformation.info/all/smartphone-image-sensor/"
+  },
+  {
+   "phone": "PHONE:BLACKVIEWA7",
+   "model": "BlackView A7",
+   "sensor_id": "SAMSUNG:4H5",
+   "role": "Unknown",
+   "confidence": "Medium",
+   "source_url": "https://spinformation.info/all/smartphone-image-sensor/"
+  },
+  {
+   "phone": "PHONE:CHINAMOBILEA3S",
+   "model": "China Mobile A3S",
+   "sensor_id": "OMNIVISION:OV8856",
+   "role": "Unknown",
+   "confidence": "Medium",
+   "source_url": "https://spinformation.info/all/smartphone-image-sensor/"
+  },
+  {
+   "phone": "PHONE:FINDN",
+   "model": "OPPO Find N",
+   "sensor_id": "SONY:IMX481",
+   "role": "Rear Ultra-wide",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/oppo/find_n_5g/"
+  },
+  {
+   "phone": "PHONE:FINDX5PRO",
+   "model": "OPPO Find X5 Pro",
+   "sensor_id": "SONY:IMX766",
+   "role": "Rear Main + Rear Ultra-wide",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/oppo/find_x5_pro/"
+  },
+  {
+   "phone": "PHONE:GALAXYA425G",
+   "model": "Galaxy A42 5G",
+   "sensor_id": "SAMSUNG:GM2",
+   "role": "Rear Main",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/samsung/galaxy_a42_5g/"
+  },
+  {
+   "phone": "PHONE:GALAXYM31",
+   "model": "Galaxy M31",
+   "sensor_id": "SONY:IMX616",
+   "role": "Front Main",
+   "confidence": "Medium",
+   "source_url": "https://www.fonearena.com/blog/306496/samsung-galaxy-m31-review.html"
+  },
+  {
+   "phone": "PHONE:ILAX",
+   "model": "iLA X",
+   "sensor_id": "SAMSUNG:5L8",
+   "role": "Unknown",
+   "confidence": "Medium",
+   "source_url": "https://spinformation.info/all/smartphone-image-sensor/"
+  },
+  {
+   "phone": "PHONE:INTEXAQUASTYLEIII",
+   "model": "Intex Aqua Style III",
+   "sensor_id": "SAMSUNG:5E8",
+   "role": "Unknown",
+   "confidence": "Medium",
+   "source_url": "https://spinformation.info/all/smartphone-image-sensor/"
+  },
+  {
+   "phone": "PHONE:IPHONE12",
+   "model": "iPhone 12",
+   "sensor_id": "SONY:IMX503",
+   "role": "Rear Main",
+   "confidence": "Medium",
+   "source_url": "https://imagesensor-info.com/en/405/"
+  },
+  {
+   "phone": "PHONE:IPHONE16PLUS",
+   "model": "iPhone 16 Plus",
+   "sensor_id": "SONY:IMX633",
+   "role": "Unknown",
+   "confidence": "Medium",
+   "source_url": "https://spinformation.info/all/smartphone-image-sensor/"
+  },
+  {
+   "phone": "PHONE:IQOONEO9PRO",
+   "model": "iQOO Neo 9 Pro",
+   "sensor_id": "SONY:IMX920",
+   "role": "Rear Main",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/vivo/iqoo_neo_9_pro_global/"
+  },
+  {
+   "phone": "PHONE:LENOVOLEGION2PRO",
+   "model": "Lenovo Legion 2 Pro",
+   "sensor_id": "OMNIVISION:OV64A",
+   "role": "Rear Main",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/lenovo/legion_duel_2/"
+  },
+  {
+   "phone": "PHONE:LENOVOLEGIONY90",
+   "model": "Lenovo Legion Y90",
+   "sensor_id": "OMNIVISION:OV64A",
+   "role": "Rear Main",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/lenovo/legion_y90/"
+  },
+  {
+   "phone": "PHONE:MAGIC6RSR",
+   "model": "HONOR Magic 6 RSR",
+   "sensor_id": "OMNIVISION:OVH9800",
+   "role": "Rear Main",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/isensor/omnivision_ovh9800/"
+  },
+  {
+   "phone": "PHONE:MAGIC8PRO",
+   "model": "Honor Magic8 Pro",
+   "sensor_id": "OMNIVISION:OV50H",
+   "role": "Rear Main",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/honor/magic8_pro/"
+  },
+  {
+   "phone": "PHONE:MAGIC8PRO",
+   "model": "Honor Magic8 Pro",
+   "sensor_id": "OMNIVISION:OVH9000 / OV50H",
+   "role": "Rear Main",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/honor/magic8_pro/"
+  },
+  {
+   "phone": "PHONE:MATE50PRO",
+   "model": "Huawei Mate 50 Pro",
+   "sensor_id": "SONY:IMX766Y",
+   "role": "Rear Main",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/isensor/sony_imx766/"
+  },
+  {
+   "phone": "PHONE:MATE80PRO",
+   "model": "HUAWEI Mate 80 Pro",
+   "sensor_id": "SMARTSENS:SC550XS",
+   "role": "Unknown",
+   "confidence": "Medium",
+   "source_url": "https://spinformation.info/all/smartphone-image-sensor/"
+  },
+  {
+   "phone": "PHONE:MEIZU18",
+   "model": "Meizu 18",
+   "sensor_id": "SAMSUNG:3T2",
+   "role": "Unknown",
+   "confidence": "Medium",
+   "source_url": "https://spinformation.info/all/smartphone-image-sensor/"
+  },
+  {
+   "phone": "PHONE:MOTOE4G",
+   "model": "Motorola Moto E 4G",
+   "sensor_id": "SAMSUNG:5E2",
+   "role": "Unknown",
+   "confidence": "Medium",
+   "source_url": "https://spinformation.info/all/smartphone-image-sensor/"
+  },
+  {
+   "phone": "PHONE:NUBIAREDMAGIC10PRO",
+   "model": "Nubia RedMagic 10 Pro",
+   "sensor_id": "OMNIVISION:OV50D",
+   "role": "Rear Ultra-wide",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/zte/nubia_red_magic_10_pro/"
+  },
+  {
+   "phone": "PHONE:NUBIAREDMAGIC8PRO",
+   "model": "Nubia Red Magic 8 Pro",
+   "sensor_id": "OMNIVISION:OV16E10",
+   "role": "Front Main",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/isensor/omnivision_ov16e/"
+  },
+  {
+   "phone": "PHONE:NUBIAZ80ULTRA",
+   "model": "Nubia Z80 Ultra",
+   "sensor_id": "OMNIVISION:OV990",
+   "role": "Rear Main",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/isensor/light_fusion_990/"
+  },
+  {
+   "phone": "PHONE:ONEPLUS10PRO",
+   "model": "OnePlus 10 Pro",
+   "sensor_id": "SONY:IMX789 RGGB",
+   "role": "Rear Main",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/isensor/sony_imx789/"
+  },
+  {
+   "phone": "PHONE:ONEPLUS12R",
+   "model": "OnePlus 12R",
+   "sensor_id": "OMNIVISION:OV02B10",
+   "role": "Rear Macro",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/isensor/omnivision_ov02b/"
+  },
+  {
+   "phone": "PHONE:ONEPLUS9PRO",
+   "model": "OnePlus 9 Pro",
+   "sensor_id": "SONY:IMX789 RGGB",
+   "role": "Rear Main",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/isensor/sony_imx789/"
+  },
+  {
+   "phone": "PHONE:ONEPLUSNORD5",
+   "model": "OnePlus Nord 5",
+   "sensor_id": "OMNIVISION:OV08D10",
+   "role": "Rear Ultra-wide",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/oneplus/nord_5/"
+  },
+  {
+   "phone": "PHONE:PIXEL9A",
+   "model": "Google Pixel 9a",
+   "sensor_id": "SONY:IMX712",
+   "role": "Front Main + Rear Ultra-wide",
+   "confidence": "Medium",
+   "source_url": "https://www.fonearena.com/blog/452198/google-pixel-9a-review.html"
+  },
+  {
+   "phone": "PHONE:PIXEL9PROFOLD",
+   "model": "Google Pixel 9 Pro Fold",
+   "sensor_id": "SAMSUNG:3LU",
+   "role": "Unknown",
+   "confidence": "Medium",
+   "source_url": "https://spinformation.info/all/smartphone-image-sensor/"
+  },
+  {
+   "phone": "PHONE:PIXELFOLD",
+   "model": "Google Pixel Fold",
+   "sensor_id": "SONY:IMX586",
+   "role": "Unknown",
+   "confidence": "Medium",
+   "source_url": "https://spinformation.info/all/smartphone-image-sensor/"
+  },
+  {
+   "phone": "PHONE:POCOF5PRO",
+   "model": "POCO F5 Pro",
+   "sensor_id": "OMNIVISION:OV16A1Q",
+   "role": "Front Main",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/isensor/omnivision_ov16a/"
+  },
+  {
+   "phone": "PHONE:POCOX3",
+   "model": "POCO X3",
+   "sensor_id": "SONY:IMX682",
+   "role": "Rear Main",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/xiaomi/poco_x3/"
+  },
+  {
+   "phone": "PHONE:POCOX7",
+   "model": "POCO X7",
+   "sensor_id": "OMNIVISION:OV02B10",
+   "role": "Rear Macro",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/isensor/omnivision_ov02b/"
+  },
+  {
+   "phone": "PHONE:PURA80ULTRA",
+   "model": "Pura 80 Ultra",
+   "sensor_id": "SMARTSENS:SC590XS",
+   "role": "Unknown",
+   "confidence": "Medium",
+   "source_url": "https://spinformation.info/all/smartphone-image-sensor/"
+  },
+  {
+   "phone": "PHONE:PURA80ULTRA",
+   "model": "Pura 80 Ultra",
+   "sensor_id": "SMARTSENS:SC5A0CS / SC5AOS",
+   "role": "Unknown",
+   "confidence": "Medium",
+   "source_url": "https://spinformation.info/all/smartphone-image-sensor/"
+  },
+  {
+   "phone": "PHONE:R11S",
+   "model": "OPPO R11s",
+   "sensor_id": "SONY:IMX398",
+   "role": "Unknown",
+   "confidence": "Medium",
+   "source_url": "https://spinformation.info/all/smartphone-image-sensor/"
+  },
+  {
+   "phone": "PHONE:R17",
+   "model": "OPPO R17",
+   "sensor_id": "SONY:IMX576",
+   "role": "Unknown",
+   "confidence": "Medium",
+   "source_url": "https://spinformation.info/all/smartphone-image-sensor/"
+  },
+  {
+   "phone": "PHONE:RAZR50ULTRA",
+   "model": "Motorola Razr 50 Ultra",
+   "sensor_id": "SAMSUNG:GN8",
+   "role": "Rear Main",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/motorola/razr_50_ultra/"
+  },
+  {
+   "phone": "PHONE:RAZR60ULTRA",
+   "model": "Motorola Razr60 Ultra",
+   "sensor_id": "SAMSUNG:JNS",
+   "role": "Front Main",
+   "confidence": "Medium",
+   "source_url": "https://www.gsmarena.com/motorola_razr_60_ultra-review-2824p5.php"
+  },
+  {
+   "phone": "PHONE:REALME14PRO5G",
+   "model": "Realme 14 Pro+ 5G",
+   "sensor_id": "SONY:IMX896",
+   "role": "Rear Main",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/realme/14_pro_plus/"
+  },
+  {
+   "phone": "PHONE:REALMEGT7",
+   "model": "Realme GT7",
+   "sensor_id": "SONY:IMX896",
+   "role": "Rear Main",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/realme/gt7/"
+  },
+  {
+   "phone": "PHONE:REDMI2",
+   "model": "Xiaomi Redmi 2",
+   "sensor_id": "OMNIVISION:OV8865",
+   "role": "Unknown",
+   "confidence": "Medium",
+   "source_url": "https://spinformation.info/all/smartphone-image-sensor/"
+  },
+  {
+   "phone": "PHONE:REDMINOTE105G",
+   "model": "Redmi Note 10 5G",
+   "sensor_id": "OMNIVISION:OV48B",
+   "role": "Rear Main",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/xiaomi/redmi_note_10_5g/"
+  },
+  {
+   "phone": "PHONE:REDMINOTE12DISCOVERYEDITION",
+   "model": "Redmi Note 12 Discovery Edition",
+   "sensor_id": "SAMSUNG:HPX",
+   "role": "Rear Main",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/xiaomi/redmi_note_12_explorer/"
+  },
+  {
+   "phone": "PHONE:REDMINOTE12TPRO",
+   "model": "Redmi Note 12T Pro",
+   "sensor_id": "SAMSUNG:4H7",
+   "role": "Unknown",
+   "confidence": "Medium",
+   "source_url": "https://spinformation.info/all/smartphone-image-sensor/"
+  },
+  {
+   "phone": "PHONE:REDMINOTE5PRO",
+   "model": "Redmi Note 5 Pro",
+   "sensor_id": "SONY:IMX486",
+   "role": "Rear Main",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/xiaomi/redmi_note_5_pro/"
+  },
+  {
+   "phone": "PHONE:REDMINOTE9PRO",
+   "model": "Redmi Note 9 Pro",
+   "sensor_id": "SAMSUNG:GM2",
+   "role": "Rear Main",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/xiaomi/redmi_note_9_pro/"
+  },
+  {
+   "phone": "PHONE:RENO14",
+   "model": "OPPO Reno 14",
+   "sensor_id": "SONY:IMX882",
+   "role": "Rear Main",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/oppo/reno14/"
+  },
+  {
+   "phone": "PHONE:THLT6S",
+   "model": "THL t6S",
+   "sensor_id": "SAMSUNG:5EA",
+   "role": "Unknown",
+   "confidence": "Medium",
+   "source_url": "https://spinformation.info/all/smartphone-image-sensor/"
+  },
+  {
+   "phone": "PHONE:V11",
+   "model": "vivo V11",
+   "sensor_id": "SONY:IMX576",
+   "role": "Unknown",
+   "confidence": "Medium",
+   "source_url": "https://spinformation.info/all/smartphone-image-sensor/"
+  },
+  {
+   "phone": "PHONE:V27PRO",
+   "model": "Vivo V27 Pro",
+   "sensor_id": "SONY:IMX766V",
+   "role": "Rear Main",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/vivo/v27_pro/"
+  },
+  {
+   "phone": "PHONE:V30PRO",
+   "model": "HONOR V30 Pro",
+   "sensor_id": "OMNIVISION:OV12D2Q",
+   "role": "Rear Ultra-wide",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/isensor/omnivision_ov12d/"
+  },
+  {
+   "phone": "PHONE:X200FE",
+   "model": "vivo X200 FE",
+   "sensor_id": "OMNIVISION:OV08D10",
+   "role": "Rear Ultra-wide",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/vivo/x200_fe/"
+  },
+  {
+   "phone": "PHONE:X60PRO",
+   "model": "vivo X60 Pro+",
+   "sensor_id": "SONY:IMX598",
+   "role": "Rear Ultra-wide",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/vivo/x60_pro_plus_5g/"
+  },
+  {
+   "phone": "PHONE:X70",
+   "model": "vivo X70",
+   "sensor_id": "SAMSUNG:GD1",
+   "role": "Unknown",
+   "confidence": "Medium",
+   "source_url": "https://spinformation.info/all/smartphone-image-sensor/"
+  },
+  {
+   "phone": "PHONE:X70PRO",
+   "model": "vivo X70 Pro",
+   "sensor_id": "SONY:IMX766V",
+   "role": "Rear Main",
+   "confidence": "Medium",
+   "source_url": "https://helpix.ru/vivo/x70_pro_china/"
+  },
+  {
+   "phone": "PHONE:X90",
+   "model": "vivo X90",
+   "sensor_id": "SAMSUNG:GD2",
+   "role": "Unknown",
+   "confidence": "Medium",
+   "source_url": "https://spinformation.info/all/smartphone-image-sensor/"
+  },
+  {
+   "phone": "PHONE:ZTEBLADEA452",
+   "model": "ZTE Blade A452",
+   "sensor_id": "OMNIVISION:OV8858",
+   "role": "Unknown",
+   "confidence": "Medium",
+   "source_url": "https://spinformation.info/all/smartphone-image-sensor/"
+  }
+ ],
+ "mappings_without_source": []
+}
