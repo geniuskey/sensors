@@ -1,0 +1,49 @@
+{
+ "source": "samsung",
+ "source_tier": "official",
+ "snapshot": "data/raw/samsung/2026-10-01/snapshot.json",
+ "snapshot_date": "2026-10-01",
+ "checked_at": "2026-10-01T11:12:57Z",
+ "generated_at": "2026-10-01T11:27:51Z",
+ "db": {
+  "sensors": 441,
+  "phones": 502
+ },
+ "summary": {
+  "records": 28,
+  "non_mobile_skipped": 0,
+  "matched_by_url": 2,
+  "matched_by_name": 25,
+  "new_sensors": 1,
+  "ambiguous": 0,
+  "spec_conflicts": 0,
+  "official_vs_secondary_conflicts": 0,
+  "db_gaps_fillable": 0,
+  "new_phone_mappings": 0,
+  "new_mappings_phone_in_db": 0,
+  "snapshot_errors": 0
+ },
+ "since_previous": {
+  "previous_snapshot": "data/raw/samsung/2026-09-26/snapshot.json",
+  "added": [],
+  "removed": []
+ },
+ "new_sensors": [
+  {
+   "name": "ISOCELL HPC",
+   "manufacturer": "Samsung",
+   "resolution_mp": 200.0,
+   "pixel_size_um": 0.6,
+   "optical_format": "1/1.3",
+   "year": null,
+   "status": "Mass production",
+   "phone_count": 0,
+   "source_url": "https://semiconductor.samsung.com/image-sensor/mobile-image-sensor/isocell-hpc/",
+   "possible_matches": []
+  }
+ ],
+ "ambiguous": [],
+ "spec_conflicts": [],
+ "db_gaps": [],
+ "new_phone_mappings": []
+}

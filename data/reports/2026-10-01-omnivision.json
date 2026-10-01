@@ -1,0 +1,196 @@
+{
+ "source": "omnivision",
+ "source_tier": "official",
+ "snapshot": "data/raw/omnivision/2026-10-01/snapshot.json",
+ "snapshot_date": "2026-10-01",
+ "checked_at": "2026-10-01T11:25:48Z",
+ "generated_at": "2026-10-01T11:27:51Z",
+ "db": {
+  "sensors": 441,
+  "phones": 502
+ },
+ "summary": {
+  "records": 149,
+  "non_mobile_skipped": 119,
+  "matched_by_url": 0,
+  "matched_by_name": 18,
+  "new_sensors": 11,
+  "ambiguous": 1,
+  "spec_conflicts": 1,
+  "official_vs_secondary_conflicts": 0,
+  "db_gaps_fillable": 0,
+  "new_phone_mappings": 0,
+  "new_mappings_phone_in_db": 0,
+  "snapshot_errors": 0
+ },
+ "since_previous": null,
+ "new_sensors": [
+  {
+   "name": "OV2740",
+   "manufacturer": "OmniVision",
+   "resolution_mp": null,
+   "pixel_size_um": 1.4,
+   "optical_format": "1/6",
+   "year": null,
+   "status": null,
+   "phone_count": 0,
+   "source_url": "https://www.ovt.com/products/ov2740/",
+   "possible_matches": []
+  },
+  {
+   "name": "OV2744",
+   "manufacturer": "OmniVision",
+   "resolution_mp": null,
+   "pixel_size_um": 1.4,
+   "optical_format": "1/6",
+   "year": null,
+   "status": null,
+   "phone_count": 0,
+   "source_url": "https://www.ovt.com/products/ov2744/",
+   "possible_matches": []
+  },
+  {
+   "name": "OV7695",
+   "manufacturer": "OmniVision",
+   "resolution_mp": null,
+   "pixel_size_um": 1.75,
+   "optical_format": "1/13",
+   "year": null,
+   "status": null,
+   "phone_count": 0,
+   "source_url": "https://www.ovt.com/products/ov7695/",
+   "possible_matches": []
+  },
+  {
+   "name": "OV50M40",
+   "manufacturer": "OmniVision",
+   "resolution_mp": 50.0,
+   "pixel_size_um": 0.612,
+   "optical_format": "1/2.88",
+   "year": null,
+   "status": null,
+   "phone_count": 0,
+   "source_url": "https://www.ovt.com/products/ov50m40/",
+   "possible_matches": [
+    "OMNIVISION:OV50M"
+   ]
+  },
+  {
+   "name": "OV9734",
+   "manufacturer": "OmniVision",
+   "resolution_mp": null,
+   "pixel_size_um": 1.4,
+   "optical_format": "1/9",
+   "year": null,
+   "status": null,
+   "phone_count": 0,
+   "source_url": "https://www.ovt.com/products/ov9734/",
+   "possible_matches": []
+  },
+  {
+   "name": "OV5693",
+   "manufacturer": "OmniVision",
+   "resolution_mp": 5.0,
+   "pixel_size_um": 1.4,
+   "optical_format": "1/4",
+   "year": null,
+   "status": null,
+   "phone_count": 0,
+   "source_url": "https://www.ovt.com/products/ov5693/",
+   "possible_matches": []
+  },
+  {
+   "name": "OV12E10",
+   "manufacturer": "OmniVision",
+   "resolution_mp": 12.0,
+   "pixel_size_um": 1.008,
+   "optical_format": "1/3.543",
+   "year": null,
+   "status": null,
+   "phone_count": 0,
+   "source_url": "https://www.ovt.com/products/ov12e10/",
+   "possible_matches": []
+  },
+  {
+   "name": "OV50X50",
+   "manufacturer": "OmniVision",
+   "resolution_mp": 50.0,
+   "pixel_size_um": 1.6,
+   "optical_format": "1",
+   "year": null,
+   "status": null,
+   "phone_count": 0,
+   "source_url": "https://www.ovt.com/products/ov50x50/",
+   "possible_matches": [
+    "OMNIVISION:OV50X"
+   ]
+  },
+  {
+   "name": "OV50R40",
+   "manufacturer": "OmniVision",
+   "resolution_mp": 50.0,
+   "pixel_size_um": 1.2,
+   "optical_format": "1/1.302",
+   "year": null,
+   "status": null,
+   "phone_count": 0,
+   "source_url": "https://www.ovt.com/products/ov50r40/",
+   "possible_matches": []
+  },
+  {
+   "name": "TD4377",
+   "manufacturer": "OmniVision",
+   "resolution_mp": null,
+   "pixel_size_um": null,
+   "optical_format": null,
+   "year": null,
+   "status": null,
+   "phone_count": 0,
+   "source_url": "https://www.ovt.com/products/td4377/",
+   "possible_matches": []
+  },
+  {
+   "name": "OG12B10",
+   "manufacturer": "OmniVision",
+   "resolution_mp": 12.0,
+   "pixel_size_um": 1.0,
+   "optical_format": "1/3.571",
+   "year": null,
+   "status": null,
+   "phone_count": 0,
+   "source_url": "https://www.ovt.com/products/og12b10/",
+   "possible_matches": []
+  }
+ ],
+ "ambiguous": [
+  {
+   "name": "OV50H",
+   "manufacturer": "OmniVision",
+   "candidates": [
+    "OMNIVISION:OV50H",
+    "OMNIVISION:OVH9000 / OV50H"
+   ],
+   "source_url": "https://www.ovt.com/products/ov50h/"
+  }
+ ],
+ "spec_conflicts": [
+  {
+   "canonical_id": "OMNIVISION:OV32B",
+   "name": "OV32B",
+   "field": "sensor_size",
+   "db_value": "1/3",
+   "source_value": "1/3.14\"",
+   "source_parsed": "1/3.14",
+   "source_tier": "official",
+   "source_url": "https://www.ovt.com/products/ov32b/",
+   "db_confidence": "High",
+   "db_source_types": [
+    "helpix smartphone sensor index",
+    "official"
+   ],
+   "official_vs_secondary": false
+  }
+ ],
+ "db_gaps": [],
+ "new_phone_mappings": []
+}
