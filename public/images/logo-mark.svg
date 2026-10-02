@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 72" width="96" height="72">
+  <rect x="2" y="2" width="92" height="68" rx="12" fill="#262b42"/>
+  <rect x="9" y="9" width="78" height="54" rx="5" fill="#4b5068" stroke="#9fa3b8" stroke-width="2"/>
+  <g transform="translate(16 15)">
+    <rect width="64" height="42" rx="2" fill="#151a30"/>
+    <g fill="#f87171"><rect x="2" y="2" width="13" height="8" rx="1.5"/><rect x="33" y="2" width="13" height="8" rx="1.5"/><rect x="2" y="22" width="13" height="8" rx="1.5"/><rect x="33" y="22" width="13" height="8" rx="1.5"/></g>
+    <g fill="#34d399"><rect x="17.5" y="2" width="13" height="8" rx="1.5"/><rect x="48.5" y="2" width="13" height="8" rx="1.5"/><rect x="2" y="12" width="13" height="8" rx="1.5"/><rect x="33" y="12" width="13" height="8" rx="1.5"/><rect x="17.5" y="22" width="13" height="8" rx="1.5"/><rect x="48.5" y="22" width="13" height="8" rx="1.5"/><rect x="2" y="32" width="13" height="8" rx="1.5"/><rect x="33" y="32" width="13" height="8" rx="1.5"/></g>
+    <g fill="#60a5fa"><rect x="17.5" y="12" width="13" height="8" rx="1.5"/><rect x="48.5" y="12" width="13" height="8" rx="1.5"/><rect x="17.5" y="32" width="13" height="8" rx="1.5"/><rect x="48.5" y="32" width="13" height="8" rx="1.5"/></g>
+  </g>
+</svg>

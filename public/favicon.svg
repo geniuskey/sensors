@@ -1,14 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <defs>
-    <linearGradient id="sensor" x1="0" y1="1" x2="1" y2="0">
-      <stop stop-color="#3e897f"/>
-      <stop offset=".42" stop-color="#313c80"/>
-      <stop offset="1" stop-color="#c954ca"/>
-    </linearGradient>
-  </defs>
-  <rect x="3" y="3" width="58" height="58" rx="9" fill="#262b42"/>
-  <rect x="8" y="8" width="48" height="48" rx="3" fill="#515569" stroke="#a4a6b6" stroke-width="2"/>
-  <rect x="12" y="12" width="40" height="33" fill="url(#sensor)"/>
-  <path d="M12 47h40v5H12z" fill="#242c63"/>
-  <path d="M12 47h20v5H12z" fill="#43877f" opacity=".7"/>
+  <rect x="2" y="2" width="60" height="60" rx="12" fill="#262b42"/>
+  <rect x="8" y="8" width="48" height="48" rx="4" fill="#4b5068" stroke="#9fa3b8" stroke-width="2"/>
+  <rect x="13" y="13" width="38" height="38" rx="2" fill="#151a30"/>
+  <g fill="#f87171"><rect x="15" y="15" width="7.5" height="7.5" rx="1.2"/><rect x="33" y="15" width="7.5" height="7.5" rx="1.2"/><rect x="15" y="33" width="7.5" height="7.5" rx="1.2"/><rect x="33" y="33" width="7.5" height="7.5" rx="1.2"/></g>
+  <g fill="#34d399"><rect x="24" y="15" width="7.5" height="7.5" rx="1.2"/><rect x="42" y="15" width="7.5" height="7.5" rx="1.2"/><rect x="15" y="24" width="7.5" height="7.5" rx="1.2"/><rect x="33" y="24" width="7.5" height="7.5" rx="1.2"/><rect x="24" y="33" width="7.5" height="7.5" rx="1.2"/><rect x="42" y="33" width="7.5" height="7.5" rx="1.2"/><rect x="15" y="42" width="7.5" height="7.5" rx="1.2"/><rect x="33" y="42" width="7.5" height="7.5" rx="1.2"/></g>
+  <g fill="#60a5fa"><rect x="24" y="24" width="7.5" height="7.5" rx="1.2"/><rect x="42" y="24" width="7.5" height="7.5" rx="1.2"/><rect x="24" y="42" width="7.5" height="7.5" rx="1.2"/><rect x="42" y="42" width="7.5" height="7.5" rx="1.2"/></g>
 </svg>
