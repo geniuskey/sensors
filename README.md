@@ -12,7 +12,7 @@
 
 ## What's inside
 
-- **Trends**: pixel pitch vs resolution, main-camera sensor size over time, sensor-maker share, DXOMARK scores by sensor.
+- **Trends**: pixel pitch vs resolution, main-camera sensor size over time, sensor-maker share.
 - **[Sensor catalog](https://sensors.euiyun.com/sensors/)**: filter by maker, camera role, resolution and optical format; every spec links to its source.
 - **[Phone catalog](https://sensors.euiyun.com/phones/)**: the sensor behind each camera (main, ultrawide, telephoto, selfie).
 - **[Size comparison](https://sensors.euiyun.com/compare/)**: overlay up to six sensors at true physical scale, plus head-to-head pages such as [IMX989 vs LYT-900](https://sensors.euiyun.com/compare/sony-imx989-vs-sony-lytia-900-lyt-900-imx06a/).
@@ -33,7 +33,7 @@ Free, no key. Details at [sensors.euiyun.com/open-data](https://sensors.euiyun.c
 curl "https://sensors.euiyun.com/api/sensors/SONY:IMX989"
 ```
 
-The data is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Please cite *Mobile Image Sensor Database, https://sensors.euiyun.com/*. Found a wrong spec or mapping? Use **Report a data error** on any sensor or phone page, or [open a correction](https://github.com/geniuskey/sensors/issues/new?template=data-correction.yml). Please include a source.
+This project's own work (catalog structure, normalized records, sensor-to-phone mappings, curation notes and exports) is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); see [LICENSE.md](LICENSE.md). Individual facts are cited to their sources, and material owned by those sources is not relicensed. DXOMARK scores, prices and launch dates are DXOMARK's data and are **not copied** into this catalog. Only the tested device name and a link to its DXOMARK test page are kept. Please cite *Mobile Image Sensor Database, https://sensors.euiyun.com/*. Found a wrong spec or mapping? Use **Report a data error** on any sensor or phone page, or [open a correction](https://github.com/geniuskey/sensors/issues/new?template=data-correction.yml). Please include a source.
 
 ## Architecture
 
@@ -56,7 +56,7 @@ npm run build
 
 This imports `data/raw/bootstrap_2026-09.csv` and merges the verified Helpix phone mappings in `exports/verified-mapping-additions-2026-09-26.csv`. It produces `database/local.sqlite3`, `database/seed.sql`, `public/data/sensors.json`, `public/data/phones.json`, and refreshed CSV exports.
 
-To refresh DXOMARK scores from a saved `data/raw/dxomark smartphones.html` snapshot, first run `python scripts/import_dxomark.py`, then run `npm run data:build`. The generated phone-level score records retain a direct DXOMARK device-page URL and camera protocol.
+To refresh DXOMARK test-page links from a saved `data/raw/dxomark smartphones.html` snapshot, first run `python scripts/import_dxomark.py`, then run `npm run data:build`. DXOMARK scores, prices and launch dates are DXOMARK's data and are **not copied** into this catalog. Only the tested device name and a link to its DXOMARK test page are kept.
 
 ## Cloudflare setup
 

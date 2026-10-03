@@ -64,29 +64,16 @@ def load_rankings() -> list[dict]:
     return json.loads(match.group(1))
 
 
-def get_score(record: dict, top_key: str, subscore: str | None = None):
-    if top_key == 'mobileScore' and subscore:
-        return (record.get('mobile') or {}).get('subscores', {}).get(subscore)
-    return record.get(top_key)
-
 
 def source_fields(record: dict) -> dict[str, str]:
-    mobile = record.get('mobile') or {}
     source_url = urljoin(DXOMARK_BASE, clean(record.get('link')).lstrip('/'))
     if not source_url.startswith(DXOMARK_BASE + 'smartphones/'):
         raise ValueError(f'Unexpected DXOMARK device URL for {record.get("name")}: {source_url}')
 
+    # Only the tested device name and a link to its DXOMARK test page are kept.
+    # Scores, prices and launch dates are DXOMARK's data and are not copied.
     values = {
         'DXOMARK_Device': clean(record.get('name')),
-        'DXOMARK_Camera_Score': get_score(record, 'mobileScore'),
-        'DXOMARK_Photo_Score': get_score(record, 'mobileScore', 'photo'),
-        'DXOMARK_Video_Score': get_score(record, 'mobileScore', 'video'),
-        'DXOMARK_Selfie_Score': get_score(record, 'selfieScore'),
-        'DXOMARK_Display_Score': get_score(record, 'displayScore'),
-        'DXOMARK_Battery_Score': get_score(record, 'batteryScore'),
-        'DXOMARK_Launch_Price_USD': record.get('launch_price'),
-        'DXOMARK_Launch_Date': record.get('launch_date'),
-        'DXOMARK_Camera_Protocol': f"V{mobile['protocol_version']}" if mobile.get('protocol_version') else '',
         'DXOMARK_Source_URL': source_url,
         'DXOMARK_Source_Type': DXOMARK_SOURCE_TYPE,
         'DXOMARK_Checked_Date': CHECKED_DATE,
@@ -127,10 +114,7 @@ def main() -> None:
         raise ValueError(f'CSV has no header: {CSV_PATH}')
     required = {
         'Phone', 'OEM', 'Phone_Canonical_ID', 'DXOMARK_Match_Status',
-        'DXOMARK_Device', 'DXOMARK_Camera_Score', 'DXOMARK_Photo_Score',
-        'DXOMARK_Video_Score', 'DXOMARK_Selfie_Score', 'DXOMARK_Display_Score',
-        'DXOMARK_Battery_Score', 'DXOMARK_Launch_Price_USD', 'DXOMARK_Launch_Date',
-        'DXOMARK_Camera_Protocol', 'DXOMARK_Source_URL', 'DXOMARK_Source_Type',
+        'DXOMARK_Device', 'DXOMARK_Source_URL', 'DXOMARK_Source_Type',
         'DXOMARK_Checked_Date',
     }
     missing = required - set(fieldnames)
@@ -164,10 +148,7 @@ def main() -> None:
                 status = f'Tested variant: {VARIANT_SUFFIX.search(clean(candidates[0].get("model"))).group("variant")}'
         if len(candidates) == 1:
             values = source_fields(candidates[0])
-            if any(values[field] for field in (
-                'DXOMARK_Camera_Score', 'DXOMARK_Selfie_Score',
-                'DXOMARK_Display_Score', 'DXOMARK_Battery_Score',
-            )):
+            if values['DXOMARK_Source_URL']:
                 assignments[phone_id] = (values, status)
 
     rows_updated = 0
@@ -178,8 +159,6 @@ def main() -> None:
         if model_key(row.get('OEM'), row.get('Phone')) != by_phone[phone_id][1]:
             continue
         values, status = assignments[phone_id]
-        # The rankings page does not expose per-camera module scores. Keep any
-        # existing Main / Ultra-wide / Tele values, and refresh fields it lists.
         for field, value in values.items():
             if value:
                 row[field] = value

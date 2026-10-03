@@ -43,7 +43,7 @@ Normalize case, whitespace, punctuation and common OEM prefixes, but preserve va
 
 ## DXOMARK
 
-DXOMARK is phone-level. Store protocol version. Do not imply V5 and V6 scores are directly comparable. Use the exact tested device variant where available.
+DXOMARK is phone-level. DXOMARK scores, prices and launch dates are DXOMARK's data and are **not copied** into this catalog. Only the tested device name and a link to its DXOMARK test page are kept. Never add score, price or launch-date columns back. Use the exact tested device variant where available.
 
 ## Pull request checklist
 
@@ -52,7 +52,7 @@ DXOMARK is phone-level. Store protocol version. Do not imply V5 and V6 scores ar
 - [ ] New facts have source URLs.
 - [ ] No invented specs.
 - [ ] Phone mappings have plausible release years/roles.
-- [ ] DXOMARK protocol retained.
+- [ ] No DXOMARK scores, prices or dates copied (links only).
 - [ ] `npm run data:build` passes.
 - [ ] `npm run build` passes.
 - [ ] Generated exports updated.
@@ -61,7 +61,7 @@ DXOMARK is phone-level. Store protocol version. Do not imply V5 and V6 scores ar
 
 1. Build robust source collectors for each official manufacturer.
 2. Expand Helpix/SP information phone-role mappings to all eligible sensors.
-3. Expand DXOMARK matching beyond the initial verified subset.
+3. Expand DXOMARK test-page link matching beyond the initial verified subset.
 4. Add phone SoC/release metadata from OEM pages.
 5. Add automated change detection and issue creation for source disagreements.
-6. Add analytics pages: adoption by year, sensor maker share, Main/UW/Tele migration, pixel pitch/format trends, DXOMARK analysis segmented by protocol.
+6. Add analytics pages: adoption by year, sensor maker share, Main/UW/Tele migration, pixel pitch/format trends.

@@ -35,9 +35,7 @@ export async function onRequestGet({ request, env }) {
     )
     SELECT
       p.id, p.canonical_id, p.oem, p.model, p.release_year, p.soc,
-      d.camera_score, d.photo_score, d.video_score, d.selfie_score,
-      d.display_score, d.battery_score, d.camera_protocol,
-      dxos.url AS dxomark_source_url,
+      d.device_name AS dxomark_device, dxos.url AS dxomark_source_url,
       pc.id AS camera_id, pc.camera_role AS role, pc.mapping_confidence AS confidence,
       s.canonical_id AS sensor_id, s.canonical_name AS sensor,
       sm.name AS sensor_manufacturer, s.resolution_mp, s.sensor_size, s.pixel_size_um,
@@ -65,13 +63,7 @@ export async function onRequestGet({ request, env }) {
         model: row.model,
         release_year: row.release_year,
         soc: row.soc,
-        camera_score: row.camera_score,
-        photo_score: row.photo_score,
-        video_score: row.video_score,
-        selfie_score: row.selfie_score,
-        display_score: row.display_score,
-        battery_score: row.battery_score,
-        camera_protocol: row.camera_protocol,
+        dxomark_device: row.dxomark_device,
         dxomark_source_url: row.dxomark_source_url,
         cameras: [],
       };

@@ -60,7 +60,7 @@ Collector options: `--max-pages`, `--delay` (seconds per host, default 2; robots
 | Sony Semiconductor | - | official | - | **skipped**: `sony-semicon.com/robots.txt` explicitly disallows `ClaudeBot` and `Claude-SearchBot`. Because this pipeline is AI-authored and maintained, we respect that opt-out rather than crawl under a different UA. Sony specs stay manual. |
 | SmartSens, SK hynix | - | official | - | not implemented yet |
 | SP information | - | secondary | - | not implemented yet (robots.txt allows; WordPress sitemap available) |
-| DXOMARK | - | benchmark | - | not implemented yet (phone-level; must keep protocol version) |
+| DXOMARK | - | benchmark | - | not implemented yet (phone-level; test-page links only, no scores) |
 
 Adding a collector: create `<source>.py` exposing `SOURCE`, `SOURCE_URL`, `DEFAULT_MAX_PAGES` and `collect(fetcher, max_pages) -> (records, meta)`, end with `run_collector(sys.modules[__name__])`, then add it to `ENABLED` in `run_all.py` (and to `OFFICIAL_SOURCES` in `diff_report.py` if official).
 

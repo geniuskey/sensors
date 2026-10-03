@@ -468,22 +468,6 @@ function renderSensorUsage(target, sensors) {
   qs('#usage-legend').innerHTML = makers.map((name) => `<span><i style="background:${palette.makers[name] || palette.other}"></i>${esc(name)}</span>`).join('');
 }
 
-function dxomarkSearchTerm(point, sensors) {
-  const device = String(point.device || '').toLowerCase();
-  const hasPhoneMapping = sensors.some((row) => {
-    const phones = (row.phones || []).map((phone) => phone.model).join(' ');
-    return [row.example_phones, phones].some((value) => String(value || '').toLowerCase().includes(device));
-  });
-  if (hasPhoneMapping || !point.sensors) return point.device;
-  return String(point.sensors).split(/[,/;]/)[0].trim() || point.device;
-}
-
-function mainSensorMaker(phone) {
-  const cameras = phone?.cameras || [];
-  const main = cameras.find((camera) => camera.role.split(' + ').includes('Rear Main')) || cameras.find((camera) => camera.role.startsWith('Rear') || camera.role === 'Unknown');
-  return main?.sensor_manufacturer || null;
-}
-
 const chartTooltip = qs('#chart-tooltip');
 function hideTooltip() {
   chartTooltip.hidden = true;
@@ -533,9 +517,9 @@ window.addEventListener('resize', hideTooltip);
 
 async function init() {
   try {
-    const responses = await Promise.all(['/data/sensors.json', '/data/stats.json', '/data/dashboard.json', '/data/phones.json'].map((url) => fetch(url)));
+    const responses = await Promise.all(['/data/sensors.json', '/data/stats.json', '/data/phones.json'].map((url) => fetch(url)));
     if (responses.some((response) => !response.ok)) throw new Error('Overview data could not be loaded.');
-    const [sensors, stats, dashboard, phones] = await Promise.all(responses.map((response) => response.json()));
+    const [sensors, stats, phones] = await Promise.all(responses.map((response) => response.json()));
 
     qs('#sensors').textContent = number(stats.sensors ?? sensors.length, 0);
     qs('#phones').textContent = number(stats.phones, 0);
@@ -544,13 +528,8 @@ async function init() {
 
     const pitchMakers = makerTally(sensors).slice(0, 5).map(([name]) => name);
     const pitchSensors = sensors.filter((row) => Number(row.pixel_size_um) > 0 && Number(row.resolution_mp) > 0);
-    const phonesByModel = new Map(phones.map((phone) => [phone.model, phone]));
-    const dxoPoints = (dashboard.dxomark || []).map((point) => {
-      const phone = phonesByModel.get(point.device);
-      return { ...point, maker: mainSensorMaker(phone), oem: phone?.oem || null };
-    });
     const oemWeight = new Map();
-    [...phones, ...dxoPoints].forEach((row) => row.oem && oemWeight.set(row.oem, (oemWeight.get(row.oem) || 0) + 1));
+    phones.forEach((row) => row.oem && oemWeight.set(row.oem, (oemWeight.get(row.oem) || 0) + 1));
     const topOems = [...oemWeight].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 6).map(([name]) => name);
     const filters = {
       sensor: { label: 'Sensor', names: pitchMakers, selection: new Set(), color: (name) => pitchMakers.includes(name) ? palette.makers[name] || palette.trend[pitchMakers.indexOf(name)] : palette.other },
@@ -562,28 +541,12 @@ async function init() {
     };
     const sensorOems = new Map();
     phones.forEach((phone) => phone.cameras.forEach((camera) => sensorOems.set(camera.sensor_id, (sensorOems.get(camera.sensor_id) || new Set()).add(phone.oem))));
-    let dxoProtocol = 'all';
-    const renderDxo = () => {
-      renderScatter('#dxo-chart', dxoPoints.filter((row) => matches('sensor', [row.maker]) && matches('oem', [row.oem]) && (dxoProtocol === 'all' || row.protocol === dxoProtocol)), 'pitch', 'score', 'Mean sensor pitch (µm)', 'Camera score', {
-        yStep: 10,
-        scaleData: dxoPoints,
-        legend: [{ label: 'V5', color: palette.other }, { label: 'V6', color: palette.other, shape: 'diamond' }],
-        pointColor: (row) => filters.sensor.color(row.maker),
-        shape: (row) => row.protocol === 'V6' ? 'diamond' : 'circle',
-        label: (row) => `${row.device} · ${row.protocol}`,
-        detail: (row) => [row.maker ? `Main sensor: ${row.maker}` : 'Main sensor not mapped', row.sensors].filter(Boolean).join('\n'),
-        href: (row) => catalogUrl({ q: dxomarkSearchTerm(row, sensors) }),
-        hitRadius: 8,
-        dotRadius: 5
-      });
-    };
     const renderPitch = () => {
       hideTooltip();
       Object.entries(filters).forEach(([kind, { selection }]) => {
         qsa(`.maker-filters[data-kind="${kind}"]`).forEach((row) => row.classList.toggle('has-selection', selection.size > 0));
         qsa(`[data-kind="${kind}"] [data-value]`).forEach((button) => button.setAttribute('aria-pressed', String(selection.has(button.dataset.value))));
       });
-      renderDxo();
       renderScatter('#pitch-chart', pitchSensors.filter((row) => matches('sensor', [row.manufacturer]) && matches('oem', sensorOems.get(row.canonical_id) || [])), 'pixel_size_um', 'resolution_mp', 'Pixel pitch (µm)', 'Resolution (MP)', {
         logX: true,
         logY: true,
@@ -632,17 +595,6 @@ async function init() {
         lastWidth = innerWidth;
         renderAll();
       }, 200);
-    });
-    qs('#dxo-controls').addEventListener('click', (event) => {
-      const button = event.target.closest('[data-dx-filter]');
-      if (!button) return;
-      hideTooltip();
-      dxoProtocol = button.dataset.dxFilter;
-      qsa('[data-dx-filter]').forEach((item) => {
-        item.classList.toggle('is-active', item === button);
-        item.setAttribute('aria-pressed', String(item === button));
-      });
-      renderDxo();
     });
   } catch (error) {
     document.querySelectorAll('.chart-area').forEach((chart) => { chart.innerHTML = '<div class="chart-empty">Could not load overview data. Try refreshing the page.</div>'; });

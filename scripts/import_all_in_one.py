@@ -42,7 +42,9 @@ def phone_model_key(oem,model):
     return identity_key(brand),identity_key(name)
 
 DXOMARK_VARIANT_SUFFIX=re.compile(r'\s*\((?P<variant>Exynos|Snapdragon(?:\s+[\w.+-]+)?|MediaTek|Dimensity(?:\s+[\w.+-]+)?|Qualcomm(?:\s+[\w.+-]+)?)\)\s*$',re.I)
-DXOMARK_DATA_FIELDS=('DXOMARK_Device','DXOMARK_Camera_Score','DXOMARK_Photo_Score','DXOMARK_Video_Score','DXOMARK_Main_Score','DXOMARK_UltraWide_Score','DXOMARK_Tele_Score','DXOMARK_Selfie_Score','DXOMARK_Display_Score','DXOMARK_Battery_Score','DXOMARK_Launch_Price_USD','DXOMARK_Launch_Date','DXOMARK_Camera_Protocol','DXOMARK_Source_URL','DXOMARK_Source_Type','DXOMARK_Checked_Date')
+# Only the tested device name and a link to its DXOMARK test page are kept;
+# scores, prices and launch dates are DXOMARK's data and are not copied.
+DXOMARK_DATA_FIELDS=('DXOMARK_Device','DXOMARK_Source_URL','DXOMARK_Source_Type','DXOMARK_Checked_Date')
 
 def apply_dxomark(rows):
     if not DXOMARK_SNAPSHOT.exists():
@@ -74,7 +76,7 @@ def apply_dxomark(rows):
                 status=f'Tested variant: {match.group("variant")}'
         if len(candidates)==1:
             record=candidates[0]
-            if any(clean(record.get(field)) for field in ('DXOMARK_Camera_Score','DXOMARK_Selfie_Score','DXOMARK_Display_Score','DXOMARK_Battery_Score')):
+            if clean(record.get('DXOMARK_Source_URL')):
                 by_id[pcid]=(record,status,key)
     updated=0
     for row in rows:
@@ -390,9 +392,9 @@ for r in rows:
         if pcid not in phone_ids:
             cur.execute('INSERT OR IGNORE INTO phones(canonical_id,oem,model,release_year,soc) VALUES(?,?,?,?,?)',(pcid,clean(r['OEM']),phone,integer(r['Release_Year']),clean(r['SoC'])))
             pid=cur.execute('SELECT id FROM phones WHERE canonical_id=?',(pcid,)).fetchone()[0];phone_ids[pcid]=pid
-            if clean(r['DXOMARK_Device']) or clean(r['DXOMARK_Camera_Score']):
+            if clean(r['DXOMARK_Device']) and clean(r['DXOMARK_Source_URL']):
                 dxomark_source=add_source(cur,clean(r['DXOMARK_Source_URL']),clean(r['DXOMARK_Source_Type']),'DXOMARK phone benchmark')
-                cur.execute('''INSERT OR REPLACE INTO dxomark_results(phone_id,device_name,match_status,camera_score,photo_score,video_score,main_score,ultrawide_score,tele_score,selfie_score,display_score,battery_score,launch_price_usd,launch_date,camera_protocol,checked_date,source_id) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)''',(pid,clean(r['DXOMARK_Device']),clean(r['DXOMARK_Match_Status']),num(r['DXOMARK_Camera_Score']),num(r['DXOMARK_Photo_Score']),num(r['DXOMARK_Video_Score']),num(r['DXOMARK_Main_Score']),num(r['DXOMARK_UltraWide_Score']),num(r['DXOMARK_Tele_Score']),num(r['DXOMARK_Selfie_Score']),num(r['DXOMARK_Display_Score']),num(r['DXOMARK_Battery_Score']),num(r['DXOMARK_Launch_Price_USD']),clean(r['DXOMARK_Launch_Date']),clean(r['DXOMARK_Camera_Protocol']),clean(r['DXOMARK_Checked_Date']),dxomark_source))
+                cur.execute('''INSERT OR REPLACE INTO dxomark_results(phone_id,device_name,match_status,checked_date,source_id) VALUES(?,?,?,?,?)''',(pid,clean(r['DXOMARK_Device']),clean(r['DXOMARK_Match_Status']),clean(r['DXOMARK_Checked_Date']),dxomark_source))
         pid=phone_ids[pcid];role=clean(r['Camera_Role']) or 'Unknown'
         cur.execute('INSERT OR IGNORE INTO phone_cameras(phone_id,sensor_id,camera_role,mapping_confidence) VALUES(?,?,?,?)',(pid,sid,role,clean(r['Mapping_Confidence'])))
         camid=cur.execute('SELECT id FROM phone_cameras WHERE phone_id=? AND sensor_id=? AND camera_role=?',(pid,sid,role)).fetchone()[0]
@@ -410,7 +412,7 @@ for item in items:
     item['sources']=[dict(url=r[0],type=r[1],relationship=r[2]) for r in con.execute('SELECT src.url,src.source_type,ss.relationship FROM sensor_sources ss JOIN sources src ON src.id=ss.source_id WHERE ss.sensor_id=? ORDER BY src.source_type,src.url',(sid,))]
     item['phones']=[dict(canonical_id=r[0],model=r[1],oem=r[2],year=r[3],role=r[4],confidence=r[5]) for r in con.execute('SELECT p.canonical_id,p.model,p.oem,p.release_year,pc.camera_role,pc.mapping_confidence FROM phone_cameras pc JOIN phones p ON p.id=pc.phone_id WHERE pc.sensor_id=? ORDER BY p.release_year DESC,p.model',(sid,))]
 (PUBLIC/'sensors.json').write_text(json.dumps(items,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
-phone_query='''SELECT p.*,d.camera_score,d.photo_score,d.video_score,d.selfie_score,d.display_score,d.battery_score,d.camera_protocol,dxsrc.url dxomark_source_url FROM phones p LEFT JOIN dxomark_results d ON d.phone_id=p.id LEFT JOIN sources dxsrc ON dxsrc.id=d.source_id ORDER BY p.release_year DESC,p.model'''
+phone_query='''SELECT p.*,d.device_name dxomark_device,dxsrc.url dxomark_source_url FROM phones p LEFT JOIN dxomark_results d ON d.phone_id=p.id LEFT JOIN sources dxsrc ON dxsrc.id=d.source_id ORDER BY p.release_year DESC,p.model'''
 phone_cols=[d[0] for d in con.execute(phone_query).description]
 phone_items=[dict(zip(phone_cols,row)) for row in con.execute(phone_query)]
 for phone in phone_items:
@@ -425,9 +427,6 @@ for phone in phone_items:
         WHERE pc.phone_id=? ORDER BY pc.camera_role,s.canonical_name''',(phone['id'],))]
     phone['camera_count']=len(phone['cameras'])
 (PUBLIC/'phones.json').write_text(json.dumps(phone_items,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
-dashboard={'dxomark':[]}
-dashboard['dxomark']=[dict(device=r[0],score=r[1],protocol=r[2],pitch=r[3],sensors=r[4]) for r in con.execute('''SELECT p.model,d.camera_score,d.camera_protocol,AVG(s.pixel_size_um),GROUP_CONCAT(DISTINCT s.canonical_name) FROM dxomark_results d JOIN phones p ON p.id=d.phone_id JOIN phone_cameras pc ON pc.phone_id=p.id JOIN sensors s ON s.id=pc.sensor_id WHERE d.camera_score IS NOT NULL AND s.pixel_size_um IS NOT NULL GROUP BY p.id''')]
-(PUBLIC/'dashboard.json').write_text(json.dumps(dashboard,ensure_ascii=False,separators=(',',':')),encoding='utf-8')
 stats={
  'sensors': con.execute('SELECT COUNT(*) FROM sensors').fetchone()[0],
  'manufacturers': con.execute('SELECT COUNT(*) FROM manufacturers').fetchone()[0],
