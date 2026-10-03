@@ -71,25 +71,13 @@
           <div><div class="section-kicker">EXPLORE THE DATA</div><h2 id="landscape-title">Sensor landscape</h2><p class="dashboard-intro">Select a point or manufacturer to open matching sensors in the catalog.</p></div>
           <a class="text-link" href="/sensors/">Open sensor catalog <span aria-hidden="true">→</span></a>
         </div>
-        <div class="chart-grid">
+        <div class="chart-grid chart-grid-single">
           <article class="chart-card">
             <h3>Pixel pitch vs resolution</h3>
             <p>Points group sensors with identical specs; size shows how many. Select manufacturers to compare them; hover to see which sit there and nearby. Both axes are logarithmic.</p>
             <div class="landscape-filters"></div>
             <div id="pitch-chart" class="chart-area" aria-live="polite"><div class="chart-empty">Loading sensor data…</div></div>
             <p class="chart-hint">Select a point to open that sensor’s catalog details.</p>
-          </article>
-          <article class="chart-card">
-            <h3>DxOMark score vs mapped sensor pitch</h3>
-            <p>Phone scores against the mean pixel pitch of mapped sensors. Color shows the main camera’s sensor maker; filters are shared with the pixel pitch chart.</p>
-            <div class="landscape-filters"></div>
-            <div id="dxo-controls" class="chart-controls" role="group" aria-label="Filter DxOMark protocols">
-              <button class="chart-filter is-active" type="button" data-dx-filter="all" aria-pressed="true">All protocols</button>
-              <button class="chart-filter" type="button" data-dx-filter="V5" aria-pressed="false">V5</button>
-              <button class="chart-filter" type="button" data-dx-filter="V6" aria-pressed="false">V6</button>
-            </div>
-            <div id="dxo-chart" class="chart-area" aria-live="polite"><div class="chart-empty">Loading score data…</div></div>
-            <p class="chart-hint">Select a point to browse sensors mapped to that phone.</p>
           </article>
         </div>
       </section>

@@ -223,7 +223,6 @@ function bestCamera(phone, score) {
 }
 function comparisonMarkup(phones) {
   const empty = '<span class="compare-empty">—</span>';
-  const hasScore = (phone) => phone.camera_score != null && phone.camera_score !== '';
   const sensorCount = (phone) => new Set((phone.cameras || []).map((camera) => camera.sensor_id || camera.sensor).filter(Boolean)).size;
   const largest = (phone) => bestCamera(phone, (camera) => sensorInches(camera.sensor_size));
   const sharpest = (phone) => bestCamera(phone, (camera) => camera.resolution_mp == null || camera.resolution_mp === '' ? null : Number(camera.resolution_mp));
@@ -232,7 +231,6 @@ function comparisonMarkup(phones) {
     { label: 'Phone maker', cell: (phone) => esc(phoneMakerLabel(phone)) },
     { label: 'Release year', cell: (phone) => phone.release_year ? esc(phone.release_year) : empty },
     { label: 'SoC', cell: (phone) => phone.soc ? esc(phone.soc) : empty },
-    { label: 'DXOMARK score', value: (phone) => hasScore(phone) ? Number(phone.camera_score) : null, cell: (phone) => hasScore(phone) ? '<strong>' + esc(formatNumber(phone.camera_score)) + '</strong>' + (phone.camera_protocol ? '<span class="compare-sub">' + esc(phone.camera_protocol) + '</span>' : '') : empty },
     { label: 'Mapped sensors', value: sensorCount, cell: (phone) => '<strong>' + sensorCount(phone) + '</strong>' },
   ];
   const roles = Array.from(new Set(phones.flatMap((phone) => (phone.cameras || []).map(cameraRole)))).sort((a, b) => roleRank(a) - roleRank(b) || a.localeCompare(b));
@@ -299,16 +297,9 @@ function showPhone(id, updateUrl = true) {
     ['Release year', phone.release_year || '—'],
     ['System on chip', phone.soc || '—'],
     ['Camera mappings', cameras.length],
-    ['DXOMARK camera score', phone.camera_score == null ? '—' : formatNumber(phone.camera_score)],
-    ['DXOMARK photo score', phone.photo_score == null ? '—' : formatNumber(phone.photo_score)],
-    ['DXOMARK video score', phone.video_score == null ? '—' : formatNumber(phone.video_score)],
-    ['DXOMARK selfie score', phone.selfie_score == null ? '—' : formatNumber(phone.selfie_score)],
-    ['DXOMARK display score', phone.display_score == null ? '—' : formatNumber(phone.display_score)],
-    ['DXOMARK battery score', phone.battery_score == null ? '—' : formatNumber(phone.battery_score)],
-    ['DXOMARK protocol', phone.camera_protocol || '—'],
   ];
   const dxomarkSource = phone.dxomark_source_url
-    ? '<p class="phone-score-source">DXOMARK score source: <a href="' + esc(phone.dxomark_source_url) + '" target="_blank" rel="noopener noreferrer">DXOMARK smartphone test ↗</a></p>'
+    ? '<p class="phone-score-source">Camera test: <a href="' + esc(phone.dxomark_source_url) + '" target="_blank" rel="noopener noreferrer">DXOMARK test results for this phone ↗</a></p>'
     : '';
   detail.innerHTML = '<div class="detail-head"><div><div class="section-kicker">PHONE DETAILS</div><h2>' + esc(phone.model) + '</h2><p>' + esc(phoneMakerLabel(phone)) + ' · ' + esc(phone.canonical_id) + ' · <a href="' + phonePath(phone) + '">Permalink</a></p></div><button class="icon-button" type="button" data-detail-close aria-label="Close phone details">×</button></div>' +
     '<div class="detail-grid phone-detail-grid">' + facts.map(([label, value]) => '<div class="detail-item"><span>' + esc(label) + '</span><strong>' + esc(value) + '</strong></div>').join('') + '</div>' +

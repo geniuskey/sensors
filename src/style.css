@@ -240,6 +240,7 @@ svg { flex: 0 0 auto; }
 .overview-section-head h2 { margin: 6px 0 4px; font-size: 26px; font-weight: 750; }
 .dashboard-intro { margin: 0; color: var(--muted); font-size: 14px; }
 .chart-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.chart-grid.chart-grid-single { grid-template-columns: minmax(0, 1fr); }
 .chart-card { display: flex; flex-direction: column; min-width: 0; padding: 22px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--paper); }
 .chart-card h3 { margin: 0; font-size: 16px; font-weight: 650; }
 .chart-card > p { margin: 4px 0 14px; color: var(--muted); font-size: 13px; line-height: 1.5; }

@@ -185,8 +185,8 @@ for p in phones:
     main=next((c for c in cams if 'Main' in (c.get('role') or '')),cams[0] if cams else None)
     title=f'{model} camera sensors{" — "+main["sensor"]+" main" if main else ""} | Sensor Database'
     desc=f'{model}{" ("+str(p["release_year"])+")" if p.get("release_year") else ""} image sensors by camera: '+('; '.join(f'{c.get("role") or "Camera"}: {c.get("sensor_manufacturer") or ""} {c.get("sensor")}'.replace('  ',' ') for c in cams) if cams else 'no sensor mappings yet')+'.'
-    facts=[('Brand',p.get('oem')),('Release year',p.get('release_year')),('System on chip',p.get('soc')),('Camera mappings',len(cams)),('DXOMARK camera score',p.get('camera_score')),('DXOMARK photo score',p.get('photo_score')),('DXOMARK video score',p.get('video_score')),('DXOMARK selfie score',p.get('selfie_score')),('DXOMARK display score',p.get('display_score')),('DXOMARK battery score',p.get('battery_score')),('DXOMARK protocol',p.get('camera_protocol'))]
-    dxomark_source_html=f'<p class="phone-score-source">DXOMARK score source: <a href="{e(p["dxomark_source_url"])}" target="_blank" rel="noopener noreferrer">DXOMARK smartphone test ↗</a></p>' if p.get('dxomark_source_url') else ''
+    facts=[('Brand',p.get('oem')),('Release year',p.get('release_year')),('System on chip',p.get('soc')),('Camera mappings',len(cams))]
+    dxomark_source_html=f'<p class="phone-score-source">Camera test: <a href="{e(p["dxomark_source_url"])}" target="_blank" rel="noopener noreferrer">DXOMARK test results for this phone ↗</a></p>' if p.get('dxomark_source_url') else ''
     def cam(c):
         sen=sensor_by_id.get(c.get('sensor_id')); nm=e(c.get('sensor') or c.get('sensor_id'))
         info=' · '.join(x for x in (c.get('sensor_manufacturer'), num(c.get('resolution_mp')) and num(c.get('resolution_mp'))+' MP', fmt_size(c.get('sensor_size')), num(c.get('pixel_size_um'),2) and num(c.get('pixel_size_um'),2)+' µm pixels') if x)
@@ -199,7 +199,7 @@ for p in phones:
       <section class="detail-panel"><div class="section-kicker">IMAGE SENSORS BY CAMERA</div><h2 class="detail-section-title">{len(cams)} camera{"s" if len(cams)!=1 else ""}</h2>{f'<div class="camera-mapping-list">{"".join(cam(c) for c in cams)}</div>' if cams else '<p class="phone-none">No image sensor mappings are available for this phone yet.</p>'}<p class="detail-cta"><a class="button button-secondary" href="/phones/?phone={e(quote(p["canonical_id"]))}">Open in phone catalog →</a>{issue_link(p["canonical_id"],path,model)}</p></section>'''
     cam_sensors=list({c['sensor_id']:sensor_by_id[c['sensor_id']] for c in cams if c.get('sensor_id') in sensor_by_id and sensor_dims[c['sensor_id']]}.values())
     if cam_sensors: body=body.replace('<p class="detail-cta"><a class="button button-secondary" href="/phones/',f'{size_svg(cam_sensors,f"{model} camera sensor sizes drawn to scale")}<p class="detail-cta"><a class="button button-secondary" href="/phones/',1)
-    og=write_og(og_path('phone',path),f'{p.get("oem") or "Phone"} camera sensors',model,[(f'{c.get("role") or "Camera"}: {c.get("sensor_manufacturer") or ""} {c.get("sensor") or ""}'.replace('  ',' '),i==0) for i,c in enumerate(sorted(cams,key=lambda c:'Main' not in (c.get('role') or '')))][:4]+[(' · '.join(str(x) for x in (f'{len(cams)} mapped camera{"s" if len(cams)!=1 else ""}',p.get('release_year'),p.get('soc'),p.get('camera_score') and f'DXOMARK camera {p["camera_score"]}') if x),False)],[(sensor_name(x),*sensor_dims[x['canonical_id']]) for x in cam_sensors[:4]])
+    og=write_og(og_path('phone',path),f'{p.get("oem") or "Phone"} camera sensors',model,[(f'{c.get("role") or "Camera"}: {c.get("sensor_manufacturer") or ""} {c.get("sensor") or ""}'.replace('  ',' '),i==0) for i,c in enumerate(sorted(cams,key=lambda c:'Main' not in (c.get('role') or '')))][:4]+[(' · '.join(str(x) for x in (f'{len(cams)} mapped camera{"s" if len(cams)!=1 else ""}',p.get('release_year'),p.get('soc')) if x),False)],[(sensor_name(x),*sensor_dims[x['canonical_id']]) for x in cam_sensors[:4]])
     product={'@context':'https://schema.org','@type':'Product','name':model,'description':desc,'url':SITE+path,'image':og,'sku':p['canonical_id'],'category':'Smartphone','brand':{'@type':'Brand','name':p.get('oem') or ''},'additionalProperty':[{'@type':'PropertyValue','name':c.get('role') or 'Camera','value':c.get('sensor') or ''} for c in cams]}
     if p.get('release_year'): product['releaseDate']=str(p['release_year'])
     write(path,page(path,title,desc,'/phones/',[('Home','/'),('Phones','/phones/'),(model,path)],body,product,og))
@@ -207,7 +207,7 @@ for p in phones:
 SOURCE_INFO={
     'helpix.ru':('Helpix','https://helpix.ru/','Smartphone camera sensor index used for sensor specs and phone-to-sensor mappings.'),
     'spinformation.info':('SP Information','https://spinformation.info/','Image sensor specification sheets and camera module listings.'),
-    'www.dxomark.com':('DXOMARK','https://www.dxomark.com/smartphones/','Smartphone camera, display and battery test scores.'),
+    'www.dxomark.com':('DXOMARK','https://www.dxomark.com/smartphones/','Smartphone camera test pages, linked from phone pages (scores are not copied).'),
     'www.gsmarena.com':('GSMArena','https://www.gsmarena.com/','Phone specification pages used to confirm camera sensors.'),
     'www.smartsenstech.com':('SmartSens','https://www.smartsenstech.com/','Official SmartSens product pages.'),
     'www.sony-semicon.com':('Sony Semiconductor Solutions','https://www.sony-semicon.com/','Official Sony image sensor product pages.'),
@@ -231,10 +231,10 @@ for host,st in sorted(source_stats.items(),key=lambda kv:-sum(kv[1].values())):
     name,home,note=SOURCE_INFO.get(host,(host.removeprefix('www.'),f'https://{host}/',''))
     source_rows+=f'<tr id="{slug(name)}"><td><a href="{e(home)}" target="_blank" rel="noopener noreferrer">{e(name)} ↗</a>'+(f'<p class="source-note">{e(note)}</p>' if note else '')+f'</td><td class="num">{cnt(st["spec"])}</td><td class="num">{cnt(st["map"])}</td><td class="num">{cnt(st["score"])}</td></tr>'
 sources_path='/sources/'; urls.append(sources_path)
-sources_desc=f'Sources behind the Mobile Image Sensor Database: {len(source_stats)} websites cited for image sensor specifications, phone camera mappings and DXOMARK scores.'
+sources_desc=f'Sources behind the Mobile Image Sensor Database: {len(source_stats)} websites cited for image sensor specifications, phone camera mappings and camera test links.'
 sources_body=f'''<section class="detail-panel">
-        <div class="detail-head"><div><div class="section-kicker">REFERENCES</div><h1>Data sources</h1><p>Every sensor spec, camera mapping and score in this catalog links back to the page it came from. Counts show how many records cite each source.</p></div></div>
-        <div class="tablewrap"><table class="source-table"><thead><tr><th>Source</th><th class="num">Sensor specs</th><th class="num">Camera mappings</th><th class="num">DXOMARK scores</th></tr></thead><tbody>{source_rows}</tbody></table></div>
+        <div class="detail-head"><div><div class="section-kicker">REFERENCES</div><h1>Data sources</h1><p>Every sensor spec and camera mapping in this catalog links back to the page it came from. Counts show how many records cite each source.</p></div></div>
+        <div class="tablewrap"><table class="source-table"><thead><tr><th>Source</th><th class="num">Sensor specs</th><th class="num">Camera mappings</th><th class="num">Camera test links</th></tr></thead><tbody>{source_rows}</tbody></table></div>
         <p class="source-footnote">Product names and trademarks belong to their owners. Per-record source links are listed on each <a href="/sensors/">sensor</a> and <a href="/phones/">phone</a> page. Found an error? <a href="https://github.com/geniuskey/sensors/issues" target="_blank" rel="noopener noreferrer">Open an issue ↗</a></p>
       </section>'''
 sources_ld={'@context':'https://schema.org','@type':'WebPage','name':'Data sources','description':sources_desc,'url':SITE+sources_path,'citation':[v[1] for v in SOURCE_INFO.values()]}
@@ -295,7 +295,7 @@ open_body=f'''<section class="detail-panel">
         <div class="tablewrap"><table class="source-table"><thead><tr><th>File</th><th>Contents</th><th class="num">Size</th></tr></thead><tbody>
           <tr><td><a href="/data/all-in-one.csv">all-in-one.csv</a></td><td>One row per phone camera mapping with sensor specs</td><td class="num">{fsize("all-in-one.csv")}</td></tr>
           <tr><td><a href="/data/sensors.json">sensors.json</a></td><td>{len(sensors)} sensors with aliases, sources and phones</td><td class="num">{fsize("sensors.json")}</td></tr>
-          <tr><td><a href="/data/phones.json">phones.json</a></td><td>{len(phones)} phones with per-camera sensors and DXOMARK scores</td><td class="num">{fsize("phones.json")}</td></tr>
+          <tr><td><a href="/data/phones.json">phones.json</a></td><td>{len(phones)} phones with per-camera sensors and camera test links</td><td class="num">{fsize("phones.json")}</td></tr>
           <tr><td><a href="/data/sensor-dims.json">sensor-dims.json</a></td><td>Sensor dimensions, specifications and phone counts</td><td class="num">{{DIMS_SIZE}}</td></tr>
         </tbody></table></div>
         <h2 class="detail-section-title">JSON API</h2>
@@ -303,7 +303,8 @@ open_body=f'''<section class="detail-panel">
         <div class="tablewrap"><table class="source-table"><thead><tr><th>Endpoint</th><th>Parameters</th><th>Example</th></tr></thead><tbody>{"".join(f'<tr><td><code>{e(a)}</code></td><td>{e(b)}</td><td><a href="{e(c)}"><code>{e(c)}</code></a></td></tr>' for a,b,c in api_rows)}</tbody></table></div>
         <pre class="code-block"><code>curl "{SITE}/api/sensors?q=IMX989"</code></pre>
         <h2 class="detail-section-title">License &amp; citation</h2>
-        <p>The data is released under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">Creative Commons Attribution 4.0 (CC BY 4.0) ↗</a>. Use it freely, including commercially, with attribution. DXOMARK scores and product names remain the property of their owners; every record links back to its <a href="/sources/">source</a>.</p>
+        <p>This project's own work — the catalog structure, normalized records, sensor-to-phone mappings, curation notes and exports — is released under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">Creative Commons Attribution 4.0 (CC BY 4.0) ↗</a>. Use it freely, including commercially, with attribution.</p>
+        <p>Individual facts are cited to the pages they came from, and material owned by those sources is not relicensed here; follow each <a href="/sources/">source</a>'s own terms when you reuse it. DXOMARK test results are linked, not copied. Product names and trademarks belong to their owners.</p>
         <pre class="code-block"><code>Mobile Image Sensor Database ({date.today().year}). https://sensors.euiyun.com/ — CC BY 4.0</code></pre>
         <p>Spotted a wrong spec or mapping? Every sensor and phone page has a <em>Report a data error</em> link, or <a href="{REPO}/issues/new?template=data-correction.yml" target="_blank" rel="noopener noreferrer">open a correction ↗</a>.</p>
       </section>'''

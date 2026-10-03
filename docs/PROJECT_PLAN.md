@@ -41,7 +41,6 @@ Implement reviewed collectors one at a time, starting with official manufacturer
 - Compare sensors.
 - Adoption charts by year / role / manufacturer.
 - Source/confidence badges.
-- DXOMARK analysis separated by protocol.
 - Full-text search using D1 FTS5 if dataset/search needs justify it.
 
 ## Phase 5 — sustainable operations

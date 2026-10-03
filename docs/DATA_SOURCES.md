@@ -11,14 +11,14 @@ The bootstrap catalog was assembled from multiple source families. Agents must k
 | SK hynix newsroom/product material | Official/primary | Black Pearl lineup/specs | useful for Hi-* series |
 | SP information | Broad mobile-CIS catalog | model list, specs, phone adoption | excellent discovery source; verify critical fields |
 | Helpix image-sensor index | Historical/adoption mapping | sensor-to-phone mapping, role, year | useful for old sensors and Main/UW/Tele roles |
-| DXOMARK smartphones | Phone benchmark | camera/photo/video/selfie/display/battery scores and protocol | phone-level only; protocol version required; retain the exact tested-device page URL for attribution |
+| DXOMARK smartphones | Phone benchmark link | tested device name, test-page URL | phone-level only; link only — scores, prices and dates are not copied |
 | OEM product pages | Phone specs | SoC, launch metadata, cameras where disclosed | primary source for phone identity |
 
 ## Current bootstrap URLs
 
 The CSV retains source URLs in `Source_URL`, `Additional_Source_URL`, `Mapping_Source_URL`, `SoC_Source_URL`, and `DXOMARK_Source_URL`. Importers register these URLs in the `sources` table.
 
-The DXOMARK smartphone ranking snapshot is parsed into `data/raw/dxomark_smartphones.csv`; its `DXOMARK_Source_URL` links each score to the tested device page, and `DXOMARK_Camera_Protocol` retains the camera protocol version. The same source link is exposed on phone detail pages. See the [DXOMARK smartphone rankings](https://www.dxomark.com/smartphones/).
+The DXOMARK smartphone ranking snapshot is parsed into `data/raw/dxomark_smartphones.csv`, keeping only the tested device name and its `DXOMARK_Source_URL`. That link is shown on phone detail pages. DXOMARK scores, prices and launch dates are DXOMARK's data and are **not copied** into this catalog. Only the tested device name and a link to its DXOMARK test page are kept. See the [DXOMARK smartphone rankings](https://www.dxomark.com/smartphones/).
 
 `exports/verified-role-updates-2026-09-26.csv` sets camera roles (and SoC when the same page states it) on existing phone-sensor mappings. Each row cites a Helpix page that explicitly ties the sensor to a camera module: the sensor page (`/isensor/<sensor>/`, role column) or the phone spec page (camera list naming the sensor). The importer rejects rows whose phone/sensor pair does not already exist, and only fills SoC when it is empty. Region-qualified Helpix entries, name aliases and sensor-variant/family pages are recorded as `Medium` confidence.
 

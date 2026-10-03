@@ -16,7 +16,7 @@
 - `phones`: canonicalized smartphone identity.
 - `phones.oem`: phone manufacturer used by phone search and the phone-catalog manufacturer filter. Do not join it to or populate it from the sensor `manufacturers` table.
 - `phone_cameras`: `(phone, sensor, role)` relationship.
-- `dxomark_results`: phone-level benchmark metadata. Store `camera_protocol`; V5/V6 must not be treated as directly comparable without normalization.
+- `dxomark_results`: phone-level link to the DXOMARK test page (`device_name`, `match_status`, `source_id`). The score, price, date and protocol columns are legacy and stay NULL: DXOMARK's data is linked, not copied.
 - `sources`: URL registry and source type.
 - `sensor_sources`, `camera_sources`: provenance edges.
 
