@@ -217,8 +217,8 @@ svg { flex: 0 0 auto; }
 .overview-phone-link { display: inline-flex; align-items: center; gap: 5px; margin-left: 20px; color: #dbe3f4; font-size: 14px; font-weight: 600; text-decoration: none; }
 .overview-phone-link:hover { color: #fff; }
 .sensor-art { display: grid; justify-items: center; gap: 12px; margin: 0; }
-.sensor-art-frame { width: 180px; aspect-ratio: 4 / 3; overflow: hidden; border: 1px solid rgba(255, 255, 255, .14); border-radius: 22px; background: #fff; box-shadow: 0 0 0 10px rgba(255, 255, 255, .05), 0 40px 80px rgba(0, 0, 0, .5), 0 0 120px rgba(129, 140, 248, .35); transform: perspective(900px) rotateY(-14deg) rotateX(6deg); }
-.sensor-art-frame img { display: block; width: 100%; height: 100%; object-fit: cover; transform: scale(1.3); }
+.sensor-art-frame { width: 180px; aspect-ratio: 4 / 3; overflow: hidden; border: 1px solid rgba(255, 255, 255, .14); border-radius: 22px; background: #0b1022; box-shadow: 0 0 0 10px rgba(255, 255, 255, .05), 0 40px 80px rgba(0, 0, 0, .5), 0 0 120px rgba(129, 140, 248, .35); transform: perspective(900px) rotateY(-14deg) rotateX(6deg); }
+.sensor-art-frame img { display: block; width: 100%; height: 100%; object-fit: cover; transform: scale(1.2); }
 .sensor-art-caption { color: #7c8aa5; font-size: 10px; font-weight: 600; letter-spacing: .22em; }
 
 .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin: 18px 0; }

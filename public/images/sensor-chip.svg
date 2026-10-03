@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360">
+  <title>Image sensor chip illustration</title>
+  <defs>
+    <radialGradient id="bg" cx=".5" cy=".42" r=".75">
+      <stop offset="0" stop-color="#1e2547"/>
+      <stop offset="1" stop-color="#0b1022"/>
+    </radialGradient>
+    <linearGradient id="pkg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a4058"/>
+      <stop offset="1" stop-color="#22273a"/>
+    </linearGradient>
+    <linearGradient id="die" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5b6178"/>
+      <stop offset="1" stop-color="#3b4056"/>
+    </linearGradient>
+    <pattern id="bayer" width="16" height="16" patternUnits="userSpaceOnUse">
+      <rect width="16" height="16" fill="#151a30"/>
+      <rect x=".75" y=".75" width="6.5" height="6.5" rx="1.2" fill="#f87171"/>
+      <rect x="8.75" y=".75" width="6.5" height="6.5" rx="1.2" fill="#34d399"/>
+      <rect x=".75" y="8.75" width="6.5" height="6.5" rx="1.2" fill="#34d399"/>
+      <rect x="8.75" y="8.75" width="6.5" height="6.5" rx="1.2" fill="#60a5fa"/>
+      <circle cx="3" cy="3" r="1.3" fill="#fff" opacity=".35"/>
+      <circle cx="11" cy="3" r="1.3" fill="#fff" opacity=".35"/>
+      <circle cx="3" cy="11" r="1.3" fill="#fff" opacity=".35"/>
+      <circle cx="11" cy="11" r="1.3" fill="#fff" opacity=".35"/>
+    </pattern>
+    <linearGradient id="tint" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#0b1022" stop-opacity=".55"/>
+      <stop offset=".55" stop-color="#312e81" stop-opacity=".35"/>
+      <stop offset="1" stop-color="#a78bfa" stop-opacity=".15"/>
+    </linearGradient>
+    <linearGradient id="sheen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset=".25" stop-color="#fff" stop-opacity="0"/>
+      <stop offset=".45" stop-color="#fff" stop-opacity=".22"/>
+      <stop offset=".6" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="pads" width="14" height="10" patternUnits="userSpaceOnUse">
+      <rect x="3" y="1" width="8" height="8" rx="1" fill="#d4a94f"/>
+    </pattern>
+    <clipPath id="array"><rect x="128" y="104" width="224" height="152" rx="3"/></clipPath>
+  </defs>
+  <rect width="480" height="360" fill="url(#bg)"/>
+  <rect x="78" y="58" width="324" height="244" rx="18" fill="url(#pkg)" stroke="#5c6584" stroke-width="2"/>
+  <rect x="100" y="70" width="280" height="10" fill="url(#pads)"/>
+  <rect x="100" y="280" width="280" height="10" fill="url(#pads)"/>
+  <rect x="108" y="88" width="264" height="184" rx="6" fill="url(#die)" stroke="#8a90a8" stroke-width="1.5"/>
+  <g clip-path="url(#array)">
+    <rect x="128" y="104" width="224" height="152" fill="url(#bayer)"/>
+    <rect x="128" y="104" width="224" height="152" fill="url(#tint)"/>
+    <rect x="128" y="104" width="224" height="152" fill="url(#sheen)"/>
+  </g>
+  <rect x="128" y="104" width="224" height="152" rx="3" fill="none" stroke="#11152a" stroke-width="2"/>
+  <rect x="128" y="260" width="96" height="5" rx="1.5" fill="#262c48"/>
+  <rect x="232" y="260" width="40" height="5" rx="1.5" fill="#262c48"/>
+</svg>
